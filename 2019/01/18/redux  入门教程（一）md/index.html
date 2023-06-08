@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/suwangsuwang/suwangsuwang.github.io.git/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/suwangsuwang/suwangsuwang.github.io.git/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="React 只是 DOM 的一个抽象层，并不是 Web 应用的完整解决方案。有两个方面，它没涉及。 12代码结构组件之间的通信  对于大型的复杂应用来说，这两方面恰恰是最关键的。以此，只用 React 没法写大型应用。 本篇文章介绍基本概念和用法。  零、你可能不需要 redux简单说，如果你的UI层非常简单，没有很多互动，Redux 就是不必要的，用了反而增加复杂性。 1234用户的使用方式非常">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redux  入门教程（一）">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2019/01/18/redux%20%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89md/index.html">
+<meta property="og:url" content="https://example.com/2019/01/18/redux%20%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89md/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="React 只是 DOM 的一个抽象层，并不是 Web 应用的完整解决方案。有两个方面，它没涉及。 12代码结构组件之间的通信  对于大型的复杂应用来说，这两方面恰恰是最关键的。以此，只用 React 没法写大型应用。 本篇文章介绍基本概念和用法。  零、你可能不需要 redux简单说，如果你的UI层非常简单，没有很多互动，Redux 就是不必要的，用了反而增加复杂性。 1234用户的使用方式非常">
 <meta property="og:locale" content="zh_CN">
@@ -36,7 +36,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://www.ruanyifeng.com/blogimg/asset/2016/bg2016091801.png">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2019/01/18/redux%20%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89md/">
+<link rel="canonical" href="https://example.com/2019/01/18/redux%20%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89md/">
 
 
 <script id="page-configurations">
@@ -98,7 +98,7 @@
 
   <div class="site-meta">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -119,12 +119,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -155,10 +155,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2019/01/18/redux%20%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89md/">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2019/01/18/redux%20%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="suwang">
       <meta itemprop="description" content="suwang blog">
     </span>
@@ -231,7 +231,7 @@
 <p>Redux 规定， 一个 State 对应一个View。只要 State 相同，View就相同。你知道 State，就知道 View 是什么样，反之亦然。</p>
 <p>##3.3 Action</p>
 <p>State 的变化，会导致 View 的变化。但是，用户接触不到 State，只能接触到 View。 所以，State 的变化必须是 View导致的。 Action就是View 发出的通知，表示 State 应该要发生变化了。</p>
-<p>Action 是一个对象，其中的 <code>type</code>属性是必须的，表示 Aciotn 的名称。其他属性可以自由设置，社区有一个 <a href="https://github.com/acdlite/flux-standard-action">规范</a> 可以参考。</p>
+<p>Action 是一个对象，其中的 <code>type</code>属性是必须的，表示 Aciotn 的名称。其他属性可以自由设置，社区有一个 <a target="_blank" rel="noopener" href="https://github.com/acdlite/flux-standard-action">规范</a> 可以参考。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cosnt action =&#123;</span><br><span class="line">	type: &#x27;ADD_TODO&#x27;,</span><br><span class="line">	payload: &#x27;Learn Redux&#x27;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>上面代码中， Action 的名称是 <code>ADD_TODO</code>，它携带的信息是字符串 <code>Learn Redux</code>。</p>
@@ -335,7 +335,7 @@
 <p>上面是一个简单的计数器，唯一的作用就是把参数 <code>value</code>的值，显示在网页上。Store 的监听函数设置为 <code>render</code>,每次 State的变化都会导致网页重新渲染。</p>
 <p>下面加入一点变化，为 <code>counter</code> 添加递增和递减的 Action。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">const Counter = (&#123;value,onIncrement,onDecrement&#125;)=&gt;(</span><br><span class="line">	&lt;div&gt;</span><br><span class="line">	&lt;h1&gt;&#123;value&#125;&lt;/h1&gt;</span><br><span class="line">	&lt;button onClick=&#123;onIncrement&#125;&gt;+&lt;/button&gt;</span><br><span class="line">	&lt;button onClick=&#123;onDecrement&#125;&gt;-&lt;/button&gt;</span><br><span class="line">	&lt;/div&gt;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">const reducer = (state= 0 ,action)=&gt;&#123;</span><br><span class="line">	switch (action.type)&#123;</span><br><span class="line">		case &#x27;INCREMENT&#x27;: return state +1;</span><br><span class="line">		case &#x27;DECREMENT&#x27;: return state -1;</span><br><span class="line">		default: return state;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line">const render = () =&gt;&#123;</span><br><span class="line">	ReactDOM.render(</span><br><span class="line">	&lt;Counter </span><br><span class="line">	  value = &#123;store.getState()&#125;</span><br><span class="line">	  onIncrement=&#123;()=&gt;store.dispatch(&#123;type:&#x27;INCREMENT&#x27;&#125;)&#125;</span><br><span class="line">	  onDecrement=&#123;()=&gt;store.dispatch(&#123;type:&#x27;DECREMENT&#x27;&#125;)&#125;</span><br><span class="line">	  /&gt;</span><br><span class="line">	  document.getElementById(&#x27;root&#x27;)</span><br><span class="line">	);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">render();</span><br><span class="line">store.subscribe(render);</span><br></pre></td></tr></table></figure>
-<p>完整的代码请看<a href="https://github.com/reactjs/redux/tree/master/examples/counter">这里</a></p>
+<p>完整的代码请看<a target="_blank" rel="noopener" href="https://github.com/reactjs/redux/tree/master/examples/counter">这里</a></p>
 <p>Redux 的基本用法就介绍到这里。</p>
 
     </div>
@@ -352,11 +352,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2018/12/13/JavaScript%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/" rel="prev" title="JavaScript 入门教程">
+    <a href="/2018/12/13/JavaScript%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/" rel="prev" title="JavaScript 入门教程">
       <i class="fa fa-chevron-left"></i> JavaScript 入门教程
     </a></div>
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2019/01/21/Redux%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%20%E4%B8%AD%E9%97%B4%E4%BB%B6%E4%B8%8E%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C/" rel="next" title="Redux 入门教程（二）： 中间件与异步操作">
+    <a href="/2019/01/21/Redux%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%20%E4%B8%AD%E9%97%B4%E4%BB%B6%E4%B8%8E%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C/" rel="next" title="Redux 入门教程（二）： 中间件与异步操作">
       Redux 入门教程（二）： 中间件与异步操作 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -429,7 +429,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
@@ -482,19 +482,19 @@
   </div>
 
   
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/anime.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/motion.js"></script>
-
-
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

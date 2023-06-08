@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/suwangsuwang/suwangsuwang.github.io.git/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/suwangsuwang/suwangsuwang.github.io.git/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="文中较详细介绍GCD队列，各种GCD使用方法，实例如何使用Dispatch Source监听系统底层对象，分析不同锁的性能对比，实例GCD死锁情况。文中的Demo在这里 https:&#x2F;&#x2F;github.com&#x2F;ming1016&#x2F;GCDDemo 对着文章试着来调demo体会更深哦，细细嚼消化好:) GCD（Grand Central Dispatch） 介绍 GCD属于系统级的线程管理，在Dispat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GCD">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/04/04/GCD/index.html">
+<meta property="og:url" content="https://example.com/2018/04/04/GCD/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="文中较详细介绍GCD队列，各种GCD使用方法，实例如何使用Dispatch Source监听系统底层对象，分析不同锁的性能对比，实例GCD死锁情况。文中的Demo在这里 https:&#x2F;&#x2F;github.com&#x2F;ming1016&#x2F;GCDDemo 对着文章试着来调demo体会更深哦，细细嚼消化好:) GCD（Grand Central Dispatch） 介绍 GCD属于系统级的线程管理，在Dispat">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="technology blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/04/04/GCD/">
+<link rel="canonical" href="https://example.com/2018/04/04/GCD/">
 
 
 <script id="page-configurations">
@@ -95,7 +95,7 @@
 
   <div class="site-meta">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -116,12 +116,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -152,10 +152,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/04/04/GCD/">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2018/04/04/GCD/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="suwang">
       <meta itemprop="description" content="suwang blog">
     </span>
@@ -196,7 +196,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>文中较详细介绍GCD队列，各种GCD使用方法，实例如何使用Dispatch Source监听系统底层对象，分析不同锁的性能对比，实例GCD死锁情况。文中的Demo在这里 <a href="https://github.com/ming1016/GCDDemo">https://github.com/ming1016/GCDDemo</a> 对着文章试着来调demo体会更深哦，细细嚼消化好:)</p>
+        <p>文中较详细介绍GCD队列，各种GCD使用方法，实例如何使用Dispatch Source监听系统底层对象，分析不同锁的性能对比，实例GCD死锁情况。文中的Demo在这里 <a target="_blank" rel="noopener" href="https://github.com/ming1016/GCDDemo">https://github.com/ming1016/GCDDemo</a> 对着文章试着来调demo体会更深哦，细细嚼消化好:)</p>
 <p>GCD（Grand Central Dispatch） 介绍</p>
 <p>GCD属于系统级的线程管理，在Dispatch queue中执行需要执行的任务性能非常的高。GCD这块已经开源，地址<a target="_blank" rel="noopener" href="http://libdispatch.macosforge.org.gcd中的fifo队列称为dispatch/">http://libdispatch.macosforge.org。GCD中的FIFO队列称为dispatch</a> queue，用来保证先进来的任务先得到执行。</p>
 <p>GCD概要</p>
@@ -291,7 +291,7 @@
 <p>Dispatch IO 文件操作</p>
 <p>dispatch io读取文件的方式类似于下面的方式，多个线程去读取文件的切片数据，对于大的数据文件这样会比单线程要快很多。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async(queue,^&#123;/*read 0-99 bytes*/&#125;);</span><br><span class="line">dispatch_async(queue,^&#123;/*read 100-199 bytes*/&#125;);</span><br><span class="line">dispatch_async(queue,^&#123;/*read 200-299 bytes*/&#125;);</span><br></pre></td></tr></table></figure>
-<p>dispatch_io_create：创建dispatch io<br>dispatch_io_set_low_water：指定切割文件大小<br>dispatch_io_read：读取切割的文件然后合并。<br>苹果系统日志API里用到了这个技术，可以在这里查看：<a href="https://github.com/Apple-FOSS-Mirror/Libc/blob/2ca2ae74647714acfc18674c3114b1a5d3325d7d/gen/asl.c">https://github.com/Apple-FOSS-Mirror/Libc/blob/2ca2ae74647714acfc18674c3114b1a5d3325d7d/gen/asl.c</a></p>
+<p>dispatch_io_create：创建dispatch io<br>dispatch_io_set_low_water：指定切割文件大小<br>dispatch_io_read：读取切割的文件然后合并。<br>苹果系统日志API里用到了这个技术，可以在这里查看：<a target="_blank" rel="noopener" href="https://github.com/Apple-FOSS-Mirror/Libc/blob/2ca2ae74647714acfc18674c3114b1a5d3325d7d/gen/asl.c">https://github.com/Apple-FOSS-Mirror/Libc/blob/2ca2ae74647714acfc18674c3114b1a5d3325d7d/gen/asl.c</a></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">pipe_q = dispatch_queue_create(&quot;PipeQ&quot;, NULL);</span><br><span class="line">//创建</span><br><span class="line">pipe_channel = dispatch_io_create(DISPATCH_IO_STREAM, fd, pipe_q, ^(int err)&#123;</span><br><span class="line">    close(fd);</span><br><span class="line">&#125;);</span><br><span class="line">*out_fd = fdpair[1];</span><br><span class="line">//设置切割大小</span><br><span class="line">dispatch_io_set_low_water(pipe_channel, SIZE_MAX);</span><br><span class="line">dispatch_io_read(pipe_channel, 0, SIZE_MAX, pipe_q, ^(bool done, dispatch_data_t pipedata, int err)&#123;</span><br><span class="line">    if (err == 0)</span><br><span class="line">    &#123;</span><br><span class="line">        size_t len = dispatch_data_get_size(pipedata);</span><br><span class="line">        if (len &gt; 0)</span><br><span class="line">        &#123;</span><br><span class="line">            //对每次切块数据的处理</span><br><span class="line">            const char *bytes = NULL;</span><br><span class="line">            char *encoded;</span><br><span class="line">            uint32_t eval;</span><br><span class="line">            dispatch_data_t md = dispatch_data_create_map(pipedata, (const void **)&amp;bytes, &amp;len);</span><br><span class="line">            encoded = asl_core_encode_buffer(bytes, len);</span><br><span class="line">            asl_msg_set_key_val(aux, ASL_KEY_AUX_DATA, encoded);</span><br><span class="line">            free(encoded);</span><br><span class="line">            eval = _asl_evaluate_send(NULL, (aslmsg)aux, -1);</span><br><span class="line">            _asl_send_message(NULL, eval, aux, NULL);</span><br><span class="line">            asl_msg_release(aux);</span><br><span class="line">            dispatch_release(md);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (done)</span><br><span class="line">    &#123;</span><br><span class="line">        //semaphore +1使得不需要再等待继续执行下去。</span><br><span class="line">        dispatch_semaphore_signal(sem);</span><br><span class="line">        dispatch_release(pipe_channel);</span><br><span class="line">        dispatch_release(pipe_q);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p>Dispatch Source 用GCD监视进程</p>
 <p>Dispatch Source用于监听系统的底层对象，比如文件描述符，Mach端口，信号量等。主要处理的事件如下表</p>
@@ -343,11 +343,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2018/03/05/iOS%20block/" rel="prev" title="iOS block">
+    <a href="/2018/03/05/iOS%20block/" rel="prev" title="iOS block">
       <i class="fa fa-chevron-left"></i> iOS block
     </a></div>
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2018/04/05/Masonry/" rel="next" title="Masonry">
+    <a href="/2018/04/05/Masonry/" rel="next" title="Masonry">
       Masonry <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -419,7 +419,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
@@ -472,19 +472,19 @@
   </div>
 
   
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/anime.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/motion.js"></script>
-
-
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

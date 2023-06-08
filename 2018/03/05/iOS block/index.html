@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/suwangsuwang/suwangsuwang.github.io.git/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/suwangsuwang/suwangsuwang.github.io.git/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="简介block可以当做匿名函数，可以在两个对象间将语句当做数据来进行传递。具有封闭性closure，方便取得上下文相关状态信息。简单 block 定义就像函数指针，用^替代了*。 Block的创建  可以如声明函数那样声明一个block变量 定义函数的方法定义block 把block当做一个函数来调用  123456789101112131415int main(int argc, const c">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS block">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/03/05/iOS%20block/index.html">
+<meta property="og:url" content="https://example.com/2018/03/05/iOS%20block/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="简介block可以当做匿名函数，可以在两个对象间将语句当做数据来进行传递。具有封闭性closure，方便取得上下文相关状态信息。简单 block 定义就像函数指针，用^替代了*。 Block的创建  可以如声明函数那样声明一个block变量 定义函数的方法定义block 把block当做一个函数来调用  123456789101112131415int main(int argc, const c">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="technology blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/03/05/iOS%20block/">
+<link rel="canonical" href="https://example.com/2018/03/05/iOS%20block/">
 
 
 <script id="page-configurations">
@@ -95,7 +95,7 @@
 
   <div class="site-meta">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -116,12 +116,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -152,10 +152,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/03/05/iOS%20block/">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2018/03/05/iOS%20block/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="suwang">
       <meta itemprop="description" content="suwang blog">
     </span>
@@ -252,11 +252,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2018/03/04/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90%20iOS%20%E7%BC%96%E8%AF%91%20Clang%20-%20LLVM/" rel="prev" title="剖析 iOS编译">
+    <a href="/2018/03/04/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90%20iOS%20%E7%BC%96%E8%AF%91%20Clang%20-%20LLVM/" rel="prev" title="剖析 iOS编译">
       <i class="fa fa-chevron-left"></i> 剖析 iOS编译
     </a></div>
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2018/04/04/GCD/" rel="next" title="GCD">
+    <a href="/2018/04/04/GCD/" rel="next" title="GCD">
       GCD <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -328,7 +328,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
@@ -381,19 +381,19 @@
   </div>
 
   
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/anime.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/motion.js"></script>
-
-
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

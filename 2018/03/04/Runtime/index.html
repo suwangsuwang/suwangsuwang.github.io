@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/suwangsuwang/suwangsuwang.github.io.git/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/suwangsuwang/suwangsuwang.github.io.git/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="概述Objc Runtime使得C具有了面向对象能力，在程序运行时创建，检查，修改类、对象和它们的方法。Runtime是C和汇编编写的，这里http:&#x2F;&#x2F;www.opensource.apple.com&#x2F;source&#x2F;objc4&#x2F;可以下到苹果维护的开源代码，GNU也有一个开源的runtime版本，他们都努力的保持一致。苹果官方的Runtime编程指南 Runtime函数Runtime系统是由一系列">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Runtime">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/03/04/Runtime/index.html">
+<meta property="og:url" content="https://example.com/2018/03/04/Runtime/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="概述Objc Runtime使得C具有了面向对象能力，在程序运行时创建，检查，修改类、对象和它们的方法。Runtime是C和汇编编写的，这里http:&#x2F;&#x2F;www.opensource.apple.com&#x2F;source&#x2F;objc4&#x2F;可以下到苹果维护的开源代码，GNU也有一个开源的runtime版本，他们都努力的保持一致。苹果官方的Runtime编程指南 Runtime函数Runtime系统是由一系列">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="technology blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/03/04/Runtime/">
+<link rel="canonical" href="https://example.com/2018/03/04/Runtime/">
 
 
 <script id="page-configurations">
@@ -95,7 +95,7 @@
 
   <div class="site-meta">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -116,12 +116,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -152,10 +152,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2018/03/04/Runtime/">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2018/03/04/Runtime/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="suwang">
       <meta itemprop="description" content="suwang blog">
     </span>
@@ -390,7 +390,7 @@
 <li>How do I implement method swizzling? <a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/5371601/how-do-i-implement-method-swizzling">http://stackoverflow.com/questions/5371601/how-do-i-implement-method-swizzling</a></li>
 <li>Method Swizzling <a target="_blank" rel="noopener" href="http://nshipster.com/method-swizzling/">http://nshipster.com/method-swizzling/</a></li>
 <li>What are the Dangers of Method Swizzling in Objective C? <a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c">http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c</a></li>
-<li>JRSwizzle <a href="https://github.com/rentzsch/jrswizzle">https://github.com/rentzsch/jrswizzle</a></li>
+<li>JRSwizzle <a target="_blank" rel="noopener" href="https://github.com/rentzsch/jrswizzle">https://github.com/rentzsch/jrswizzle</a></li>
 </ul>
 <h1 id="Protocol和Category"><a href="#Protocol和Category" class="headerlink" title="Protocol和Category"></a>Protocol和Category</h1><h2 id="基础数据类型-1"><a href="#基础数据类型-1" class="headerlink" title="基础数据类型"></a>基础数据类型</h2><h3 id="Category"><a href="#Category" class="headerlink" title="Category"></a>Category</h3><p>指向分类的结构体的指针</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">typedef struct objc_category *Category;</span><br><span class="line"></span><br><span class="line">struct objc_category &#123;</span><br><span class="line"></span><br><span class="line">     char *category_name OBJC2_UNAVAILABLE; // 分类名</span><br><span class="line"></span><br><span class="line">     char *class_name OBJC2_UNAVAILABLE; // 分类所属的类名</span><br><span class="line"></span><br><span class="line">     struct objc_method_list *instance_methods OBJC2_UNAVAILABLE; // 实例方法列表</span><br><span class="line"></span><br><span class="line">     struct objc_method_list *class_methods OBJC2_UNAVAILABLE; // 类方法列表，Meta Class方法列表的子集</span><br><span class="line"></span><br><span class="line">     struct objc_protocol_list *protocols OBJC2_UNAVAILABLE; // 分类所实现的协议列表</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -425,7 +425,7 @@
 <h2 id="对App的用户行为进行追踪"><a href="#对App的用户行为进行追踪" class="headerlink" title="对App的用户行为进行追踪"></a>对App的用户行为进行追踪</h2><p>就是用户点击时把事件记录下来。一般比较做法就是在viewDidAppear里记录事件，这样会让这样记录事件的代码遍布整个项目中。继承或类别也会有问题。这时利用Method Swizzling把一个方法的实现和另一个方法的实现进行替换。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">//先定义一个类别，添加要Swizzled的方法</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (Logging)- (void)swizzled_viewDidAppear:(BOOL)animated</span><br><span class="line"></span><br><span class="line">&#123; // call original implementation</span><br><span class="line"></span><br><span class="line">     [self swizzled_viewDidAppear:animated]; // Logging</span><br><span class="line"></span><br><span class="line">     [Logging logWithEventName:NSStringFromClass([self class])];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//接下来实现swizzle方法</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (Logging)void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector) &#123; // the method might not exist in the class, but in its superclass</span><br><span class="line"></span><br><span class="line">     Method originalMethod = class_getInstanceMethod(class, originalSelector);</span><br><span class="line"></span><br><span class="line">     Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector); // class_addMethod will fail if original method already exists</span><br><span class="line"></span><br><span class="line">     BOOL didAddMethod = class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod)); // the method doesn’t exist and we just added one</span><br><span class="line"></span><br><span class="line">     if (didAddMethod) &#123;</span><br><span class="line"></span><br><span class="line">          class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     else &#123;</span><br><span class="line"></span><br><span class="line">          method_exchangeImplementations(originalMethod, swizzledMethod);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//最后要确保在程序启动的时候调用swizzleMethod方法在之前的UIViewController的Logging类别里添加+load:方法，然后在+load:里把viewDidAppear替换掉</span><br><span class="line"></span><br><span class="line">@implementation UIViewController (Logging)+ (void)load</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     swizzleMethod([self class], @selector(viewDidAppear:), @selector(swizzled_viewDidAppear:));</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//更简化直接用新的IMP取代原IMP，不是替换，只需要有全局的函数指针指向原IMP即可。</span><br><span class="line"></span><br><span class="line">void (gOriginalViewDidAppear)(id, SEL, BOOL);void newViewDidAppear(UIViewController *self, SEL _cmd, BOOL animated)</span><br><span class="line"></span><br><span class="line">&#123; // call original implementation</span><br><span class="line"></span><br><span class="line">     gOriginalViewDidAppear(self, _cmd, animated); // Logging</span><br><span class="line"></span><br><span class="line">     [Logging logWithEventName:NSStringFromClass([self class])];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (void)load</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     Method originalMethod = class_getInstanceMethod(self, @selector(viewDidAppear:));</span><br><span class="line"></span><br><span class="line">     gOriginalViewDidAppear = (void *)method_getImplementation(originalMethod); if(!class_addMethod(self, @selector(viewDidAppear:), (IMP) newViewDidAppear, method_getTypeEncoding(originalMethod))) &#123;</span><br><span class="line"></span><br><span class="line">          method_setImplementation(originalMethod, (IMP) newViewDidAppear);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>通过Method Swizzling可以把事件代码或Logging，Authentication，Caching等跟主要业务逻辑代码解耦。这种处理方式叫做Cross Cutting Concerns<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Cross-cutting_concern">http://en.wikipedia.org/wiki/Cross-cutting_concern</a> 用Method Swizzling动态给指定的方法添加代码解决Cross Cutting Concerns的编程方式叫Aspect Oriented Programming <a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Aspect-oriented_programming">http://en.wikipedia.org/wiki/Aspect-oriented_programming</a> 目前有些第三方库可以很方便的使用AOP，比如Aspects <a href="https://github.com/steipete/Aspects">https://github.com/steipete/Aspects</a> 这里是使用Aspects的范例<a href="https://github.com/okcomp/AspectsDemo">https://github.com/okcomp/AspectsDemo</a></p>
+<p>通过Method Swizzling可以把事件代码或Logging，Authentication，Caching等跟主要业务逻辑代码解耦。这种处理方式叫做Cross Cutting Concerns<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Cross-cutting_concern">http://en.wikipedia.org/wiki/Cross-cutting_concern</a> 用Method Swizzling动态给指定的方法添加代码解决Cross Cutting Concerns的编程方式叫Aspect Oriented Programming <a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Aspect-oriented_programming">http://en.wikipedia.org/wiki/Aspect-oriented_programming</a> 目前有些第三方库可以很方便的使用AOP，比如Aspects <a target="_blank" rel="noopener" href="https://github.com/steipete/Aspects">https://github.com/steipete/Aspects</a> 这里是使用Aspects的范例<a target="_blank" rel="noopener" href="https://github.com/okcomp/AspectsDemo">https://github.com/okcomp/AspectsDemo</a></p>
 
     </div>
 
@@ -441,11 +441,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2018/03/03/Windows%20%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/" rel="prev" title="Windows 系统安装教程">
+    <a href="/2018/03/03/Windows%20%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/" rel="prev" title="Windows 系统安装教程">
       <i class="fa fa-chevron-left"></i> Windows 系统安装教程
     </a></div>
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2018/03/04/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90%20iOS%20%E7%BC%96%E8%AF%91%20Clang%20-%20LLVM/" rel="next" title="剖析 iOS编译">
+    <a href="/2018/03/04/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90%20iOS%20%E7%BC%96%E8%AF%91%20Clang%20-%20LLVM/" rel="next" title="剖析 iOS编译">
       剖析 iOS编译 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -518,7 +518,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
@@ -571,19 +571,19 @@
   </div>
 
   
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/anime.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/motion.js"></script>
-
-
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

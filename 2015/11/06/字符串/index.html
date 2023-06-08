@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/suwangsuwang/suwangsuwang.github.io.git/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/suwangsuwang/suwangsuwang.github.io.git/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="搜索在一个字符串中搜索子字符串 最灵活的方法  (NSRange)rangeOfString:(NSString *)aString options:(NSStringCompareOptions)mask range:(NSRange)searchRange locale:(NSLocale *)locale    格式化字符串 3个方法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="字符串">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/index.html">
+<meta property="og:url" content="https://example.com/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="搜索在一个字符串中搜索子字符串 最灵活的方法  (NSRange)rangeOfString:(NSString *)aString options:(NSStringCompareOptions)mask range:(NSRange)searchRange locale:(NSLocale *)locale    格式化字符串 3个方法">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="technology blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+<link rel="canonical" href="https://example.com/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/">
 
 
 <script id="page-configurations">
@@ -95,7 +95,7 @@
 
   <div class="site-meta">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -116,12 +116,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -152,10 +152,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="suwang">
       <meta itemprop="description" content="suwang blog">
     </span>
@@ -494,13 +494,13 @@
 <p>进行语法解析，需要语法分析库描述我们的语言。下面代码就是为那个布局约束语言写的解析语法，用的扩展的巴科斯范式<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">EBNF</a>写法：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">constraint = expression comparator expression</span><br><span class="line"></span><br><span class="line">comparator = &quot;=&quot; | &quot;&gt;=&quot; | &quot;&lt;=&quot;</span><br><span class="line"></span><br><span class="line">expression = keyPath &quot;.&quot; attribute addMultiplier addConstant</span><br><span class="line"></span><br><span class="line">keyPath = identifier | identifier &quot;.&quot; keyPath</span><br><span class="line"></span><br><span class="line">attribute = &quot;left&quot; | &quot;right&quot; | &quot;top&quot; | &quot;bottom&quot; | &quot;leading&quot; | &quot;trailing&quot; | &quot;width&quot; | &quot;height&quot; | &quot;centerX&quot; | &quot;centerY&quot; | &quot;baseline&quot;</span><br><span class="line"></span><br><span class="line">addMultiplier = &quot;*&quot; atom</span><br><span class="line"></span><br><span class="line">addConstant = &quot;+&quot; atom</span><br><span class="line"></span><br><span class="line">atom = number | identifier</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>还有很多Objective-C的语法解析，更多的可以在CocoaPods上找到：<a target="_blank" rel="noopener" href="http://cocoapods.org/?q=parse">http://cocoapods.org/?q=parse</a>。比较好的就是CoreParse，地址：<a href="https://github.com/beelsebob/CoreParse">https://github.com/beelsebob/CoreParse</a>，但是需要使用它支持的语法。下面就是CoreParse支持的格式：</p>
+<p>还有很多Objective-C的语法解析，更多的可以在CocoaPods上找到：<a target="_blank" rel="noopener" href="http://cocoapods.org/?q=parse">http://cocoapods.org/?q=parse</a>。比较好的就是CoreParse，地址：<a target="_blank" rel="noopener" href="https://github.com/beelsebob/CoreParse">https://github.com/beelsebob/CoreParse</a>，但是需要使用它支持的语法。下面就是CoreParse支持的格式：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">NSString* grammarString = [@[</span><br><span class="line"></span><br><span class="line">     @&quot;Atom ::= num@&#x27;Number&#x27; | ident@&#x27;Identifier&#x27;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;Constant ::= name@&#x27;Identifier&#x27; &#x27;=&#x27; value@&lt;Atom&gt;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;Relation ::= &#x27;=&#x27; | &#x27;&gt;=&#x27; | &#x27;&lt;=&#x27;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;Attribute ::= &#x27;left&#x27; | &#x27;right&#x27; | &#x27;top&#x27; | &#x27;bottom&#x27; | &#x27;leading&#x27; | &#x27;trailing&#x27; | &#x27;width&#x27; | &#x27;height&#x27; | &#x27;centerX&#x27; | &#x27;centerY&#x27; | &#x27;baseline&#x27;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;Multiplier ::= &#x27;*&#x27; num@&#x27;Number&#x27;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;AddConstant ::= &#x27;+&#x27; num@&#x27;Number&#x27;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;KeypathAndAttribute ::= &#x27;Identifier&#x27; &#x27;.&#x27; &lt;AttributeOrRest&gt;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;AttributeOrRest ::= att@&lt;Attribute&gt; | &#x27;Identifier&#x27; &#x27;.&#x27; &lt;AttributeOrRest&gt;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;Expression ::= &lt;KeypathAndAttribute&gt; &lt;Multiplier&gt;? &lt;AddConstant&gt;?;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;LayoutConstraint ::= lhs@&lt;Expression&gt; rel@&lt;Relation&gt; rhs@&lt;Expression&gt;;&quot;,</span><br><span class="line"></span><br><span class="line">     @&quot;Rule ::= &lt;Atom&gt; | &lt;LayoutConstraint&gt;;&quot;,</span><br><span class="line"></span><br><span class="line">] componentsJoinedByString:@&quot;\n&quot;];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>一个规则匹配后解析器就找到同样名称的类</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (id)parser:(CPParser *)parser didProduceSyntaxTree:(CPSyntaxTree *)syntaxTree</span><br><span class="line"></span><br><span class="line">     NSString *ruleName = syntaxTree.rule.name;</span><br><span class="line"></span><br><span class="line">     if ([ruleName isEqualToString:@&quot;Attribute&quot;]) &#123;</span><br><span class="line"></span><br><span class="line">          return self.layoutAttributes[[[syntaxTree childAtIndex:0] keyword]];</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>完整的解析器代码在：<a href="https://github.com/objcio/issue-9-string-parsing">https://github.com/objcio/issue-9-string-parsing</a>。里面有个解析类可以用来解析复杂的布局约束，如下：</p>
+<p>完整的解析器代码在：<a target="_blank" rel="noopener" href="https://github.com/objcio/issue-9-string-parsing">https://github.com/objcio/issue-9-string-parsing</a>。里面有个解析类可以用来解析复杂的布局约束，如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">viewController.view.centerX + 20 &lt;= self.view.centerX * 0.5</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>可以得到如下结果，方便转换成NSLayoutConstraint对象</p>
@@ -562,11 +562,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2015/09/09/%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B/" rel="prev" title="基础类型">
+    <a href="/2015/09/09/%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B/" rel="prev" title="基础类型">
       <i class="fa fa-chevron-left"></i> 基础类型
     </a></div>
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2015/12/12/Swift/" rel="next" title="Swift">
+    <a href="/2015/12/12/Swift/" rel="next" title="Swift">
       Swift <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -639,7 +639,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
@@ -692,19 +692,19 @@
   </div>
 
   
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/anime.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/motion.js"></script>
-
-
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

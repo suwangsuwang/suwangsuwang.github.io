@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/suwangsuwang/suwangsuwang.github.io.git/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/suwangsuwang/suwangsuwang.github.io.git/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="先前写到的一篇Masonry心得文章里已经提到了很多AutoLayout相关的知识，这篇我会更加详细的对其知识要点进行分析和整理。 来历一般大家都会认为Auto Layout这个东西是苹果自己搞出来的，其实不然，早在1997年Alan Borning, Kim Marriott, Peter Stuckey等人就发布了《Solving Linear Arithmetic Constraints f">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Auto_Layout剖析">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2017/02/04/Auto_Layout%E5%89%96%E6%9E%90/index.html">
+<meta property="og:url" content="https://example.com/2017/02/04/Auto_Layout%E5%89%96%E6%9E%90/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="先前写到的一篇Masonry心得文章里已经提到了很多AutoLayout相关的知识，这篇我会更加详细的对其知识要点进行分析和整理。 来历一般大家都会认为Auto Layout这个东西是苹果自己搞出来的，其实不然，早在1997年Alan Borning, Kim Marriott, Peter Stuckey等人就发布了《Solving Linear Arithmetic Constraints f">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="technology blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2017/02/04/Auto_Layout%E5%89%96%E6%9E%90/">
+<link rel="canonical" href="https://example.com/2017/02/04/Auto_Layout%E5%89%96%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -95,7 +95,7 @@
 
   <div class="site-meta">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -116,12 +116,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -152,10 +152,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2017/02/04/Auto_Layout%E5%89%96%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2017/02/04/Auto_Layout%E5%89%96%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="suwang">
       <meta itemprop="description" content="suwang blog">
     </span>
@@ -197,7 +197,7 @@
 
       
         <p>先前写到的一篇Masonry心得文章里已经提到了很多AutoLayout相关的知识，这篇我会更加详细的对其知识要点进行分析和整理。</p>
-<h1 id="来历"><a href="#来历" class="headerlink" title="来历"></a>来历</h1><p>一般大家都会认为Auto Layout这个东西是苹果自己搞出来的，其实不然，早在1997年Alan Borning, Kim Marriott, Peter Stuckey等人就发布了《Solving Linear Arithmetic Constraints for User Interface Applications》论文（论文地址：<a target="_blank" rel="noopener" href="http://constraints.cs.washington.edu/solvers/uist97.html">http://constraints.cs.washington.edu/solvers/uist97.html</a>）提出了在解决布局问题的Cassowary constraint-solving算法实现，并且将代码发布在他们搭建的Cassowary网站上<a target="_blank" rel="noopener" href="http://constraints.cs.washington.edu/cassowary/">http://constraints.cs.washington.edu/cassowary/</a>。后来更多开发者用各种语言来写Cassowary，比如说pybee用python写的<a href="https://github.com/pybee/cassowary">https://github.com/pybee/cassowary</a>。自从它发布以来JavaScript，.NET，JAVA，Smalltall和C++都有相应的库。2011年苹果将这个算法运用到了自家的布局引擎中，美其名曰Auto Layout。</p>
+<h1 id="来历"><a href="#来历" class="headerlink" title="来历"></a>来历</h1><p>一般大家都会认为Auto Layout这个东西是苹果自己搞出来的，其实不然，早在1997年Alan Borning, Kim Marriott, Peter Stuckey等人就发布了《Solving Linear Arithmetic Constraints for User Interface Applications》论文（论文地址：<a target="_blank" rel="noopener" href="http://constraints.cs.washington.edu/solvers/uist97.html">http://constraints.cs.washington.edu/solvers/uist97.html</a>）提出了在解决布局问题的Cassowary constraint-solving算法实现，并且将代码发布在他们搭建的Cassowary网站上<a target="_blank" rel="noopener" href="http://constraints.cs.washington.edu/cassowary/">http://constraints.cs.washington.edu/cassowary/</a>。后来更多开发者用各种语言来写Cassowary，比如说pybee用python写的<a target="_blank" rel="noopener" href="https://github.com/pybee/cassowary">https://github.com/pybee/cassowary</a>。自从它发布以来JavaScript，.NET，JAVA，Smalltall和C++都有相应的库。2011年苹果将这个算法运用到了自家的布局引擎中，美其名曰Auto Layout。</p>
 <h2 id="Cassowary"><a href="#Cassowary" class="headerlink" title="Cassowary"></a>Cassowary</h2><p>Cassowary是个解析工具包，能够有效解析线性等式系统和线性不等式系统，用户的界面中总是会出现不等关系和相等关系，Cassowary开发了一种规则系统可以通过约束来描述视图间关系。约束就是规则，能够表示出一个视图相对于另一个视图的位置。</p>
 <h1 id="Auto-Layout的生命周期"><a href="#Auto-Layout的生命周期" class="headerlink" title="Auto Layout的生命周期"></a>Auto Layout的生命周期</h1><p>进入下面主题前可以先介绍下加入Auto Layout的生命周期。在得到自己的layout之前Layout Engine会将Views，约束，Priorities（优先级），instrinsicContentSize（主要是UILabel,UIImageView等）通过计算转换成最终的效果。在Layout Engine里会有约束变化到Deferred Layout Pass再到应用Run Loop再回到约束变化这样的循环机制。</p>
 <h2 id="约束变化"><a href="#约束变化" class="headerlink" title="约束变化"></a>约束变化</h2><p>触发约束变化包括</p>
@@ -346,8 +346,8 @@
 </ul>
 <h1 id="实践中碰到的非必现低配置机器崩溃bug分析"><a href="#实践中碰到的非必现低配置机器崩溃bug分析" class="headerlink" title="实践中碰到的非必现低配置机器崩溃bug分析"></a>实践中碰到的非必现低配置机器崩溃bug分析</h1><h2 id="案例一"><a href="#案例一" class="headerlink" title="案例一"></a>案例一</h2><p>一个视图缺少高宽约束，在设置完了约束后执行layoutIfNeeded，然后设置宽高，这种情况在低配机器上可能会出现崩问题。原因在于layoutIfNeeded需要有标记才会立刻调用layoutSubview得到宽高，不然是不会马上调用的。页面第一次显示是会自动标记上需要刷新这个标记的，所以第一次看显示都是看不出问题的，但页面再次调用layoutIfNeeded时是不会立刻执行layoutSubview的（但之前加上setNeedsLayout就会立刻执行），这时改变的宽高值会在上文生命周期中提到的Auto Layout Cycle中的Engine里的Deferred Layout Pass里执行layoutSubview，手动设置的layoutIfNeeded也会执行一遍layoutSubview，但是这个如果发生在Deferred Layout Pass之后就会出现崩的问题，因为当视图设置为setTranslatesAutoresizingMaskIntoConstraints:NO时会严格按照约束-&gt;Engine-&gt;显示这种流程，如在Deferred Layout Pass之前设置好是没有问题的，之后强制执行LayoutSubview会产生一个权重和先前一样的约束在类似动画block里更新布局让Engine执行导致Ambiguous Layouts这种权重相同冲突崩溃的情况发生。</p>
 <h2 id="案例二"><a href="#案例二" class="headerlink" title="案例二"></a>案例二</h2><p>将多个有相互约束关系视图removeFromSuperView后更新布局在低配机器上出现崩的问题。这个原因主要是根据不含视图项的约束不合法这个原则来的，同时会抛出野指针的错误。在内存吃紧机器上，当应用占内存较多系统会抓住任何可以释放heap区内存的机会视图被移除后会立刻被清空，这时约束如果还没有被释就满足不含视图项的约束会崩的情况了。</p>
-<h1 id="推荐Auto-Layout第三方库"><a href="#推荐Auto-Layout第三方库" class="headerlink" title="推荐Auto Layout第三方库"></a>推荐Auto Layout第三方库</h1><h2 id="Masonry"><a href="#Masonry" class="headerlink" title="Masonry"></a>Masonry</h2><p>Github地址：<a href="https://github.com/SnapKit/Masonry">https://github.com/SnapKit/Masonry</a></p>
-<h2 id="Cartography"><a href="#Cartography" class="headerlink" title="Cartography"></a>Cartography</h2><p>Github地址：<a href="https://github.com/robb/Cartography">https://github.com/robb/Cartography</a></p>
+<h1 id="推荐Auto-Layout第三方库"><a href="#推荐Auto-Layout第三方库" class="headerlink" title="推荐Auto Layout第三方库"></a>推荐Auto Layout第三方库</h1><h2 id="Masonry"><a href="#Masonry" class="headerlink" title="Masonry"></a>Masonry</h2><p>Github地址：<a target="_blank" rel="noopener" href="https://github.com/SnapKit/Masonry">https://github.com/SnapKit/Masonry</a></p>
+<h2 id="Cartography"><a href="#Cartography" class="headerlink" title="Cartography"></a>Cartography</h2><p>Github地址：<a target="_blank" rel="noopener" href="https://github.com/robb/Cartography">https://github.com/robb/Cartography</a></p>
 <h1 id="Masonry-1"><a href="#Masonry-1" class="headerlink" title="Masonry"></a>Masonry</h1><p>可以参看我上篇文章《AutoLayout框架Masonry使用心得》:<a target="_blank" rel="noopener" href="http://www.starming.com/index.php?v=index&view=81">http://www.starming.com/index.php?v=index&view=81</a></p>
 <h1 id="各版本iOS中AutoLayout的区别"><a href="#各版本iOS中AutoLayout的区别" class="headerlink" title="各版本iOS中AutoLayout的区别"></a>各版本iOS中AutoLayout的区别</h1><p>完整记录可以到官方网站进行核对和查找：What’s New in iOS <a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/releasenotes/General/WhatsNewIniOS/Introduction/Introduction.html">https://developer.apple.com/library/ios/releasenotes/General/WhatsNewIniOS/Introduction/Introduction.html</a></p>
 <h2 id="iOS6"><a href="#iOS6" class="headerlink" title="iOS6"></a>iOS6</h2><p>苹果在这个版本引入Auto Layout，具备了所有核心功能。</p>
@@ -375,7 +375,7 @@
 <h2 id="iOS9"><a href="#iOS9" class="headerlink" title="iOS9"></a>iOS9</h2><h3 id="UIStackView"><a href="#UIStackView" class="headerlink" title="UIStackView"></a>UIStackView</h3><p>苹果一直希望能够让更多的人来用Auto Layout，除了弄出一个VFL现在又弄出一个不需要约束的方法，使用Stack view使大家使用Auto Layout时不用触碰到约束，官方口号是“Start with Stack View, use constraints as needed”。 更多细节可以查看官方介绍：UIKit Framework Reference UIStackView Class Reference<a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/AutoLayoutWithoutConstraints.html">https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/AutoLayoutWithoutConstraints.html</a></p>
 <p>Stack Views ：<a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html">https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html</a></p>
 <p>Stack View提供了更加简便的自动布局方法比如Alignment的Fill，Leading，Center，Trailing。Distribution的Fill，Fill Equally，Fill Proportionally，Equal Spacing。</p>
-<p>如果希望在iOS9之前的系统也能够使用Stack view可以用sunnyxx的FDStackView<a href="https://github.com/forkingdog/FDStackView">https://github.com/forkingdog/FDStackView</a>，利用运行时替换元素的方法来支持iOS6+系统。</p>
+<p>如果希望在iOS9之前的系统也能够使用Stack view可以用sunnyxx的FDStackView<a target="_blank" rel="noopener" href="https://github.com/forkingdog/FDStackView">https://github.com/forkingdog/FDStackView</a>，利用运行时替换元素的方法来支持iOS6+系统。</p>
 <h3 id="NSLayoutAnchorAPI"><a href="#NSLayoutAnchorAPI" class="headerlink" title="NSLayoutAnchorAPI"></a>NSLayoutAnchorAPI</h3><p>新增这个API能够让约束的声明更加清晰，还能够通过静态类型检查确保约束的正常工作。具体可以查看官方文档<a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/AppKit/Reference/NSLayoutAnchor_ClassReference/">https://developer.apple.com/library/ios/documentation/AppKit/Reference/NSLayoutAnchor_ClassReference&#x2F;</a></p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSLayoutConstraint</span> *constraint = [view1.leadingAnchor constraintEqualToAnchor:view2.topAnchor];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -411,11 +411,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2017/01/25/Swift%20%E8%87%AA%E5%8A%A8%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="prev" title="Swift 自动引用计数">
+    <a href="/2017/01/25/Swift%20%E8%87%AA%E5%8A%A8%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="prev" title="Swift 自动引用计数">
       <i class="fa fa-chevron-left"></i> Swift 自动引用计数
     </a></div>
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8%20Core%20ML%20%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="next" title="iOS：使用 Core ML 进行机器学习">
+    <a href="/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8%20Core%20ML%20%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="next" title="iOS：使用 Core ML 进行机器学习">
       iOS：使用 Core ML 进行机器学习 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -488,7 +488,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
@@ -541,19 +541,19 @@
   </div>
 
   
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/anime.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/motion.js"></script>
-
-
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

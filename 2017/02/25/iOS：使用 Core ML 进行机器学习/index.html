@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/suwangsuwang/suwangsuwang.github.io.git/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/suwangsuwang/suwangsuwang.github.io.git/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="Core ML 是一个使各种机器学习和统计模型在 macOS 和 iOS 上原生支持的令人兴奋的新框架。它帮助开发者将已经成型的统计和机器学习模型整合到应用之中。这个模块是基于苹果公司的底层机器学习基本元件，有一些是在 WWDC2016中声明的。#Core ML在三个方面帮助开发者：  Core ML 支持多种机器学习模型，从类神经网络模型到广义线性模型，Core ML 中都有。 Core ML">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS：使用 Core ML 进行机器学习">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8%20Core%20ML%20%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:url" content="https://example.com/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8%20Core%20ML%20%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="Core ML 是一个使各种机器学习和统计模型在 macOS 和 iOS 上原生支持的令人兴奋的新框架。它帮助开发者将已经成型的统计和机器学习模型整合到应用之中。这个模块是基于苹果公司的底层机器学习基本元件，有一些是在 WWDC2016中声明的。#Core ML在三个方面帮助开发者：  Core ML 支持多种机器学习模型，从类神经网络模型到广义线性模型，Core ML 中都有。 Core ML">
 <meta property="og:locale" content="zh_CN">
@@ -37,7 +37,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1064761-27fdb60b569529e5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8%20Core%20ML%20%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+<link rel="canonical" href="https://example.com/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8%20Core%20ML%20%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
 
 
 <script id="page-configurations">
@@ -99,7 +99,7 @@
 
   <div class="site-meta">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -120,12 +120,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -156,10 +156,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8%20Core%20ML%20%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8%20Core%20ML%20%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="suwang">
       <meta itemprop="description" content="suwang blog">
     </span>
@@ -238,7 +238,7 @@
 <p>我们不需要对 Python 非常精通才能理解以上代码。顶上的部分是导入必须的包。<br><br>接下来，我们导入波士顿房价数据，并且进行适度处理来使我们的模型更好地获取自变量和因变量。使用以上变量，我们可以创造出线性规划模型：lm &#x3D; linear_model.LinearRegression().<br>我们创建了模型之后，就可以使用数据进行适配，适配数据可以生产帮助我们预测房价的系数。.mlmodel 文件会允许我满使用系数来做出预测。<br>最后两行的 Python 代码，是转换线性模型到 .mlmodel 格式并且保存到文件中。<br>coremltools.converters.sklearn.convert(lm, [“crime”, “rooms”], “price”)完成装换操作。coremltools 提供一系列可供使用的转换器来转换模型到 .mlmodel 格式。<a target="_blank" rel="noopener" href="https://pypi.python.org/pypi/coremltools">详情参考</a>.下载该网页文档来了解更多关于转换的消息。<br>运行python NAME_OF_FILE.py 来生成 BostonPricer.mlmodel。举例来说，我的文件名是“pricer_example.py”，所以 我们运行 python pricer_example.py。<br>确保运行程序在 Python 脚本文件在相同目录中。我们的 .mlmodel 文件会创建在相同的位置。</p>
 <h1 id="一个小巧智能的-iOS-应用程序"><a href="#一个小巧智能的-iOS-应用程序" class="headerlink" title="一个小巧智能的 iOS 应用程序"></a>一个小巧智能的 iOS 应用程序</h1><p>我们的应用程序是一个简单的单视图应用程序。该应用使用了简答的用户图形接口来根据两个变量生成房价预测值。这个程序有一个有两个组件的UIPickerView，一个是犯罪率另一个是房屋个数。并且有一个标签来显示结果。</p>
 <p>显示如下：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1064761-a8f1a3139109a702.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="singleView.png"><br>我们不会使用 storyboard 来构建视图。如果对该项目好奇可以在<a href="https://github.com/bignerdranch/ml-boston-pricer">这里</a>找到。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-a8f1a3139109a702.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="singleView.png"><br>我们不会使用 storyboard 来构建视图。如果对该项目好奇可以在<a target="_blank" rel="noopener" href="https://github.com/bignerdranch/ml-boston-pricer">这里</a>找到。</p>
 <p>添加BostonPricer.mlmodel 到 Xcode 项目中。</p>
 <p>将 .mlmodel 文件 拖拽进项目中，这样可以方便查看模型文件。你可以通过点击BostonPricer.mlmodel 来观察模型文件。</p>
 <p>这样添加文件和会自动添加生成名为：BostonPricer, BostonPricerInput and BostonPricerOutput的类。</p>
@@ -290,11 +290,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2017/02/04/Auto_Layout%E5%89%96%E6%9E%90/" rel="prev" title="Auto_Layout剖析">
+    <a href="/2017/02/04/Auto_Layout%E5%89%96%E6%9E%90/" rel="prev" title="Auto_Layout剖析">
       <i class="fa fa-chevron-left"></i> Auto_Layout剖析
     </a></div>
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2017/03/04/URLSession/" rel="next" title="URLSession">
+    <a href="/2017/03/04/URLSession/" rel="next" title="URLSession">
       URLSession <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -367,7 +367,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
@@ -420,19 +420,19 @@
   </div>
 
   
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/anime.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/motion.js"></script>
-
-
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

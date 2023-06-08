@@ -5,25 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/suwangsuwang/suwangsuwang.github.io.git/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/suwangsuwang/suwangsuwang.github.io.git/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/suwangsuwang/suwangsuwang.github.io.git/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/suwangsuwang/suwangsuwang.github.io.git/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="线程使用Instruments的CPU strategy view查看代码如何在多核CPU中执行。创建线程可以使用POSIX 线程API，或者NSThread（封装POSIX 线程API）。下面是并发4个线程在一百万个数字中找最小值和最大值的pthread例子：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多线程开发">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/index.html">
+<meta property="og:url" content="https://example.com/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/index.html">
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="线程使用Instruments的CPU strategy view查看代码如何在多核CPU中执行。创建线程可以使用POSIX 线程API，或者NSThread（封装POSIX 线程API）。下面是并发4个线程在一百万个数字中找最小值和最大值的pthread例子：">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="technology blog">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/">
+<link rel="canonical" href="https://example.com/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/">
 
 
 <script id="page-configurations">
@@ -95,7 +95,7 @@
 
   <div class="site-meta">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -116,12 +116,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -152,10 +152,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="suwang">
       <meta itemprop="description" content="suwang blog">
     </span>
@@ -364,7 +364,7 @@
 <p>重写start方法需要管理isExecuting和isFinished状态。下面是取消操作的方法</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (void)cancel</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     [super cancel];</span><br><span class="line"></span><br><span class="line">     [self.connection cancel];</span><br><span class="line"></span><br><span class="line">     self.isFinished = YES;</span><br><span class="line"></span><br><span class="line">     self.isExecuting = NO;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//连接完成发送回调</span><br><span class="line"></span><br><span class="line">- (void)connectionDidFinishLoading:(NSURLConnection *)connection</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     self.data = self.buffer;</span><br><span class="line"></span><br><span class="line">     self.buffer = nil;</span><br><span class="line"></span><br><span class="line">     self.isExecuting = NO;</span><br><span class="line"></span><br><span class="line">     self.isFinished = YES;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h1 id="后台处理I-x2F-O"><a href="#后台处理I-x2F-O" class="headerlink" title="后台处理I&#x2F;O"></a>后台处理I&#x2F;O</h1><p>异步处理文件可以使用NSInputStream。官方文档：<a target="_blank" rel="noopener" href="http://developer.apple.com/library/ios/#documentation/FileManagement/Conceptual/FileSystemProgrammingGUide/TechniquesforReadingandWritingCustomFiles/TechniquesforReadingandWritingCustomFiles.html">http://developer.apple.com/library/ios/#documentation/FileManagement/Conceptual/FileSystemProgrammingGUide/TechniquesforReadingandWritingCustomFiles/TechniquesforReadingandWritingCustomFiles.html</a>实例：<a href="https://github.com/objcio/issue-2-background-file-io">https://github.com/objcio/issue-2-background-file-io</a></p>
+<h1 id="后台处理I-x2F-O"><a href="#后台处理I-x2F-O" class="headerlink" title="后台处理I&#x2F;O"></a>后台处理I&#x2F;O</h1><p>异步处理文件可以使用NSInputStream。官方文档：<a target="_blank" rel="noopener" href="http://developer.apple.com/library/ios/#documentation/FileManagement/Conceptual/FileSystemProgrammingGUide/TechniquesforReadingandWritingCustomFiles/TechniquesforReadingandWritingCustomFiles.html">http://developer.apple.com/library/ios/#documentation/FileManagement/Conceptual/FileSystemProgrammingGUide/TechniquesforReadingandWritingCustomFiles/TechniquesforReadingandWritingCustomFiles.html</a>实例：<a target="_blank" rel="noopener" href="https://github.com/objcio/issue-2-background-file-io">https://github.com/objcio/issue-2-background-file-io</a></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@interface Reader : NSObject</span><br><span class="line"></span><br><span class="line">- (void)enumerateLines:(void (^)(NSString*))block</span><br><span class="line"></span><br><span class="line">     completion:(void (^)())completion;</span><br><span class="line"></span><br><span class="line">- (id)initWithFileAtPath:(NSString*)path;</span><br><span class="line"></span><br><span class="line">//采用main run loop的事件将数据发到后台操作线程去处理</span><br><span class="line"></span><br><span class="line">- (void)enumerateLines:(void (^)(NSString*))block</span><br><span class="line"></span><br><span class="line">completion:(void (^)())completion</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     if (self.queue == nil) &#123;</span><br><span class="line"></span><br><span class="line">          self.queue = [[NSOperationQueue alloc] init];</span><br><span class="line"></span><br><span class="line">          self.queue.maxConcurrentOperationCount = 1;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     self.callback = block;</span><br><span class="line"></span><br><span class="line">     self.completion = completion;</span><br><span class="line"></span><br><span class="line">     self.inputStream = [NSInputStream inputStreamWithURL:self.fileURL];</span><br><span class="line"></span><br><span class="line">     self.inputStream.delegate = self;</span><br><span class="line"></span><br><span class="line">     [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop]</span><br><span class="line"></span><br><span class="line">     forMode:NSDefaultRunLoopMode];</span><br><span class="line"></span><br><span class="line">          [self.inputStream open];</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//input stream在主线程中发送代理消息，接着就可以在操作队列加入block操作</span><br><span class="line"></span><br><span class="line">- (void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)eventCode</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     switch (eventCode) &#123;</span><br><span class="line"></span><br><span class="line">          ...</span><br><span class="line"></span><br><span class="line">          case NSStreamEventHasBytesAvailable: &#123;</span><br><span class="line"></span><br><span class="line">               NSMutableData *buffer = [NSMutableData dataWithLength:4 * 1024];</span><br><span class="line"></span><br><span class="line">               NSUInteger length = [self.inputStream read:[buffer mutableBytes]</span><br><span class="line"></span><br><span class="line">                    maxLength:[buffer length]];</span><br><span class="line"></span><br><span class="line">               if (0 &lt; length) &#123;</span><br><span class="line"></span><br><span class="line">                    [buffer setLength:length];</span><br><span class="line"></span><br><span class="line">                    __weak id weakSelf = self;</span><br><span class="line"></span><br><span class="line">                    [self.queue addOperationWithBlock:^&#123;</span><br><span class="line"></span><br><span class="line">                         [weakSelf processDataChunk:buffer];</span><br><span class="line"></span><br><span class="line">                    &#125;];</span><br><span class="line"></span><br><span class="line">               &#125;</span><br><span class="line"></span><br><span class="line">               break;</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          ...</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//处理数据chunk，原理就是把数据切成很多小块，然后不断更新和处理buffer缓冲区，逐块读取和存入方式来处理大文件响应快而且内存开销也小。</span><br><span class="line"></span><br><span class="line">- (void)processDataChunk:(NSMutableData *)buffer;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     if (self.remainder != nil) &#123;</span><br><span class="line"></span><br><span class="line">          [self.remainder appendData:buffer];</span><br><span class="line"></span><br><span class="line">     &#125; else &#123;</span><br><span class="line"></span><br><span class="line">          self.remainder = buffer;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     [self.remainder obj_enumerateComponentsSeparatedBy:self.delimiter</span><br><span class="line"></span><br><span class="line">               usingBlock:^(NSData* component, BOOL last) &#123;</span><br><span class="line"></span><br><span class="line">          if (!last) &#123;</span><br><span class="line"></span><br><span class="line">               [self emitLineWithData:component];</span><br><span class="line"></span><br><span class="line">          &#125; else if (0 &lt; [component length]) &#123;</span><br><span class="line"></span><br><span class="line">               self.remainder = [component mutableCopy];</span><br><span class="line"></span><br><span class="line">          &#125; else &#123;</span><br><span class="line"></span><br><span class="line">               self.remainder = nil;</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h1 id="并发开发会遇到的困难问题"><a href="#并发开发会遇到的困难问题" class="headerlink" title="并发开发会遇到的困难问题"></a>并发开发会遇到的困难问题</h1><h2 id="多个线程访问共享资源"><a href="#多个线程访问共享资源" class="headerlink" title="多个线程访问共享资源"></a>多个线程访问共享资源</h2><p>比如两个线程都会把计算结果写到一个整型数中。为了防止，需要一种互斥机制来访问共享资源</p>
@@ -378,9 +378,9 @@
 <h2 id="优先级反转"><a href="#优先级反转" class="headerlink" title="优先级反转"></a>优先级反转</h2><p>运行时低优先级任务由于先取得了释放了锁的共享资源而阻塞了高优先级任务，这种情况叫做优先级反转</p>
 <h2 id="最佳安全实践避免问题的方法"><a href="#最佳安全实践避免问题的方法" class="headerlink" title="最佳安全实践避免问题的方法"></a>最佳安全实践避免问题的方法</h2><p>从主线程中取到数据，利用一个操作队列在后台处理数据，完后返回后台队列中得到的数据到主队列中。这样的操作不会有任何锁操作。</p>
 <h2 id="并发测试"><a href="#并发测试" class="headerlink" title="并发测试"></a>并发测试</h2><ul>
-<li>使用SenTestingKit框架测试：<a href="https://github.com/nxtbgthng/SenTestingKitAsync">https://github.com/nxtbgthng/SenTestingKitAsync</a></li>
-<li>kiwi：<a href="https://github.com/allending/Kiwi">https://github.com/allending/Kiwi</a></li>
-<li>GHunit：<a href="https://github.com/gabriel/gh-unit/">https://github.com/gabriel/gh-unit/</a></li>
+<li>使用SenTestingKit框架测试：<a target="_blank" rel="noopener" href="https://github.com/nxtbgthng/SenTestingKitAsync">https://github.com/nxtbgthng/SenTestingKitAsync</a></li>
+<li>kiwi：<a target="_blank" rel="noopener" href="https://github.com/allending/Kiwi">https://github.com/allending/Kiwi</a></li>
+<li>GHunit：<a target="_blank" rel="noopener" href="https://github.com/gabriel/gh-unit/">https://github.com/gabriel/gh-unit/</a></li>
 </ul>
 
     </div>
@@ -397,11 +397,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2016/12/01/AsyncDisplayKit%202.0%20%E6%95%99%E7%A8%8B/" rel="prev" title="AsyncDisplayKit 2.0 教程">
+    <a href="/2016/12/01/AsyncDisplayKit%202.0%20%E6%95%99%E7%A8%8B/" rel="prev" title="AsyncDisplayKit 2.0 教程">
       <i class="fa fa-chevron-left"></i> AsyncDisplayKit 2.0 教程
     </a></div>
       <div class="post-nav-item">
-    <a href="/suwangsuwang/suwangsuwang.github.io.git/2017/01/02/Swift%20%20%20%E6%9E%90%E6%9E%84%E8%BF%87%E7%A8%8B/" rel="next" title="Swift   析构过程">
+    <a href="/2017/01/02/Swift%20%20%20%E6%9E%90%E6%9E%84%E8%BF%87%E7%A8%8B/" rel="next" title="Swift   析构过程">
       Swift   析构过程 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -474,7 +474,7 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/suwangsuwang/suwangsuwang.github.io.git/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
@@ -527,19 +527,19 @@
   </div>
 
   
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/anime.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.min.js"></script>
-  <script src="/suwangsuwang/suwangsuwang.github.io.git/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/motion.js"></script>
-
-
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/suwangsuwang/suwangsuwang.github.io.git/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

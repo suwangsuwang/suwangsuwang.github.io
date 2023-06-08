@@ -20,18 +20,22 @@
     var CONFIG = {"hostname":"github.com","root":"/suwangsuwang/suwangsuwang.github.io.git/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="suwang blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Blog">
-<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/archives/index.html">
+  <meta name="description" content="#推送流程  #一些概念1.真机证书- &gt; 让电脑有了使用手机进行某项操作的权力(真机,推送,上线)APP ID:程序标识符3.真机证书制作 1.创建证书 创建CSR文件(本机的钥匙串)(CSR文件包含创建证书的电脑的一些信息,我们用电脑创建的证书,只有那一台电脑可以用)2.1 钥匙串访问- &gt; 证书助理-&gt; 从证书颁发机构请求证书-&gt; 存储到磁盘 上传CSR文件 下载ce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 总结">
+<meta property="og:url" content="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2015/08/08/iOS%20%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="suwang blog">
+<meta property="og:description" content="#推送流程  #一些概念1.真机证书- &gt; 让电脑有了使用手机进行某项操作的权力(真机,推送,上线)APP ID:程序标识符3.真机证书制作 1.创建证书 创建CSR文件(本机的钥匙串)(CSR文件包含创建证书的电脑的一些信息,我们用电脑创建的证书,只有那一台电脑可以用)2.1 钥匙串访问- &gt; 证书助理-&gt; 从证书颁发机构请求证书-&gt; 存储到磁盘 上传CSR文件 下载ce">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-09663a409c658a4e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2015-08-08T11:23:25.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:31.300Z">
 <meta property="article:author" content="suwang">
 <meta property="article:tag" content="technology blog">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1064761-09663a409c658a4e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
-<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/archives/">
+<link rel="canonical" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2015/08/08/iOS%20%E6%80%BB%E7%BB%93/">
 
 
 <script id="page-configurations">
@@ -39,12 +43,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | Blog</title>
+  <title>iOS 总结 | Blog</title>
   
 
 
@@ -143,238 +147,107 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        <span class="collection-header">不错! 目前共计 58 篇日志。 继续努力。</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://github.com/suwangsuwang/suwangsuwang.github.io.git/2015/08/08/iOS%20%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/suwangsuwang/suwangsuwang.github.io.git/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="suwang blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS 总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-08-08 19:23:25" itemprop="dateCreated datePublished" datetime="2015-08-08T19:23:25+08:00">2015-08-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:31" itemprop="dateModified" datetime="2023-06-07T23:20:31+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2019</span>
-    </div>
+        <p>#推送流程</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-09663a409c658a4e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1064761-91decb9285e9d812.jpg"></p>
+<p>#一些概念<br>1.真机证书- &gt; 让电脑有了使用手机进行某项操作的权力(真机,推送,上线)<br><br>APP ID:程序标识符<br><br>3.真机证书制作<br></p>
+<p>1.创建证书</p>
+<p>创建CSR文件(本机的钥匙串)(CSR文件包含创建证书的电脑的一些信息,我们用电脑创建的证书,只有那一台电脑可以用)<br><br>2.1 钥匙串访问- &gt; 证书助理-&gt; 从证书颁发机构请求证书-&gt; 存储到磁盘</p>
+<p>上传CSR文件</p>
+<p>下载cer证书文件- &gt;双击安装到钥匙串</p>
+<span id="more"></span>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-01-21T00:00:00+08:00"
-              content="2019-01-21">
-          01-21
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2019/01/21/Redux%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9AReact-Redux%20%E7%9A%84%E7%94%A8%E6%B3%95/" itemprop="url">
-            <span itemprop="name">Redux 入门教程（三）：React-Redux 的用法</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-01-21T00:00:00+08:00"
-              content="2019-01-21">
-          01-21
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2019/01/21/Redux%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%20%E4%B8%AD%E9%97%B4%E4%BB%B6%E4%B8%8E%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C/" itemprop="url">
-            <span itemprop="name">Redux 入门教程（二）： 中间件与异步操作</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-01-18T00:00:00+08:00"
-              content="2019-01-18">
-          01-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2019/01/18/redux%20%20%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89md/" itemprop="url">
-            <span itemprop="name">redux  入门教程（一）</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-    <div class="collection-year">
-      <span class="collection-header">2018</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2018-12-13T17:33:05+08:00"
-              content="2018-12-13">
-          12-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2018/12/13/JavaScript%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/" itemprop="url">
-            <span itemprop="name">JavaScript 入门教程</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2018-12-13T10:38:40+08:00"
-              content="2018-12-13">
-          12-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2018/12/13/iOS%E4%BC%81%E4%B8%9A%E5%8C%85%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B/" itemprop="url">
-            <span itemprop="name">iOS 部署企业包教程</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2018-12-13T00:00:00+08:00"
-              content="2018-12-13">
-          12-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2018/12/13/Linux%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/" itemprop="url">
-            <span itemprop="name">Linux 程序设计入门教程</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2018-09-10T12:03:02+08:00"
-              content="2018-09-10">
-          09-10
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2018/09/10/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url">
-            <span itemprop="name">设计模式</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2018-08-14T19:24:39+08:00"
-              content="2018-08-14">
-          08-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2018/08/14/ReactiveCocoa/" itemprop="url">
-            <span itemprop="name">ReactiveCocoa</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2018-07-28T08:00:23+08:00"
-              content="2018-07-28">
-          07-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2018/07/28/%E7%A8%8B%E5%BA%8F%E7%98%A6%E8%BA%AB/" itemprop="url">
-            <span itemprop="name">程序瘦身</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2018-06-17T15:23:39+08:00"
-              content="2018-06-17">
-          06-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/suwangsuwang/suwangsuwang.github.io.git/2018/06/17/%E6%96%AD%E7%82%B9%E5%92%8C%E8%B0%83%E8%AF%95%E5%99%A8%E4%BA%A4%E4%BA%92/" itemprop="url">
-            <span itemprop="name">调试</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
+<p>5.[注意]-&gt; 这个证书只用创建CSR的那台电脑使用,如果想让其他电脑也可以使用这个证书,就必须让创建CSR文件的电脑将开发者证书导出为.p12的证书</p>
+<p>APP ID :程序标识符</p>
+<p>通配的: 可以用于真机测试,因为不可以选择某些app servers</p>
+<p>精确的:可以选现有的app servers,但是在xcode中的bundle identifier 必须和app id 一样</p>
+<p>描述文件(真机和上线) : xcode 中可以直接运行程序最重要的一个文件</p>
+<p>1.描述文件选择了app id,如果你在xcode中选择了这个描述文件,你的xcode中的bundle identifier就必须和描述文件的 app ID 一样</p>
+<p>2.描述文件选择了真机 测试证书,xcode 中项目选择了某个描述文件,你的电脑中就必须安装过描述文件所选择的那个真机测试证书</p>
+<p>描述文件中有一个真机列表,如果想真机测试,你的设备udid 必须在描述文件的真机列表中<br>添加一台设备</p>
+<p>1.添加设备到账号,</p>
+<p>2.重新生成一个描述文件,让描述文件真机列表中有你的真机的udid</p>
+<p>#cell自适应高度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (CGFloat)textHeight:(NSString)str&#123;</span><br><span class="line">	NSDictionary dict = @&#123;NSFontAttributeName:[UIFont systemFontOfSize:17]&#125;;</span><br><span class="line">	CGRect rect = [str boundingRectWithSize:CGSizeMake(375,1000) options:NSStringDrawingUsesLineFragmentOrigin attributes: dict context:nil];</span><br><span class="line">	return rect.size.height;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/suwangsuwang/suwangsuwang.github.io.git/2015/07/24/Learning%20to%20use%20Markdown/" rel="prev" title="Learning to use Markdown">
+      <i class="fa fa-chevron-left"></i> Learning to use Markdown
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/suwangsuwang/suwangsuwang.github.io.git/2015/08/20/Layer%20%E5%8A%A8%E7%94%BB/" rel="next" title="Layer 动画">
+      Layer 动画 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
   
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/suwangsuwang/suwangsuwang.github.io.git/archives/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/suwangsuwang/suwangsuwang.github.io.git/archives/page/6/">6</a><a class="extend next" rel="next" href="/suwangsuwang/suwangsuwang.github.io.git/archives/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+  
+  
 
 
 

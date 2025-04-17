@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="AutoLayout的一些基本概念 利用约束来控制视图的大小和位置，系统会在运行时通过设置的约束计算得到frame再绘制屏幕 两个属性Content Compression Resistance（排挤，值越高越固定）和Content Hugging（拥抱）,Masonry代码如下  12345678910111213&#x2F;&#x2F;content hugging 为1000[view setContentHu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Masonry">
+<meta property="og:url" content="https://suwangsuwang.github.io/2018/04/05/Masonry/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="AutoLayout的一些基本概念 利用约束来控制视图的大小和位置，系统会在运行时通过设置的约束计算得到frame再绘制屏幕 两个属性Content Compression Resistance（排挤，值越高越固定）和Content Hugging（拥抱）,Masonry代码如下  12345678910111213&#x2F;&#x2F;content hugging 为1000[view setContentHu">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-04-05T08:22:23.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:27.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2018/04/05/Masonry/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Masonry | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/04/05/Masonry/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Masonry
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-05 16:22:23" itemprop="dateCreated datePublished" datetime="2018-04-05T16:22:23+08:00">2018-04-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:27" itemprop="dateModified" datetime="2023-06-07T23:20:27+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="AutoLayout的一些基本概念"><a href="#AutoLayout的一些基本概念" class="headerlink" title="AutoLayout的一些基本概念"></a>AutoLayout的一些基本概念</h1><ul>
+<li>利用约束来控制视图的大小和位置，系统会在运行时通过设置的约束计算得到frame再绘制屏幕</li>
+<li>两个属性Content Compression Resistance（排挤，值越高越固定）和Content Hugging（拥抱）,Masonry代码如下</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//content hugging 为1000</span></span><br><span class="line"></span><br><span class="line">[view setContentHuggingPriority:<span class="built_in">UILayoutPriorityRequired</span></span><br><span class="line"></span><br><span class="line">                           forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//content compression 为250</span></span><br><span class="line"></span><br><span class="line">[view setContentCompressionResistancePriority:<span class="built_in">UILayoutPriorityDefaultLow</span></span><br><span class="line"></span><br><span class="line">                                         forAxis:<span class="built_in">UILayoutConstraintAxisHorizontal</span>];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<ul>
+<li>multipler属性表示约束值为约束对象的百分比，在Masonry里有对应的multipliedBy函数</li>
+</ul>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//宽度为superView宽度的20%</span></span><br><span class="line"></span><br><span class="line">make<span class="selector-class">.width</span><span class="selector-class">.equalTo</span>(superView.mas_width)<span class="selector-class">.multipliedBy</span>(<span class="number">0.2</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>AutoLayout下UILabel设置多行计算需要设置preferredMaxLayoutWidth</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="selector-tag">label</span><span class="selector-class">.preferredMaxWidth</span> = <span class="selector-attr">[UIScreen mainScreen]</span><span class="selector-class">.bounds</span><span class="selector-class">.size</span><span class="selector-class">.width</span> - <span class="attribute">margin</span> - padding;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>preferredMaxLayoutWidth用来制定最大的宽，一般用在多行的UILabel中</li>
+<li>systemLayoutSizeFittingSize方法能够获得view的高度</li>
+<li>iOS7有两个很有用的属性，topLayoutGuide和bottomLayoutGuide，这个两个主要是方便获取UINavigationController和UITabBarController的头部视图区域和底部视图区域。</li>
+</ul>
+<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Masonry直接支持这个属性</span></span><br><span class="line"></span><br><span class="line">make.top.equalTo(<span class="symbol">self</span>.mas_topLayoutGuide);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="AutoLayout关于更新的几个方法的区别"><a href="#AutoLayout关于更新的几个方法的区别" class="headerlink" title="AutoLayout关于更新的几个方法的区别"></a>AutoLayout关于更新的几个方法的区别</h1><ul>
+<li>setNeedsLayout：告知页面需要更新，但是不会立刻开始更新。执行后会立刻调用layoutSubviews。</li>
+<li>layoutIfNeeded：告知页面布局立刻更新。所以一般都会和setNeedsLayout一起使用。如果希望立刻生成新的frame需要调用此方法，利用这点一般布局动画可以在更新布局后直接使用这个方法让动画生效。</li>
+<li>layoutSubviews：系统重写布局</li>
+<li>setNeedsUpdateConstraints：告知需要更新约束，但是不会立刻开始</li>
+<li>updateConstraintsIfNeeded：告知立刻更新约束</li>
+<li>updateConstraints：系统更新约束</li>
+</ul>
+<h1 id="Masonry使用注意事项"><a href="#Masonry使用注意事项" class="headerlink" title="Masonry使用注意事项"></a>Masonry使用注意事项</h1><ul>
+<li>用mas_makeConstraints的那个view需要在addSubview之后才能用这个方法</li>
+<li>mas_equalTo适用数值元素，equalTo适合多属性的比如make.left.and.right.equalTo(self.view)</li>
+<li>方法and和with只是为了可读性，返回自身，比如make.left.and.right.equalTo(self.view)和make.left.right.equalTo(self.view)是一样的。</li>
+<li>因为iOS中原点在左上角所以注意使用offset时注意right和bottom用负数。</li>
+</ul>
+<h1 id="Masonry适配iOS6和iOS7时需要注意的问题"><a href="#Masonry适配iOS6和iOS7时需要注意的问题" class="headerlink" title="Masonry适配iOS6和iOS7时需要注意的问题"></a>Masonry适配iOS6和iOS7时需要注意的问题</h1><p>开发项目时是先在iOS8上调试完成的，测试时发现低版本的系统会发生奔溃的现象，修复后总结问题主要是在equalTo的对象指到了父视图的父视图或者父视图同级的子视图上造成的，所以做约束时如果出现了奔溃问题百分之九十都是因为这个。</p>
+<h1 id="Masonry使用范例"><a href="#Masonry使用范例" class="headerlink" title="Masonry使用范例"></a>Masonry使用范例</h1><h2 id="基本写法"><a href="#基本写法" class="headerlink" title="基本写法"></a>基本写法</h2><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//相对于父视图边距为10</span></span><br><span class="line"></span><br><span class="line"><span class="type">UIEdgeInsets</span> padding <span class="operator">=</span> <span class="type">UIEdgeInsetsMake</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.avatarView mas_makeConstraints:<span class="operator">^</span>(<span class="type">MASConstraintMaker</span> <span class="operator">*</span>make) &#123;</span><br><span class="line"></span><br><span class="line">    make.top.equalTo(superview.mas_top).with.offset(padding.top); <span class="comment">//with is an optional semantic filler</span></span><br><span class="line"></span><br><span class="line">    make.left.equalTo(superview.mas_left).with.offset(padding.left);</span><br><span class="line"></span><br><span class="line">    make.bottom.equalTo(superview.mas_bottom).with.offset(<span class="operator">-</span>padding.bottom);</span><br><span class="line"></span><br><span class="line">    make.right.equalTo(superview.mas_right).with.offset(<span class="operator">-</span>padding.right);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">//相对于父视图边距为10简洁写法</span></span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.avatarView mas_makeConstraints:<span class="operator">^</span>(<span class="type">MASConstraintMaker</span> <span class="operator">*</span>make) &#123;</span><br><span class="line"></span><br><span class="line">    make.edges.equalTo(superview).with.insets(padding);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">//这两个作用完全一样</span></span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.avatarView mas_makeConstraints:<span class="operator">^</span>(<span class="type">MASConstraintMaker</span> <span class="operator">*</span>make) &#123;</span><br><span class="line"></span><br><span class="line">    make.left.greaterThanOrEqualTo(<span class="keyword">self</span>.view);</span><br><span class="line"></span><br><span class="line">    make.left.greaterThanOrEqualTo(<span class="keyword">self</span>.view.mas_left);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">//.equalTo .lessThanOrEqualTo .greaterThanOrEqualTo使用NSNumber</span></span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.avatarView mas_makeConstraints:<span class="operator">^</span>(<span class="type">MASConstraintMaker</span> <span class="operator">*</span>make) &#123;</span><br><span class="line"></span><br><span class="line">    make.width.greaterThanOrEqualTo(@<span class="number">200</span>);</span><br><span class="line"></span><br><span class="line">    make.width.lessThanOrEqualTo(@<span class="number">400</span>);</span><br><span class="line"></span><br><span class="line">    make.left.lessThanOrEqualTo(@<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果不用NSNumber可以用以前的数据结构，只需用mas_equalTo就行</span></span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.avatarView mas_makeConstraints:<span class="operator">^</span>(<span class="type">MASConstraintMaker</span> <span class="operator">*</span>make) &#123;</span><br><span class="line"></span><br><span class="line">    make.top.mas_equalTo(<span class="number">42</span>);</span><br><span class="line"></span><br><span class="line">    make.height.mas_equalTo(<span class="number">20</span>);</span><br><span class="line"></span><br><span class="line">    make.size.mas_equalTo(<span class="type">CGSizeMake</span>(<span class="number">50</span>, <span class="number">100</span>));</span><br><span class="line"></span><br><span class="line">    make.edges.mas_equalTo(<span class="type">UIEdgeInsetsMake</span>(<span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">    make.left.mas_equalTo(<span class="keyword">self</span>.view).mas_offset(<span class="type">UIEdgeInsetsMake</span>(<span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">//也可以使用数组</span></span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.avatarView mas_makeConstraints:<span class="operator">^</span>(<span class="type">MASConstraintMaker</span> <span class="operator">*</span>make) &#123;</span><br><span class="line"></span><br><span class="line">    make.height.equalTo(@[<span class="keyword">self</span>.view.mas_height, superview.mas_height]);</span><br><span class="line"></span><br><span class="line">    make.height.equalTo(@[<span class="keyword">self</span>.view, superview]);</span><br><span class="line"></span><br><span class="line">    make.left.equalTo(@[<span class="keyword">self</span>.view, @<span class="number">100</span>, superview.mas_right]);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// priority的使用</span></span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.avatarView mas_makeConstraints:<span class="operator">^</span>(<span class="type">MASConstraintMaker</span> <span class="operator">*</span>make) &#123;</span><br><span class="line"></span><br><span class="line">    make.left.greaterThanOrEqualTo(<span class="keyword">self</span>.view.mas_left).with.priorityLow();</span><br><span class="line"></span><br><span class="line">    make.top.equalTo(<span class="keyword">self</span>.view.mas_top).with.priority(<span class="number">600</span>);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">//同时创建多个约束</span></span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.avatarView mas_makeConstraints:<span class="operator">^</span>(<span class="type">MASConstraintMaker</span> <span class="operator">*</span>make) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//让top,left,bottom,right都和self.view一样</span></span><br><span class="line"></span><br><span class="line">    make.edges.equalTo(<span class="keyword">self</span>.view);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//edges</span></span><br><span class="line"></span><br><span class="line">    make.edges.equalTo(<span class="keyword">self</span>.view).insets(<span class="type">UIEdgeInsetsMake</span>(<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">//size</span></span><br><span class="line"></span><br><span class="line">    make.size.greaterThanOrEqualTo(<span class="keyword">self</span>.view);</span><br><span class="line"></span><br><span class="line">    make.size.equalTo(superview).sizeOffset(<span class="type">CGSizeMake</span>(<span class="number">100</span>, <span class="operator">-</span><span class="number">50</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">//center</span></span><br><span class="line"></span><br><span class="line">    make.center.equalTo(<span class="keyword">self</span>.view);</span><br><span class="line"></span><br><span class="line">    make.center.equalTo(<span class="keyword">self</span>.view).centerOffset(<span class="type">CGPointMake</span>(<span class="operator">-</span><span class="number">5</span>, <span class="number">10</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">//chain</span></span><br><span class="line"></span><br><span class="line">    make.left.right.and.bottom.equalTo(<span class="keyword">self</span>.view);</span><br><span class="line"></span><br><span class="line">    make.top.equalTo(<span class="keyword">self</span>.view);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<h2 id="AutoLayout情况如何计算UITableView的变高高度"><a href="#AutoLayout情况如何计算UITableView的变高高度" class="headerlink" title="AutoLayout情况如何计算UITableView的变高高度"></a>AutoLayout情况如何计算UITableView的变高高度</h2><p>主要是UILabel的高度会有变化，所以这里主要是说说label变化时如何处理，设置UILabel的时候注意要设置preferredMaxLayoutWidth这个宽度，还有ContentHuggingPriority为UILayoutPriorityRequried</p>
+<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CGFloat maxWidth = [UIScreen mainScreen].bounds.size.width - <span class="number">10</span> * <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">textLabel = [UILabel <span class="keyword">new</span>];</span><br><span class="line"></span><br><span class="line">textLabel.numberOfLines = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">textLabel.preferredMaxLayoutWidth = maxWidth;</span><br><span class="line"></span><br><span class="line">[<span class="symbol">self</span>.contentView addSubview:textLabel];</span><br><span class="line"></span><br><span class="line">[textLabel mas_makeConstraints:^(MASConstraintMaker *make) &#123;</span><br><span class="line"></span><br><span class="line">    make.top.equalTo(statusView.mas_bottom).<span class="keyword">with</span>.offset(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">    make.left.equalTo(<span class="symbol">self</span>.contentView).<span class="keyword">with</span>.offset(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">    make.right.equalTo(<span class="symbol">self</span>.contentView).<span class="keyword">with</span>.offset(<span class="number">-10</span>);</span><br><span class="line"></span><br><span class="line">    make.bottom.equalTo(<span class="symbol">self</span>.contentView).<span class="keyword">with</span>.offset(<span class="number">-10</span>);</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">[_contentLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如果版本支持最低版本为iOS 8以上的话可以直接利用UITableViewAutomaticDimension在tableview的heightForRowAtIndexPath直接返回即可。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">tableView.rowHeight = <span class="built_in">UITableViewAutomaticDimension</span>;</span><br><span class="line"></span><br><span class="line">tableView.estimatedRowHeight = <span class="number">80</span>; <span class="comment">//减少第一次计算量，iOS7后支持</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 只用返回这个！</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">UITableViewAutomaticDimension</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但如果需要兼容iOS 8之前版本的话，就要回到老路子上了，主要是用systemLayoutSizeFittingSize来取高。步骤是先在数据model中添加一个height的属性用来缓存高，然后在table view的heightForRowAtIndexPath代理里static一个只初始化一次的Cell实例，然后根据model内容填充数据，最后根据cell的contentView的systemLayoutSizeFittingSize的方法获取到cell的高。具体代码如下</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//在model中添加属性缓存高度</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">DataModel</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">copy</span>, <span class="keyword">nonatomic</span>) <span class="built_in">NSString</span> *text;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">assign</span>, <span class="keyword">nonatomic</span>) <span class="built_in">CGFloat</span> cellHeight; <span class="comment">//缓存高度</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> CustomCell *cell;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//只初始化一次cell</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line"></span><br><span class="line">        cell = [tableView dequeueReusableCellWithIdentifier:<span class="built_in">NSStringFromClass</span>([CustomCell <span class="keyword">class</span>])];</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    DataModel *model = <span class="keyword">self</span>.dataArray[(<span class="built_in">NSUInteger</span>) indexPath.row];</span><br><span class="line"></span><br><span class="line">    [cell makeupData:model];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (model.cellHeight &lt;= <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//使用systemLayoutSizeFittingSize获取高度</span></span><br><span class="line"></span><br><span class="line">        model.cellHeight = [cell.contentView systemLayoutSizeFittingSize:<span class="built_in">UILayoutFittingCompressedSize</span>].height + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> model.cellHeight;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><p>因为布局约束就是要脱离frame这种表达方式的，可是动画是需要根据这个来执行，这里面就会有些矛盾，不过根据前面说到的布局约束的原理，在某个时刻约束也是会被还原成frame使视图显示，这个时刻可以通过layoutIfNeeded这个方法来进行控制。具体代码如下</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[<span class="name">aniView</span> mas_makeConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</span><br><span class="line"></span><br><span class="line">    make.top.bottom.left.right.equalTo(<span class="name">self.view</span>).offset(<span class="name">10</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">&#125;]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">[<span class="name">aniView</span> mas_updateConstraints:^(<span class="name">MASConstraintMaker</span> *make) &#123;</span><br><span class="line"></span><br><span class="line">    make.top.equalTo(<span class="name">self.view</span>).offset(<span class="name">30</span>)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">&#125;]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">[<span class="name">UIView</span> animateWithDuration:3 animations:^&#123;</span><br><span class="line"></span><br><span class="line">    [<span class="name">self.view</span> layoutIfNeeded]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">&#125;]<span class="comment">;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><ul>
+<li>Masonry官网：<a target="_blank" rel="noopener" href="https://github.com/SnapKit/Masonry">https://github.com/SnapKit/Masonry</a></li>
+<li>Apple官方Auto Layout Guide：<a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/Introduction/Introduction.html">https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/AutolayoutPG/Introduction/Introduction.html</a></li>
+<li>WWDC2012 session 202 – Introduction to Auto Layout for iOS and OS X： <a target="_blank" rel="noopener" href="https://developer.apple.com/videos/wwdc/2012/?id=202">https://developer.apple.com/videos/wwdc/2012/?id=202</a></li>
+<li>WWDC2012 session 228 – Best Practices for Mastering Auto Layout：<a target="_blank" rel="noopener" href="https://developer.apple.com/videos/wwdc/2012/?id=228">https://developer.apple.com/videos/wwdc/2012/?id=228</a></li>
+<li>WWDC2012 session 232 – Auto Layout by Example：<a target="_blank" rel="noopener" href="https://developer.apple.com/videos/wwdc/2012/?id=232">https://developer.apple.com/videos/wwdc/2012/?id=232</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/04/GCD/" rel="prev" title="GCD">
+      <i class="fa fa-chevron-left"></i> GCD
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/15/OpenCV/" rel="next" title="OpenCV">
+      OpenCV <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AutoLayout%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">AutoLayout的一些基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AutoLayout%E5%85%B3%E4%BA%8E%E6%9B%B4%E6%96%B0%E7%9A%84%E5%87%A0%E4%B8%AA%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">AutoLayout关于更新的几个方法的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Masonry%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.</span> <span class="nav-text">Masonry使用注意事项</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Masonry%E9%80%82%E9%85%8DiOS6%E5%92%8CiOS7%E6%97%B6%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">Masonry适配iOS6和iOS7时需要注意的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Masonry%E4%BD%BF%E7%94%A8%E8%8C%83%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">Masonry使用范例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%86%99%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">基本写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoLayout%E6%83%85%E5%86%B5%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97UITableView%E7%9A%84%E5%8F%98%E9%AB%98%E9%AB%98%E5%BA%A6"><span class="nav-number">5.2.</span> <span class="nav-text">AutoLayout情况如何计算UITableView的变高高度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E7%94%BB"><span class="nav-number">5.3.</span> <span class="nav-text">动画</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">6.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

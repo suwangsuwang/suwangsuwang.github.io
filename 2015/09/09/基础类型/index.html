@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="NSArray##排序  逆序，array.reverseObjectEnumerator.allObjects  数组中是字符串对象排序首选sortedArrayUsingSelector: NSArray *array &#x3D; @[@”John Appleseed”, @”Tim Cook”, @”Hair Force One”, @”Michael Jurewitz”]; NSArra">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基础类型">
+<meta property="og:url" content="https://suwangsuwang.github.io/2015/09/09/%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="NSArray##排序  逆序，array.reverseObjectEnumerator.allObjects  数组中是字符串对象排序首选sortedArrayUsingSelector: NSArray *array &#x3D; @[@”John Appleseed”, @”Tim Cook”, @”Hair Force One”, @”Michael Jurewitz”]; NSArra">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-09-09T01:25:28.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:19.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2015/09/09/%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基础类型 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2015/09/09/%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基础类型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-09-09 09:25:28" itemprop="dateCreated datePublished" datetime="2015-09-09T09:25:28+08:00">2015-09-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:19" itemprop="dateModified" datetime="2023-06-07T23:20:19+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="NSArray"><a href="#NSArray" class="headerlink" title="NSArray"></a>NSArray</h1><p>##排序</p>
+<ul>
+<li><p>逆序，array.reverseObjectEnumerator.allObjects</p>
+</li>
+<li><p>数组中是字符串对象排序首选sortedArrayUsingSelector:</p>
+<p>NSArray *array &#x3D; @[@”John Appleseed”, @”Tim Cook”, @”Hair Force One”, @”Michael Jurewitz”];</p>
+<p>NSArray *sortedArray &#x3D; [array sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];</p>
+</li>
+</ul>
+<span id="more"></span>
+
+<ul>
+<li><p>存储内容是数字</p>
+<p>NSArray *numbers &#x3D; @[@9, @5, @11, @3, @1];</p>
+<p>NSArray *sortedNumbers &#x3D; [numbers sortedArrayUsingSelector:@selector(compare:)];</p>
+</li>
+<li><p>使用函数指针sortedArrayHint排序</p>
+<ul>
+<li><p>(NSData *)sortedArrayHint;</p>
+</li>
+<li><p>(NSArray <em>)sortedArrayUsingFunction:(NSInteger (</em>)(id, id, void *))comparator</p>
+<p>   context:(void *)context;</p>
+</li>
+<li><p>(NSArray <em>)sortedArrayUsingFunction:(NSInteger (</em>)(id, id, void *))comparator</p>
+<p>   context:(void *)context hint:(NSData *)hint;</p>
+</li>
+</ul>
+</li>
+<li><p>基于block的排序方法</p>
+<ul>
+<li><p>(NSArray *)sortedArrayUsingComparator:(NSComparator)cmptr;</p>
+</li>
+<li><p>(NSArray *)sortedArrayWithOptions:(NSSortOptions)opts</p>
+<p>   usingComparator:(NSComparator)cmptr;</p>
+</li>
+</ul>
+</li>
+<li><p>性能比较selector最快</p>
+<p>Sorting 1000000 elements. selector: 4947.90[ms] function: 5618.93[ms] block: 5082.98[ms].</p>
+</li>
+<li><p>更快的二分查找</p>
+<p>typedef NS_OPTIONS(NSUInteger, NSBinarySearchingOptions) {</p>
+<pre><code> NSBinarySearchingFirstEqual = (1UL &lt;&lt; 8),
+
+ NSBinarySearchingLastEqual = (1UL &lt;&lt; 9),
+
+ NSBinarySearchingInsertionIndex = (1UL &lt;&lt; 10),
+</code></pre>
+<p>};</p>
+<ul>
+<li><p>(NSUInteger)indexOfObject:(id)obj</p>
+<p>   inSortedRange:(NSRange)r</p>
+<p>   options:(NSBinarySearchingOptions)opts</p>
+<p>   usingComparator:(NSComparator)cmp;</p>
+</li>
+</ul>
+<p>&#x2F;&#x2F;Time to search for 1000 entries within 1000000 objects. Linear: 54130.38[ms]. Binary: 7.62[ms]</p>
+</li>
+</ul>
+<h2 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h2><ul>
+<li><p>使用indexesOfObjectsWithOptions:passingTest:</p>
+<p>NSIndexSet *indexes &#x3D; [randomArray indexesOfObjectsWithOptions:NSEnumerationConcurrent</p>
+<pre><code> passingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) &#123;
+
+ return testObj(obj);
+</code></pre>
+<p>}];</p>
+<p>NSArray *filteredArray &#x3D; [randomArray objectsAtIndexes:indexes];</p>
+</li>
+<li><p>传统的枚举</p>
+<p>NSMutableArray *mutableArray &#x3D; [NSMutableArray array];</p>
+<p>for (id obj in randomArray) {</p>
+<pre><code> if (testObj(obj)) &#123;
+
+      [mutableArray addObject:obj];
+
+ &#125;
+</code></pre>
+<p>}</p>
+</li>
+<li><p>block方式枚举</p>
+<p>NSMutableArray *mutableArray &#x3D; [NSMutableArray array];</p>
+<p>[randomArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {</p>
+<pre><code> if (testObj(obj)) &#123;
+
+      [mutableArray addObject:obj];
+
+ &#125;
+</code></pre>
+<p>}];</p>
+</li>
+<li><p>通过下标objectAtIndex:</p>
+<p>NSMutableArray *mutableArray &#x3D; [NSMutableArray array];</p>
+<p>for (NSUInteger idx &#x3D; 0; idx &lt; randomArray.count; idx++) {</p>
+<pre><code> id obj = randomArray[idx];
+
+ if (testObj(obj)) &#123;
+
+      [mutableArray addObject:obj];
+
+ &#125;
+</code></pre>
+<p>}</p>
+</li>
+<li><p>使用比较传统的学院派NSEnumerator</p>
+<p>NSMutableArray *mutableArray &#x3D; [NSMutableArray array];</p>
+<p>NSEnumerator *enumerator &#x3D; [randomArray objectEnumerator];</p>
+<p>id obj &#x3D; nil;</p>
+<p>while ((obj &#x3D; [enumerator nextObject]) !&#x3D; nil) {</p>
+<pre><code> if (testObj(obj)) &#123;
+
+      [mutableArray addObject:obj];
+
+ &#125;
+</code></pre>
+<p>}</p>
+</li>
+<li><p>使用predicate</p>
+<p>NSArray *filteredArray2 &#x3D; [randomArray filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id obj, NSDictionary *bindings) {</p>
+<pre><code> return testObj(obj);
+</code></pre>
+<p>}]];</p>
+</li>
+<li><p>各个方法枚举时间参考，indexesOfObjectsWithOptions在开启了并发枚举的情况下比NSFastEnumeration快一倍。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>枚举方法 &#x2F; 时间 [ms]</th>
+<th>10.000.000 elements</th>
+<th>10.000 elements</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>indexesOfObjects:, concurrent</td>
+<td>1844.73</td>
+<td>2.25</td>
+</tr>
+<tr>
+<td>NSFastEnumeration (for in)</td>
+<td>3223.45</td>
+<td>3.21</td>
+</tr>
+<tr>
+<td>indexesOfObjects:</td>
+<td>4221.23</td>
+<td>3.36</td>
+</tr>
+<tr>
+<td>enumerateObjectsUsingBlock:</td>
+<td>5459.43</td>
+<td>5.43</td>
+</tr>
+<tr>
+<td>objectAtIndex:</td>
+<td>5282.67</td>
+<td>5.53</td>
+</tr>
+<tr>
+<td>NSEnumerator</td>
+<td>5566.92</td>
+<td>5.75</td>
+</tr>
+<tr>
+<td>filteredArrayUsingPredicate:</td>
+<td>6466.95</td>
+<td>6.31</td>
+</tr>
+</tbody></table>
+<h1 id="NSDictionary"><a href="#NSDictionary" class="headerlink" title="NSDictionary"></a>NSDictionary</h1><h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>同样数目的值，NSDictionary比NSArray要花费多得多的内存空间</p>
+<h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><p>使用NSArray的排序方法将键数组排序为新的对象</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- <span class="params">(NSArray *)</span>keysSortedByValueUsingSelector:<span class="params">(SEL)</span>comparator;</span><br><span class="line"></span><br><span class="line">- <span class="params">(NSArray *)</span>keysSortedByValueUsingComparator:<span class="params">(NSComparator)</span>cmptr;</span><br><span class="line"></span><br><span class="line">- <span class="params">(NSArray *)</span>keysSortedByValueWithOptions:<span class="params">(NSSortOptions)</span>opts</span><br><span class="line"></span><br><span class="line">     usingComparator:<span class="params">(NSComparator)</span>cmptr;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="枚举-1"><a href="#枚举-1" class="headerlink" title="枚举"></a>枚举</h2><ul>
+<li><p>keysOfEntriesWithOptions:passingTest:，可并行</p>
+<p>NSSet *matchingKeys &#x3D; [randomDict keysOfEntriesWithOptions:NSEnumerationConcurrent</p>
+<p>passingTest:^BOOL(id key, id obj, BOOL *stop)</p>
+<p>{</p>
+<pre><code> return testObj(obj);
+</code></pre>
+<p>}];</p>
+<p>NSArray *keys &#x3D; matchingKeys.allObjects;</p>
+<p>NSArray *values &#x3D; [randomDict objectsForKeys:keys notFoundMarker:NSNull.null];</p>
+<p>__unused NSDictionary *filteredDictionary &#x3D; [NSDictionary dictionaryWithObjects:values</p>
+<pre><code> forKeys:keys];
+</code></pre>
+</li>
+<li><p>getObjects:andKeys: 枚举，基于c数组</p>
+<p>NSMutableDictionary *mutableDictionary &#x3D; [NSMutableDictionary dictionary];</p>
+<p>id __unsafe_unretained objects[numberOfEntries];</p>
+<p>id __unsafe_unretained keys[numberOfEntries];</p>
+<p>[randomDict getObjects:objects andKeys:keys];</p>
+<p>for (int i &#x3D; 0; i &lt; numberOfEntries; i++) {</p>
+<pre><code> id obj = objects[I];
+
+ id key = keys[I];
+
+ if (testObj(obj)) &#123;
+
+      mutableDictionary[key] = obj;
+
+ &#125;
+</code></pre>
+<p>}</p>
+</li>
+<li><p>block枚举</p>
+<p>NSMutableDictionary *mutableDictionary &#x3D; [NSMutableDictionary dictionary];</p>
+<p>[randomDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {</p>
+<pre><code> if (testObj(obj)) &#123;
+
+      mutableDictionary[key] = obj;
+
+ &#125;
+</code></pre>
+<p>}];</p>
+</li>
+<li><p>NSFastEnumeration</p>
+<p>NSMutableDictionary *mutableDictionary &#x3D; [NSMutableDictionary dictionary];</p>
+<p>for (id key in randomDict) {</p>
+<pre><code> id obj = randomDict[key];
+
+ if (testObj(obj)) &#123;
+
+      mutableDictionary[key] = obj;
+
+ &#125;
+</code></pre>
+<p>}</p>
+</li>
+<li><p>NSEnumeration</p>
+<p>NSMutableDictionary *mutableDictionary &#x3D; [NSMutableDictionary dictionary];</p>
+<p>NSEnumerator *enumerator &#x3D; [randomDict keyEnumerator];</p>
+<p>id key &#x3D; nil;</p>
+<p>while ((key &#x3D; [enumerator nextObject]) !&#x3D; nil) {</p>
+<pre><code> id obj = randomDict[key];
+
+ if (testObj(obj)) &#123;
+
+      mutableDictionary[key] = obj;
+
+ &#125;
+</code></pre>
+<p>}</p>
+</li>
+<li><p>各个方法枚举时间参考</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>枚举方法 &#x2F; 时间 [ms]</th>
+<th>50.000 elements</th>
+<th>1.000.000 elements</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>keysOfEntriesWithOptions:, concurrent</td>
+<td>16.65</td>
+<td>425.24</td>
+</tr>
+<tr>
+<td>getObjects:andKeys:</td>
+<td>30.33</td>
+<td>798.49</td>
+</tr>
+<tr>
+<td>keysOfEntriesWithOptions:</td>
+<td>30.59</td>
+<td>856.93</td>
+</tr>
+<tr>
+<td>enumerateKeysAndObjectsUsingBlock:</td>
+<td>36.33</td>
+<td>882.93</td>
+</tr>
+<tr>
+<td>NSFastEnumeration</td>
+<td>41.20</td>
+<td>1043.42</td>
+</tr>
+<tr>
+<td>NSEnumeration</td>
+<td>42.21</td>
+<td>1113.08</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/08/20/%E5%9B%BE%E5%BD%A2%E7%AE%97%E6%B3%95/" rel="prev" title="图形算法">
+      <i class="fa fa-chevron-left"></i> 图形算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="next" title="字符串">
+      字符串 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NSArray"><span class="nav-number">1.</span> <span class="nav-text">NSArray</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE"><span class="nav-number">1.1.</span> <span class="nav-text">枚举</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NSDictionary"><span class="nav-number">2.</span> <span class="nav-text">NSDictionary</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD"><span class="nav-number">2.1.</span> <span class="nav-text">性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">2.2.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE-1"><span class="nav-number">2.3.</span> <span class="nav-text">枚举</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

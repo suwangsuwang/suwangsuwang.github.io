@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1.入门在本文章中，将介绍如何使用 Markdown 书写文档。内容实为总结并非原创。 2. 简介Markdown 是由 John Gruber 在 Aaron Swartz 的帮助下,于 2004年创造的标记语言。使人可以用易读易用的纯文本格式语言书写,并且可以转换为 XHTML 或者 HTML。Markdown 是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markdown 入门">
+<meta property="og:url" content="https://suwangsuwang.github.io/2016/05/23/Markdown-%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="1.入门在本文章中，将介绍如何使用 Markdown 书写文档。内容实为总结并非原创。 2. 简介Markdown 是由 John Gruber 在 Aaron Swartz 的帮助下,于 2004年创造的标记语言。使人可以用易读易用的纯文本格式语言书写,并且可以转换为 XHTML 或者 HTML。Markdown 是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-05-23T02:25:30.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:23.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2016/05/23/Markdown-%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Markdown 入门 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/05/23/Markdown-%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Markdown 入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-05-23 10:25:30" itemprop="dateCreated datePublished" datetime="2016-05-23T10:25:30+08:00">2016-05-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:23" itemprop="dateModified" datetime="2023-06-07T23:20:23+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-入门"><a href="#1-入门" class="headerlink" title=" 1.入门"></a> 1.入门</h2><p>在本文章中，将介绍如何使用 Markdown 书写文档。内容实为总结并非原创。</p>
+<h2 id="2-简介"><a href="#2-简介" class="headerlink" title="2. 简介"></a>2. 简介</h2><p>Markdown 是由 John Gruber 在 Aaron Swartz 的帮助下,于 2004年创造的标记语言。使人可以用易读易用的纯文本格式语言书写,并且可以转换为 XHTML 或者 HTML。Markdown 是一种可以使用普通文本编辑器编写的标记语言，通过简单的标记语法，它可以使普通文本内容具有一定的格式。Markdown的语法简洁明了、学习容易，而且功能比纯文本更强，因此有很多人用它写博客。</p>
+<p>一份 Markdown 文档通常会使用. md 的扩展名，你可以使用文本编辑器来打开编辑。<br>Github，GitBook，Reddit，Diaspora，Stack Overflow， OpenStreetMap 等许多组织机构都使用了 Markdown。甚至这篇文章也在使用 Markdown。</p>
+<h2 id="3-Titles"><a href="#3-Titles" class="headerlink" title="3.Titles"></a>3.Titles</h2><p> 当我们开始书写一份文档时，我们通常需要问文章添加标题和副标题。<br>Markdown 支持两种标题书写格式，Setext 和 Atx</p>
+<p>Setext 模式书写标题是在书写一级标题时在下方使用等号,而在二级标题时使用破折号。</p>
+<span id="more"></span>
+
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> This  is  an H1</span><br><span class="line"> <span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span><span class="operator">=</span></span><br><span class="line">This is  an H2</span><br><span class="line"> ---------------------</span><br></pre></td></tr></table></figure>
+<p>任意个数的等号和破折号都会起作用。</p>
+<p>而 Atx 模式下,标题是使用1-6个 # 来对应1-6等级的标题</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># This is an H1</span><br><span class="line"></span><br><span class="line">## This is an H2</span><br><span class="line"></span><br><span class="line">###### This is an H6</span><br></pre></td></tr></table></figure>
+<p>你也可以在标题末尾使用任意个数的 # 来使你的书写显得整齐优美,但是标题之前的符号个数决定了标题等级</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># This is an H1#</span><br><span class="line"></span><br><span class="line">## This is an H2##</span><br><span class="line"></span><br><span class="line">### This is an H3######</span><br></pre></td></tr></table></figure>
+<p><em>Tips:</em>  ‘#’ 与标题字符之间需要有空格</p>
+<p><em>Tips:</em> 只有’&#x3D;’和’-‘才能在处于文字下方时起作用。</p>
+<h2 id="4-Links"><a href="#4-Links" class="headerlink" title="4.Links"></a>4.Links</h2><p>Markdown 支持两种连接模式: 内联连接 和引用连接<br>在两种模式下，连接文本都是由[方括号]限定的。<br>在书写连接时，你需要在包含连接文本的方括号结束后使用普通括号，并把连接地址 URL 和一个可选的引号内的链接标题放入括号内。</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[<span class="name">I</span><span class="symbol">&#x27;m</span> an inline-style link](<span class="name">https://www.baidu.com</span>)</span><br><span class="line"></span><br><span class="line">[<span class="name">I</span><span class="symbol">&#x27;m</span> an inline-style link with title](<span class="name">https://www.baidu.com</span> <span class="string">&quot;baidu&quot;</span>)</span><br><span class="line"></span><br><span class="line">[<span class="name">I</span><span class="symbol">&#x27;m</span> a reference-style link][<span class="name">Arbitrary</span> case-insensitive reference text]</span><br><span class="line"></span><br><span class="line">[<span class="name">I</span><span class="symbol">&#x27;m</span> a relative reference to a repository file](<span class="name">../blob/master/LICENSE</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>引用模式连接使用另外一对方括号,并在括号中放置一个你选定的标签来标识该连接</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">This <span class="keyword">is</span> [an example] [<span class="built_in">id</span>] <span class="keyword">reference</span>-style link. </span><br></pre></td></tr></table></figure>
+<p>你可以随意使用一个空格来分开这几个方括号</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">This <span class="keyword">is</span> [an example] [<span class="built_in">id</span>] <span class="keyword">reference</span>-style link.</span><br></pre></td></tr></table></figure>
+<p>之后在文档的任意位置,你可以像这样定义你的连接标签</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[id]: http://example.com/ <span class="string">&#x27;&#x27;</span>Optional Title Her<span class="string">e&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>GitHub 和 GitBook 都支持 URL 自动识别，会自动连接到标准的 URL 地址。所以如果你在不设置连接文本的情况下连接到 URL，你可以简单地输入 URL， 该 URL 会自动转换为指向该 URL 的链接。<br><em>Tips:</em>  连接文本是由方括号限定的<br><em>Tips:</em>  连接有三个部分: 文本, URL 和一个标题  </p>
+<h2 id="5-Images"><a href="#5-Images" class="headerlink" title="5.Images"></a>5.Images</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#InLine</span></span><br><span class="line">!<span class="selector-attr">[]</span>(/path/to/<span class="selector-tag">img</span><span class="selector-class">.jpg</span> <span class="string">&quot;Optional title&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#Reference</span></span><br><span class="line">!<span class="selector-attr">[Alternative text]</span> <span class="selector-attr">[id]</span></span><br><span class="line"><span class="selector-attr">[id]</span>: url/to/<span class="selector-tag">image</span> <span class="string">&quot;Optional title&quot;</span></span><br></pre></td></tr></table></figure>
+<p>也许你已经注意到，在 Markdown 中 图像和连接是非常相似的。不同之处在于:</p>
+<ul>
+<li>方括号之前需要一个惊叹号</li>
+<li>图像中需要一个替换文本,来描述将要加载的图像,在图像不能正常显示时加以显示。<br><em>Tips:</em>  定义图像时需要在方括号之前书写惊叹号,替换文本是可选的<br><em>Tips:</em>  和连接类似，图像也由三部分组成: 可选文本， URL， 和一个标题。而且惊叹号是必须的。</li>
+</ul>
+<h2 id="6-Code-Blocks"><a href="#6-Code-Blocks" class="headerlink" title="6.Code Blocks"></a>6.Code Blocks</h2><p>预定义格式的代码块可以用来书写或者标记源代码，而不是用来规范普通段落文本,代码块中的文本是逐行逐字显示的。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">This  is <span class="selector-tag">a</span> <span class="selector-tag">code</span> block</span><br></pre></td></tr></table></figure>
+
+<p> 在 markdown 中书写代码块非常简单,只需要把每一行缩进至少4个空格或者一个 Tab。</p>
+<p>This is a normal paragraph:</p>
+<pre><code>This is a code block.
+</code></pre>
+<p>你也可以通过 &#96;&#96;&#96; 来分隔，书写代码块</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line">* 内联代码块</span><br><span class="line"><span class="title">内联代码块书写可以使用:</span> `</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>This is a <code>inline code block</code></p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">* </span>语法高亮</span><br><span class="line">你可以定义需要高亮现实的语言,并将它的名字添加进入开放的标签中</span><br><span class="line">![语法高亮.png](http://upload-images.jianshu.io/upload_images/1064761-190e5681e1a2d306.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span><br><span class="line"></span><br><span class="line"><span class="section">7.Tables</span></span><br><span class="line"><span class="section">--</span></span><br><span class="line">表格并不是 core Markdown 特性,但是 GFM(GitHub Markdown)支持,现在 Markdown 支持了</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>Tables</th>
+<th align="center">Are</th>
+<th align="right">Cool</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>col 3 is</td>
+<td align="center">right-aligned</td>
+<td align="right">$1600</td>
+</tr>
+<tr>
+<td>col 2 is</td>
+<td align="center">centered</td>
+<td align="right">$12</td>
+</tr>
+<tr>
+<td>zebra stripes</td>
+<td align="center">are neat</td>
+<td align="right">$1</td>
+</tr>
+</tbody></table>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">|<span class="string"> Tables        </span>|<span class="string"> Are           </span>|<span class="string"> Cool  </span>|</span><br><span class="line">|<span class="string"> ------------- </span>|<span class="string">:-------------:</span>|<span class="string"> -----:</span>|</span><br><span class="line">|<span class="string"> col 3 is      </span>|<span class="string"> right-aligned </span>|<span class="string"> $1600 </span>|</span><br><span class="line">|<span class="string"> col 2 is      </span>|<span class="string"> centered      </span>|<span class="string">   $12 </span>|</span><br><span class="line">|<span class="string"> zebra stripes </span>|<span class="string"> are neat      </span>|<span class="string">    $1 </span>|</span><br><span class="line"></span><br><span class="line">冒号可以用来对齐</span><br><span class="line">外面的(|<span class="string">)是可选的,你并不需要在 Markdown 中进行严格对齐</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>Markdown</th>
+<th>Less</th>
+<th>Pretty</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>Still</em></td>
+<td><code>renders</code></td>
+<td><strong>nicely</strong></td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+</tbody></table>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">8.常用语法</span></span><br><span class="line"><span class="section">--</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>输出后的效果</th>
+<th align="center">Markdown</th>
+<th align="right">快捷键</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bold</td>
+<td align="center"><strong>text</strong></td>
+<td align="right">Ctrl&#x2F;⌘ + B</td>
+</tr>
+<tr>
+<td>Emphasize</td>
+<td align="center"><em>text</em></td>
+<td align="right">Ctrl&#x2F;⌘ + I</td>
+</tr>
+<tr>
+<td>Strike-through</td>
+<td align="center"><del>text</del></td>
+<td align="right">Ctrl + Alt + U</td>
+</tr>
+<tr>
+<td>Link</td>
+<td align="center"><a href="http://">title</a></td>
+<td align="right">Ctrl&#x2F;⌘ + K</td>
+</tr>
+<tr>
+<td>Inline Code</td>
+<td align="center"><code>code</code></td>
+<td align="right">Ctrl&#x2F;⌘ + Shift + K</td>
+</tr>
+<tr>
+<td>Image</td>
+<td align="center"><code>[图片上传失败...(image-a496e7-1541132915096)]</code></td>
+<td align="right">Ctrl&#x2F;⌘ + Shift + I</td>
+</tr>
+<tr>
+<td>List</td>
+<td align="center">* item</td>
+<td align="right">Ctrl + L</td>
+</tr>
+<tr>
+<td>Blockquote</td>
+<td align="center">&gt; quote</td>
+<td align="right">Ctrl + Q</td>
+</tr>
+<tr>
+<td>H1</td>
+<td align="center"># Heading</td>
+<td align="right"></td>
+</tr>
+<tr>
+<td>H2</td>
+<td align="center">## Heading</td>
+<td align="right">Ctrl&#x2F;⌘ + H</td>
+</tr>
+<tr>
+<td>H3</td>
+<td align="center">### Heading</td>
+<td align="right">Ctrl&#x2F;⌘ + H (x2)</td>
+</tr>
+</tbody></table>
+<pre><code>|输出后的效果|	Markdown|	快捷键|
+| ------------- |:-------------:| -----:|
+|Bold	|**text**	|Ctrl/⌘ + B
+|Emphasize	|*text*	|Ctrl/⌘ + I
+|Strike-through	|~~text~~	|Ctrl + Alt + U
+|Link	|[title](http://)	|Ctrl/⌘ + K
+|Inline Code	|`code`	|Ctrl/⌘ + Shift + K
+|Image	|`[图片上传失败...(image-a496e7-1541132915096)]`	|Ctrl/⌘ + Shift + I
+|List	|* item	|Ctrl + L
+|Blockquote	|&gt; quote	|Ctrl + Q
+|H1	|# Heading	|                  |
+|H2	|## Heading	|Ctrl/⌘ + H
+|H3	|### Heading	|Ctrl/⌘ + H (x2)
+</code></pre>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/05/06/KVO-%E3%80%81category%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" rel="prev" title="KVO 、category实现原理">
+      <i class="fa fa-chevron-left"></i> KVO 、category实现原理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/08/15/Core-Data/" rel="next" title="Core-Data">
+      Core-Data <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text"> 1.入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">2. 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Titles"><span class="nav-number">3.</span> <span class="nav-text">3.Titles</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Links"><span class="nav-number">4.</span> <span class="nav-text">4.Links</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Images"><span class="nav-number">5.</span> <span class="nav-text">5.Images</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Code-Blocks"><span class="nav-number">6.</span> <span class="nav-text">6.Code Blocks</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

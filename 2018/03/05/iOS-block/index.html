@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="简介block可以当做匿名函数，可以在两个对象间将语句当做数据来进行传递。具有封闭性closure，方便取得上下文相关状态信息。简单 block 定义就像函数指针，用^替代了*。 Block的创建  可以如声明函数那样声明一个block变量 定义函数的方法定义block 把block当做一个函数来调用  123456789101112131415int main(int argc, const c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS block">
+<meta property="og:url" content="https://suwangsuwang.github.io/2018/03/05/iOS-block/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="简介block可以当做匿名函数，可以在两个对象间将语句当做数据来进行传递。具有封闭性closure，方便取得上下文相关状态信息。简单 block 定义就像函数指针，用^替代了*。 Block的创建  可以如声明函数那样声明一个block变量 定义函数的方法定义block 把block当做一个函数来调用  123456789101112131415int main(int argc, const c">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-03-05T09:30:25.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:19.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2018/03/05/iOS-block/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS block | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/03/05/iOS-block/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS block
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-05 17:30:25" itemprop="dateCreated datePublished" datetime="2018-03-05T17:30:25+08:00">2018-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:19" itemprop="dateModified" datetime="2023-06-07T23:20:19+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>简介<br><br>block可以当做匿名函数，可以在两个对象间将语句当做数据来进行传递。具有封闭性closure，方便取得上下文相关状态信息。简单 block 定义就像函数指针，用^替代了*。</p>
+<p>Block的创建</p>
+<ul>
+<li>可以如声明函数那样声明一个block变量</li>
+<li>定义函数的方法定义block</li>
+<li>把block当做一个函数来调用</li>
+</ul>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">     <span class="meta">@autoreleasepool</span> &#123;</span><br><span class="line">     <span class="comment">// Declare the block variable</span></span><br><span class="line">     <span class="keyword">double</span> (^distanceFromRateAndTime)(<span class="keyword">double</span> rate, <span class="keyword">double</span> time);</span><br><span class="line">     <span class="comment">// Create and assign the block</span></span><br><span class="line">     distanceFromRateAndTime = ^<span class="keyword">double</span>(<span class="keyword">double</span> rate, <span class="keyword">double</span> time) &#123;</span><br><span class="line">          <span class="keyword">return</span> rate * time;</span><br><span class="line">     &#125;;</span><br><span class="line">     <span class="comment">// Call the block</span></span><br><span class="line">     <span class="keyword">double</span> dx = distanceFromRateAndTime(<span class="number">35</span>, <span class="number">1.5</span>);</span><br><span class="line">     NSLog(@<span class="string">&quot;A car driving 35 mph will travel &quot;</span></span><br><span class="line">          @<span class="string">&quot;%.2f miles in 1.5 hours.&quot;</span>, dx);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>不带参数的Block</p>
+<p>block可以简写为^ { … }</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">double</span> (^randomPercent)(<span class="keyword">void</span>) = ^ &#123;</span><br><span class="line">     <span class="keyword">return</span> (<span class="built_in">double</span>)arc4random() / <span class="number">4294967295</span>;</span><br><span class="line">&#125;;</span><br><span class="line">NSLog(<span class="string">@&quot;Gas tank is %.1f%% full”, randomPercent() * 100);</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<p>Block的闭包（closure）</p>
+<p>block内部可以访问定义在block外部的非局部变量。非局部变量会以拷贝形式存储到block中。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *make = <span class="string">@&quot;Honda&quot;</span>;</span><br><span class="line"><span class="built_in">NSString</span> *(^getFullCarName)(<span class="built_in">NSString</span> *) = ^(<span class="built_in">NSString</span> *model) &#123;</span><br><span class="line">     <span class="keyword">return</span> [make stringByAppendingFormat:<span class="string">@&quot; %@&quot;</span>, model];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, getFullCarName(<span class="string">@&quot;Accord&quot;</span>)); <span class="comment">// Honda Accord</span></span><br><span class="line"><span class="comment">// Try changing the non-local variable (it won&#x27;t change the block)</span></span><br><span class="line">make = <span class="string">@&quot;Porsche&quot;</span>;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>, getFullCarName(<span class="string">@&quot;911 Turbo&quot;</span>)); <span class="comment">// Honda 911 Turbo</span></span><br></pre></td></tr></table></figure>
+
+<p>修改非局部变量</p>
+<p>用block存储修饰符号（storage modifier）声明非局部变量，默认情况下，在程序块中访问的外部变量是复制过去的，即写操作不会对原变量生效。但是你可以加上block 来让其写操作生效。对于 block 外的变量引用，如果对象是引用类型，则 block 会将其引用计数加1。</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">__block <span class="built_in">int</span> i = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">int</span> (^<span class="keyword">count</span>)(<span class="keyword">void</span>) = ^ &#123;</span><br><span class="line">     i += <span class="number">1</span>;</span><br><span class="line">     <span class="keyword">return</span> i;</span><br><span class="line">&#125;;</span><br><span class="line">NSLog(@<span class="string">&quot;%d&quot;</span>, <span class="keyword">count</span>()); <span class="comment">// 1</span></span><br><span class="line">NSLog(@<span class="string">&quot;%d&quot;</span>, <span class="keyword">count</span>()); <span class="comment">// 2</span></span><br><span class="line">NSLog(@<span class="string">&quot;%d&quot;</span>, <span class="keyword">count</span>()); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+
+<p>Block作为函数的参数</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Car.h</span></span><br><span class="line"><span class="meta">#import</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Car</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span> <span class="type">double</span> odometer;</span><br><span class="line">- (<span class="type">void</span>)driveForDuration:(<span class="type">double</span>)duration</span><br><span class="line">     withVariableSpeed:(<span class="type">double</span> (^)(<span class="type">double</span> time))speedFunction</span><br><span class="line">     steps:(<span class="type">int</span>)numSteps;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"><span class="comment">//调用block</span></span><br><span class="line"><span class="comment">// Car.m</span></span><br><span class="line"><span class="meta">#import <span class="string">&quot;Car.h&quot;</span></span></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Car</span></span></span><br><span class="line"><span class="keyword">@synthesize</span> odometer = _odometer;</span><br><span class="line">- (<span class="type">void</span>)driveForDuration:(<span class="type">double</span>)duration</span><br><span class="line">     withVariableSpeed:(<span class="type">double</span> (^)(<span class="type">double</span> time))speedFunction</span><br><span class="line">     steps:(<span class="type">int</span>)numSteps &#123;</span><br><span class="line">     <span class="type">double</span> dt = duration / numSteps;</span><br><span class="line">     <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">1</span>; i&amp;lt;=numSteps; i++) &#123;</span><br><span class="line">          _odometer += speedFunction(i*dt) * dt;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"><span class="comment">//在main函数中block定义在另一个函数的调用过程中。</span></span><br><span class="line"><span class="comment">// main.m</span></span><br><span class="line"><span class="meta">#import</span></span><br><span class="line"><span class="meta">#import <span class="string">&quot;Car.h&quot;</span></span></span><br><span class="line"><span class="type">int</span> main(<span class="type">int</span> argc, <span class="keyword">const</span> <span class="type">char</span> * argv[]) &#123;</span><br><span class="line">     <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">          Car *theCar = [[Car alloc] init];</span><br><span class="line">          <span class="comment">// Drive for awhile with constant speed of 5.0 m/s</span></span><br><span class="line">          [theCar driveForDuration:<span class="number">10.0</span></span><br><span class="line">               withVariableSpeed:^(<span class="type">double</span> time) &#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="number">5.0</span>;</span><br><span class="line">               &#125; steps:<span class="number">100</span>];</span><br><span class="line">          <span class="built_in">NSLog</span>(<span class="string">@&quot;The car has now driven %.2f meters&quot;</span>, theCar.odometer);</span><br><span class="line">          <span class="comment">// Start accelerating at a rate of 1.0 m/s^2</span></span><br><span class="line">          [theCar driveForDuration:<span class="number">10.0</span></span><br><span class="line">               withVariableSpeed:^(<span class="type">double</span> time) &#123;</span><br><span class="line">               <span class="keyword">return</span> time + <span class="number">5.0</span>;</span><br><span class="line">               &#125; steps:<span class="number">100</span>];</span><br><span class="line">          <span class="built_in">NSLog</span>(<span class="string">@&quot;The car has now driven %.2f meters&quot;</span>, theCar.odometer);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义Block类型</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Car.h</span></span><br><span class="line"><span class="selector-id">#import</span></span><br><span class="line"><span class="comment">// Define a new type for the block</span></span><br><span class="line"><span class="selector-tag">typedef</span> <span class="selector-tag">double</span> (^SpeedFunction)(double);</span><br><span class="line"><span class="variable">@interface</span> <span class="attribute">Car </span>: NSObject</span><br><span class="line"><span class="variable">@property</span> double odometer;</span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">driveForDuration</span>:(double)<span class="selector-tag">duration</span></span><br><span class="line">     <span class="selector-tag">withVariableSpeed</span>:(SpeedFunction)<span class="selector-tag">speedFunction</span></span><br><span class="line">     <span class="selector-tag">steps</span>:(int)<span class="selector-tag">numSteps</span>;</span><br><span class="line">@<span class="selector-tag">end</span></span><br></pre></td></tr></table></figure>
+
+<p>风险</p>
+<p>block会存在导致retain cycles的风险，如果发送者需要 retain block 但又不能确保引用在什么时候被赋值为 nil， 那么所有在 block 内对 self 的引用就会发生潜在的 retain 环。NSOperation 是使用 block 的一个好范例。因为它在一定的地方打破了 retain 环，解决了上述的问题。</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">self.queue = <span class="comment">[<span class="comment">[NSOperationQueue alloc]</span> init]</span>;</span><br><span class="line">MyOperation *operation = <span class="comment">[<span class="comment">[MyOperation alloc]</span> init]</span>;</span><br><span class="line">operation.completionBlock = ^&#123;</span><br><span class="line">     <span class="comment">[self finishedOperation]</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">[self.queue addOperation:operation]</span>;</span><br></pre></td></tr></table></figure>
+
+<p>另一个解决方法</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Encoder</span> ()</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="type">void</span> (^completionHandler)();</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Encoder</span></span></span><br><span class="line">- (<span class="type">void</span>)encodeWithCompletionHandler:(<span class="type">void</span> (^)())handler</span><br><span class="line">&#123;</span><br><span class="line">     <span class="keyword">self</span>.completionHandler = handler;</span><br><span class="line">     <span class="comment">// 进行异步处理...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 这个方法会在完成后被调用一次</span></span><br><span class="line">- (<span class="type">void</span>)finishedEncoding</span><br><span class="line">&#123;</span><br><span class="line">     <span class="keyword">self</span>.completionHandler();</span><br><span class="line">     <span class="keyword">self</span>.completionHandler = <span class="literal">nil</span>; <span class="comment">//一旦任务完成就设置为nil</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>#block 定义</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> Block_descriptor &#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> reserved;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> size;</span><br><span class="line">    <span class="type">void</span> (*<span class="keyword">copy</span>)(<span class="type">void</span> *dst, <span class="type">void</span> *src);</span><br><span class="line">    <span class="type">void</span> (*dispose)(<span class="type">void</span> *);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> Block_layout &#123;</span><br><span class="line">    <span class="type">void</span> *isa;</span><br><span class="line">    <span class="type">int</span> flags;</span><br><span class="line">    <span class="type">int</span> reserved; </span><br><span class="line">    <span class="type">void</span> (*invoke)(<span class="type">void</span> *, ...);</span><br><span class="line">    <span class="keyword">struct</span> Block_descriptor *descriptor;</span><br><span class="line">    <span class="comment">/* Imported variables. */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在Xcode里输入inlineblock可以快速补全block定义:</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;#returnType#&gt; (^&lt;#blockName#&gt;) (&lt;#parameterTypes#&gt;) = ^ (&lt;#parameters#&gt;) &#123; &lt;#statements#&gt; &#125;;</span><br><span class="line"></span><br><span class="line">returnType : 返回值类型</span><br><span class="line">blockName  : block命名</span><br><span class="line">parameterTypes : 参数类型</span><br><span class="line">parameters : 参数</span><br><span class="line">声明block使用 &lt;#returnType#&gt; (^&lt;#blockName#&gt;) (&lt;#parameterTypes#&gt;);</span><br><span class="line"></span><br><span class="line">如: @property (copy, nonatomic) void (^block)(int);</span><br><span class="line">^(&lt;#参数#&gt;)&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在Block中, 如果只使用全局或静态变量或不使用外部变量, 那么Block块的代码会存储在全局区;</span></span><br><span class="line">如果使用了外部变量, 在ARC中, Block块的代码会存储在堆区;</span><br><span class="line">在MRC中, Block块的代码会存储在栈区;</span><br><span class="line">block默认情况下不能修改外部变量, 只能读取外部变量:</span><br><span class="line">在ARC中, 外部变量存在堆中, 这个变量在Block块内与Block块外地址相同;</span><br><span class="line">外部变量存在栈中, 这个变量会被转移到堆区, 不是复制, 是转移.</span><br><span class="line">在MRC中, 外部变量存在堆中, 这个变量在Block块内与Block块外地址相同; 外部变量存在栈中, 这个变量在Block块内与Block块外地址相同; /&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/03/04/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90-iOS-%E7%BC%96%E8%AF%91-Clang-LLVM/" rel="prev" title="剖析 iOS编译">
+      <i class="fa fa-chevron-left"></i> 剖析 iOS编译
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/04/GCD/" rel="next" title="GCD">
+      GCD <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="页面响应页面响应采用[[检测iOS的APP性能的一些方法]]里的子线程监控主线程方式就能够检测到。 电量三种方式可以获取电量，分别是通过Instruments的Energy Diagnostics，UIDevice和IOKit framework Instruments的Energy Diagnostics可以获取到iphone特定时段的电量消耗信息。具体步骤：打开Developer选项中的Sta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS分析">
+<meta property="og:url" content="https://suwangsuwang.github.io/2016/02/02/iOS%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="页面响应页面响应采用[[检测iOS的APP性能的一些方法]]里的子线程监控主线程方式就能够检测到。 电量三种方式可以获取电量，分别是通过Instruments的Energy Diagnostics，UIDevice和IOKit framework Instruments的Energy Diagnostics可以获取到iphone特定时段的电量消耗信息。具体步骤：打开Developer选项中的Sta">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-02-02T05:24:09.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:31.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2016/02/02/iOS%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS分析 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/02/02/iOS%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-02-02 13:24:09" itemprop="dateCreated datePublished" datetime="2016-02-02T13:24:09+08:00">2016-02-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:31" itemprop="dateModified" datetime="2023-06-07T23:20:31+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="页面响应"><a href="#页面响应" class="headerlink" title="页面响应"></a>页面响应</h1><p>页面响应采用[[检测iOS的APP性能的一些方法]]里的子线程监控主线程方式就能够检测到。</p>
+<h1 id="电量"><a href="#电量" class="headerlink" title="电量"></a>电量</h1><p>三种方式可以获取电量，分别是通过Instruments的Energy Diagnostics，UIDevice和IOKit framework</p>
+<h2 id="Instruments的Energy-Diagnostics"><a href="#Instruments的Energy-Diagnostics" class="headerlink" title="Instruments的Energy Diagnostics"></a>Instruments的Energy Diagnostics</h2><p>可以获取到iphone特定时段的电量消耗信息。具体步骤：<br>打开Developer选项中的Start Logging —&gt; 断开iphone与PC连接 —&gt; 一系列的用户操作 —&gt; Stop Logging —&gt; 连接iphone与PC, 将电量消耗数据导入Instruments。 </p>
+<h2 id="UIDevice"><a href="#UIDevice" class="headerlink" title="UIDevice"></a>UIDevice</h2><p>UIDevice提供了设备的详细信息，如systemVersion, batteryLevel等。</p>
+<span id="more"></span>
+
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">UIDevice</span>.currentDevice.batteryMonitoringEnabled = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">let batteryLevel = <span class="built_in">UIDevice</span>.currentDevice().batteryLevel</span><br><span class="line"></span><br><span class="line"><span class="built_in">UIDevice</span>.currentDevice.batteryMonitoringEnabled = <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="IOKit-framework"><a href="#IOKit-framework" class="headerlink" title="IOKit framework"></a>IOKit framework</h2><p>IOKit framework在IOS中用来跟硬件或内核服务通信，常用于获取硬件详细信息。 首先，需要将IOPowerSources.h，IOPSKeys.h，IOKit三个文件导入到工程中。把batteryMonitoringEnabled置为true,然后即可通过如下代码获取1%精确度的电量信息：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-(<span class="type">double</span>) getBatteryLevel&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// returns a blob of power source information in an opaque CFTypeRef</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">CFTypeRef</span> blob = IOPSCopyPowerSourcesInfo();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// returns a CFArray of power source handles, each of type CFTypeRef</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">CFArrayRef</span> sources = IOPSCopyPowerSourcesList(blob);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">CFDictionaryRef</span> pSource = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="type">void</span> *psValue;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// returns the number of values currently in an array</span></span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> numOfSources = <span class="built_in">CFArrayGetCount</span>(sources);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// error in CFArrayGetCount</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (numOfSources == <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;Error in CFArrayGetCount&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1.0</span>f;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// calculating the remaining energy</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;numOfSources; i++) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// returns a CFDictionary with readable information about the specific power source</span></span><br><span class="line"></span><br><span class="line">        pSource = IOPSGetPowerSourceDescription(blob, <span class="built_in">CFArrayGetValueAtIndex</span>(sources, i));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!pSource) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">NSLog</span>(<span class="string">@&quot;Error in IOPSGetPowerSourceDescription&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1.0</span>f;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        psValue = (<span class="built_in">CFStringRef</span>) <span class="built_in">CFDictionaryGetValue</span>(pSource, <span class="built_in">CFSTR</span>(kIOPSNameKey));</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> curCapacity = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">int</span> maxCapacity = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">double</span> percentage;</span><br><span class="line"></span><br><span class="line">        psValue = <span class="built_in">CFDictionaryGetValue</span>(pSource, <span class="built_in">CFSTR</span>(kIOPSCurrentCapacityKey));</span><br><span class="line"></span><br><span class="line">        <span class="built_in">CFNumberGetValue</span>((<span class="built_in">CFNumberRef</span>)psValue, kCFNumberSInt32Type, &amp;curCapacity);</span><br><span class="line"></span><br><span class="line">        psValue = <span class="built_in">CFDictionaryGetValue</span>(pSource, <span class="built_in">CFSTR</span>(kIOPSMaxCapacityKey));</span><br><span class="line"></span><br><span class="line">        <span class="built_in">CFNumberGetValue</span>((<span class="built_in">CFNumberRef</span>)psValue, kCFNumberSInt32Type, &amp;maxCapacity);</span><br><span class="line"></span><br><span class="line">        percentage = ((<span class="type">double</span>) curCapacity / (<span class="type">double</span>) maxCapacity * <span class="number">100.0</span>f);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;curCapacity : %d / maxCapacity: %d , percentage: %.1f &quot;</span>, curCapacity, maxCapacity, percentage);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> percentage;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1.0</span>f;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="流量"><a href="#流量" class="headerlink" title="流量"></a>流量</h1><p>使用Instruments的Network来，这个工具它可以获取到各个线程每秒发送的字节数量，每秒接受字节数量，发包的数量和接收包的数量。跟踪 TCP&#x2F;IP 和 UDP&#x2F;IP 连接</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/01/05/%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1/" rel="prev" title="后台任务">
+      <i class="fa fa-chevron-left"></i> 后台任务
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/03/05/Auto-Layout/" rel="next" title="Auto-Layout">
+      Auto-Layout <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E5%93%8D%E5%BA%94"><span class="nav-number">1.</span> <span class="nav-text">页面响应</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%B5%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">电量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Instruments%E7%9A%84Energy-Diagnostics"><span class="nav-number">2.1.</span> <span class="nav-text">Instruments的Energy Diagnostics</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UIDevice"><span class="nav-number">2.2.</span> <span class="nav-text">UIDevice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IOKit-framework"><span class="nav-number">2.3.</span> <span class="nav-text">IOKit framework</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%81%E9%87%8F"><span class="nav-number">3.</span> <span class="nav-text">流量</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

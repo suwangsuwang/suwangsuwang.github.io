@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="相机原理 感光度(ISO) ISO也叫胶卷速度，衡量图像传感器对光的敏感程度。亮的时候需要的ISO就越小，暗的时候相反ISO就高噪点会多。 光圈 光圈用来衡量到达图像感应器的光所通过的通孔大小。iPhone6的光圈值是f&#x2F;2.2，2.2就是表示镜头焦距和光圈的有效直径比例。 对焦 将离相机一定范围内物体渲染清晰，太近太远会模糊这种情况叫做失焦。 保存获取文件 关于Core Image处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Camera">
+<meta property="og:url" content="https://suwangsuwang.github.io/2016/10/08/Camera/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="相机原理 感光度(ISO) ISO也叫胶卷速度，衡量图像传感器对光的敏感程度。亮的时候需要的ISO就越小，暗的时候相反ISO就高噪点会多。 光圈 光圈用来衡量到达图像感应器的光所通过的通孔大小。iPhone6的光圈值是f&#x2F;2.2，2.2就是表示镜头焦距和光圈的有效直径比例。 对焦 将离相机一定范围内物体渲染清晰，太近太远会模糊这种情况叫做失焦。 保存获取文件 关于Core Image处理">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-10-08T08:24:05.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:34.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2016/10/08/Camera/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Camera | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/10/08/Camera/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Camera
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-10-08 16:24:05" itemprop="dateCreated datePublished" datetime="2016-10-08T16:24:05+08:00">2016-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:34" itemprop="dateModified" datetime="2023-06-07T23:20:34+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>相机原理</strong></p>
+<p><strong>感光度(ISO)</strong></p>
+<p>ISO也叫胶卷速度，衡量图像传感器对光的敏感程度。亮的时候需要的ISO就越小，暗的时候相反ISO就高噪点会多。</p>
+<p><strong>光圈</strong></p>
+<p>光圈用来衡量到达图像感应器的光所通过的通孔大小。iPhone6的光圈值是f&#x2F;2.2，2.2就是表示镜头焦距和光圈的有效直径比例。</p>
+<p><strong>对焦</strong></p>
+<p>将离相机一定范围内物体渲染清晰，太近太远会模糊这种情况叫做失焦。</p>
+<p><strong>保存获取文件</strong></p>
+<p>关于Core Image处理RAW格式可以参考CoreImage&#x2F;CIRAWFilter.h，以及WWDC上的讲座WWDC 2014 session 514 <a target="_blank" rel="noopener" href="https://developer.apple.com/videos/wwdc/2014/#514">https://developer.apple.com/videos/wwdc/2014/#514</a></p>
+<span id="more"></span>
+
+<p><strong>如何处理图像数据</strong></p>
+<p>处理位图的类是UIImage，CGImage(Core Graphics)和CIImage(Core Image)。从NSData得到UIImage使用imageWithContentsOfFiles:方法。</p>
+<p><strong>从相机捕捉图像</strong></p>
+<ul>
+<li><p>相比较UIImagePickerController使用AVFoundation能够直接访问相机，提供完全的操作权，比如用编程方式更改硬件参数，或者操纵实时预览图。</p>
+</li>
+<li><p>先创建AVCaptureStillImageOutput对象，使用captureStillImageAsynchronouslyFromConnection: completionHandler: 方法。</p>
+</li>
+<li><p>使用AVCaptureStillImageOutput中的类方法jpegStillImageNSDataRepresentation:将其转换成NSData对象，接着用imageWithData:得到一个UIImage</p>
+</li>
+<li><p>过程中可以调节很多参数例如曝光，聚焦，光补偿，闪光灯，ISO等。所有这些设置都会被应用到一个AVCaptureDevice里。</p>
+</li>
+</ul>
+<p><strong>AVFoundation相关类</strong></p>
+<p>可以通过以下类访问来自相机设备原始数据并控制他们的组件。</p>
+<ul>
+<li><p>AVCaptureDevice：控制硬件特性，比如镜头位置，曝光，闪光灯</p>
+</li>
+<li><p>AVCaptureDeviceInput：设备数据</p>
+</li>
+<li><p>AVCaptureOutput：抽象类包括了三种静态图片捕捉类</p>
+</li>
+<li><p>AVCaptureStillImageOutput：用于捕捉静态图片</p>
+</li>
+<li><p>AVCaptureMetadataOutput：启用检测人脸和二维码</p>
+</li>
+<li><p>AVCaptureVideoOutput：实时预览图提供原始帧</p>
+</li>
+<li><p>AVCaptureSession：管理输入输出之间数据流，以及在出现问题时生成运行时错误。</p>
+</li>
+<li><p>AVCaptureVideoPreviewLayer：CALayer的子类，用于自动显示相机产生的实时图像，</p>
+</li>
+</ul>
+<p><strong>捕捉设置</strong></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//先需要一个AVCaptureSession对象</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> session <span class="operator">=</span> <span class="type">AVCaptureSession</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">//接着遍历所能提供视频数据设备并检查position属性。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> availableCameraDevices <span class="operator">=</span> <span class="type">AVCaptureDevice</span>.devicesWithMediaType(<span class="type">AVMediaTypeVideo</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> device <span class="keyword">in</span> availableCameraDevices <span class="keyword">as</span> [<span class="type">AVCaptureDevice</span>] &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> device.position <span class="operator">==</span> .<span class="type">Back</span> &#123;</span><br><span class="line"></span><br><span class="line">          backCameraDevice <span class="operator">=</span> device</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">else</span> <span class="keyword">if</span> device.position <span class="operator">==</span> .<span class="type">Front</span> &#123;</span><br><span class="line"></span><br><span class="line">          frontCameraDevice <span class="operator">=</span> device</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//发现合适的相机设备，就可以获得相关的AVCaptureDeviceInput对象。将它设置为session输入：</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> error:<span class="type">NSError</span>?</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> possibleCameraInput: <span class="type">AnyObject</span>? <span class="operator">=</span> <span class="type">AVCaptureDeviceInput</span>.deviceInputWithDevice(backCameraDevice, error: <span class="operator">&amp;</span>error)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> backCameraInput <span class="operator">=</span> possibleCameraInput <span class="keyword">as?</span> <span class="type">AVCaptureDeviceInput</span> &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> <span class="keyword">self</span>.session.canAddInput(backCameraInput) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">self</span>.session.addInput(backCameraInput)</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//第一次调用AVCaptureDeviceInput.deviceInputWithDevice()会出发系统提示，向用户请求访问相机。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> authorizationStatus <span class="operator">=</span> <span class="type">AVCaptureDevice</span>.authorizationStatusForMediaType(<span class="type">AVMediaTypeVideo</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">switch</span> authorizationStatus &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> .<span class="type">NotDetermined</span>:</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 许可对话没有出现，发起授权许可</span></span><br><span class="line"></span><br><span class="line">     <span class="type">AVCaptureDevice</span>.requestAccessForMediaType(<span class="type">AVMediaTypeVideo</span>,</span><br><span class="line"></span><br><span class="line">          completionHandler: &#123; (granted:<span class="type">Bool</span>) -&gt; <span class="type">Void</span> <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> granted &#123;</span><br><span class="line"></span><br><span class="line">               <span class="comment">// 继续</span></span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">               <span class="comment">// 用户拒绝，无法继续</span></span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> .<span class="type">Authorized</span>:</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 继续</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> .<span class="type">Denied</span>, .<span class="type">Restricted</span>:</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 用户明确地拒绝授权，或者相机设备无法访问</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//允许访问后的处理，有两种方法显示来自相机的图像流。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//第一种，生成一个带有AVCaptureVideoPreviewLayer的view。用capture session做初始参数。AVCaptureVideoPreviewLayer会自动的显示来自相机输出</span></span><br><span class="line"></span><br><span class="line">previewLayer <span class="operator">=</span> <span class="type">AVCaptureVideoPreviewLayer</span>.layerWithSession(session) <span class="keyword">as</span> <span class="type">AVCaptureVideoPreviewLayer</span></span><br><span class="line"></span><br><span class="line">previewLayer.frame <span class="operator">=</span> view.bounds</span><br><span class="line"></span><br><span class="line">view.layer.addSublayer(previewLayer)</span><br><span class="line"></span><br><span class="line"><span class="comment">//第二种，从输出数据流捕捉单一图像帧，使用OpenGL手动显示在view上。这种方法适用于想实时预览滤镜效果的情况。</span></span><br><span class="line"></span><br><span class="line">glContext <span class="operator">=</span> <span class="type">EAGLContext</span>(API: .<span class="type">OpenGLES2</span>) <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">glView <span class="operator">=</span> <span class="type">GLKView</span>(frame: viewFrame, context: glContext)</span><br><span class="line"></span><br><span class="line">ciContext <span class="operator">=</span> <span class="type">CIContext</span>(EAGLContext: glContext)</span><br><span class="line"></span><br><span class="line"><span class="comment">//AVCaptureVideoOutput</span></span><br><span class="line"></span><br><span class="line">videoOutput <span class="operator">=</span> <span class="type">AVCaptureVideoDataOutput</span>()</span><br><span class="line"></span><br><span class="line">videoOutput.setSampleBufferDelegate(<span class="keyword">self</span>, queue: dispatch_queue_create(<span class="string">&quot;sample buffer delegate&quot;</span>, <span class="type">DISPATCH_QUEUE_SERIAL</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> session.canAddOutput(<span class="keyword">self</span>.videoOutput) &#123;</span><br><span class="line"></span><br><span class="line">session.addOutput(<span class="keyword">self</span>.videoOutput)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建完AVCaptureVideoDataOutput后需要通过代理captureOutput(_:didOutputSampleBuffer:fromConnection:)获得所有图像帧，将他们绘制在GLKView中。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">captureOutput</span>(<span class="params">captureOutput</span>: <span class="type">AVCaptureOutput</span>!, <span class="params">didOutputSampleBuffer</span> <span class="params">sampleBuffer</span>: <span class="type">CMSampleBuffer</span>!, <span class="params">fromConnection</span> <span class="params">connection</span>: <span class="type">AVCaptureConnection</span>!) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">let</span> pixelBuffer <span class="operator">=</span> <span class="type">CMSampleBufferGetImageBuffer</span>(sampleBuffer)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">let</span> image <span class="operator">=</span> <span class="type">CIImage</span>(CVPixelBuffer: pixelBuffer)</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> glContext <span class="operator">!=</span> <span class="type">EAGLContext</span>.currentContext() &#123;</span><br><span class="line"></span><br><span class="line">          <span class="type">EAGLContext</span>.setCurrentContext(glContext)</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     glView.bindDrawable()</span><br><span class="line"></span><br><span class="line">     ciContext.drawImage(image, inRect:image.extent(), fromRect: image.extent())</span><br><span class="line"></span><br><span class="line">     glView.display()</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//注意的问题， AVCaptureVideoPreviewLayer会自动处理样本旋转90度的情况。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//使用AVCaptureStillImageOutput捕捉静态图片。</span></span><br><span class="line"></span><br><span class="line">stillCameraOutput <span class="operator">=</span> <span class="type">AVCaptureStillImageOutput</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">self</span>.session.canAddOutput(<span class="keyword">self</span>.stillCameraOutput) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>.session.addOutput(<span class="keyword">self</span>.stillCameraOutput)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//配置，为对象找最合适的配置。有两个方法，简单的方法是使用session preset</span></span><br><span class="line"></span><br><span class="line">session.sessionPreset <span class="operator">=</span> <span class="type">AVCaptureSessionPresetPhoto</span> <span class="comment">//AVCaptureSessionPresetPhoto会为照片捕捉选择最合适的配置，允许使用最高的感光度（ISO）和曝光时间。基于相位检测（phase detection）的自动对焦，以及输出全分辨率的JPEG格式压缩的静态图片。使用AVCaptureDeviceFormat这个类可以有更多的操控，比如静态分辨率，视频预览分辨率，自动对焦类型，感光度和曝光时间限制，支持格式都在AVCaptureDevice.formats中，可以赋值给AVCaptureDevice的activeFormat。</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>操作相机</strong></p>
+<p>到了iOS8后可以对所有参数进行手动调整了。包括镜头光圈。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//先启动相机</span></span><br><span class="line"></span><br><span class="line">sessionQueue = <span class="title function_">dispatch_queue_create</span>(<span class="string">&quot;com.example.camera.capture_session&quot;</span>, <span class="variable constant_">DISPATCH_QUEUE_SERIAL</span>)</span><br><span class="line"></span><br><span class="line"><span class="title function_">dispatch_async</span>(<span class="params">sessionQueue</span>) &#123; () -&gt; <span class="title class_">Void</span> <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">     self.<span class="property">session</span>.<span class="title function_">startRunning</span>()</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//建议将所有block调用操作和配置分配到后台串行队列中。在相机设备改变一些参数前先锁定，改完再解锁</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> <span class="attr">error</span>:<span class="title class_">NSError</span>?</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> currentDevice.<span class="title function_">lockForConfiguration</span>(<span class="params">&amp;error</span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 锁定成功，继续配置</span></span><br><span class="line"></span><br><span class="line">     <span class="comment">// currentDevice.unlockForConfiguration()</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 出错，相机可能已经被锁</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>对焦</strong></p>
+<p>AVCaptureFocusMode枚举描述可用对焦模式</p>
+<ul>
+<li><p>locked：镜片固定位置</p>
+</li>
+<li><p>AutoFocus：先自动对焦一次就处于Locked模式</p>
+</li>
+<li><p>ContinuousAutoFocus：场景改变自动重新对焦到画面中心点</p>
+</li>
+</ul>
+<p>对焦可以使用UISlider设置，类似单反对焦环。手动对焦有个辅助标识指向清晰区域，可以通过对焦峰值（focus peaking）将对焦区域高亮显示的方式，方法是使用阈值边缘（threshold edge）滤镜，自定义CIFilter或GPUImageThresholdEdgeDetectionFilter，并调用AVCaptureAudioDataOutputSampleBufferDelegate下的captureOutput(_:didOutputSampleBuffer:fromConnection:)方法将它覆盖到实时预览图上。</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置对焦模式需要在锁定后</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> focusMode:AVCaptureFocusMode = <span class="params">...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> currentCameraDevice.isFocusModeSupported(focusMode) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="params">...</span> <span class="comment">// 锁定以进行配置</span></span><br><span class="line"></span><br><span class="line">     currentCameraDevice.focusMode = focusMode</span><br><span class="line"></span><br><span class="line">     <span class="params">...</span> <span class="comment">// 解锁</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//AutoFocus会让屏幕中心为清晰区，也可以通过预览图上点击手势改变这个区域。</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">var</span> pointInPreview = focusTapGR.locationInView(focusTapGR.view)</span><br><span class="line"></span><br><span class="line"><span class="built_in">var</span> pointInCamera = previewLayer.captureDevicePointOfInterestForPoint(pointInPreview)</span><br><span class="line"></span><br><span class="line"><span class="params">...</span><span class="comment">// 锁定，配置</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置感兴趣的点</span></span><br><span class="line"></span><br><span class="line">currentCameraDevice.focusPointOfInterest = pointInCamera</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在设置的点上切换成自动对焦</span></span><br><span class="line"></span><br><span class="line">currentCameraDevice.focusMode = .AutoFocus</span><br><span class="line"></span><br><span class="line"><span class="params">...</span><span class="comment">// 解锁</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//iOS8中可以通过选项移动镜片的位置</span></span><br><span class="line"></span><br><span class="line"><span class="params">...</span> <span class="comment">// 锁定，配置</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">var</span> lensPosition:Float = <span class="params">...</span> <span class="comment">// 0.0 到 1.0的float</span></span><br><span class="line"></span><br><span class="line">currentCameraDevice.setFocusModeLockedWithLensPosition(lensPosition) &#123;</span><br><span class="line"></span><br><span class="line">     (timestamp:CMTime) -&gt; <span class="literal">Void</span> <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">     <span class="comment">// timestamp 对应于应用了镜片位置的第一张图像缓存区</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="params">...</span> <span class="comment">// 解锁</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>曝光</strong></p>
+<p>曝光档数范围在minExposureTargetBias和maxExposureTargetBias之间。0为默认没有补偿</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">var</span> exposureBias:Float = <span class="params">...</span> <span class="comment">// 在 minExposureTargetBias 和 maxExposureTargetBias 之间的值</span></span><br><span class="line"></span><br><span class="line"><span class="params">...</span> <span class="comment">// 锁定，配置</span></span><br><span class="line"></span><br><span class="line">currentDevice.setExposureTargetBias(exposureBias) &#123; (time:CMTime) -&gt; <span class="literal">Void</span> <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="params">...</span> <span class="comment">// 解锁</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//设置ISO和曝光时间</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">var</span> activeFormat = currentDevice.activeFormat</span><br><span class="line"></span><br><span class="line"><span class="built_in">var</span> <span class="built_in">duration</span>:CTime = <span class="params">...</span> <span class="comment">//在activeFormat.minExposureDuration 和 activeFormat.maxExposureDuration 之间的值，或用 AVCaptureExposureDurationCurrent 表示不变</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">var</span> iso:Float = <span class="params">...</span> <span class="comment">// 在 activeFormat.minISO 和 activeFormat.maxISO 之间的值，或用 AVCaptureISOCurrent 表示不变</span></span><br><span class="line"></span><br><span class="line"><span class="params">...</span> <span class="comment">// 锁定，配置</span></span><br><span class="line"></span><br><span class="line">currentDevice.setExposureModeCustomWithDuration(<span class="built_in">duration</span>, ISO: iso) &#123; (time:CMTime) -&gt; <span class="literal">Void</span> <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="params">...</span> <span class="comment">// 解锁</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//检验曝光是否准确可以通过KVO观察AVCaptureDevice的exposureTargetOffset属性。</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>白平衡</strong></p>
+<p>iOS8可以手动控制白平衡。可以通过开尔文所表示的温度来调节色温和色彩。典型色温值在2000-3000K（类似蜡烛或灯泡的暖光源）到8000K（纯净的蓝色天空）之间。色彩范围从最小的-150（偏绿）到150（偏品红）。</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">var</span> incandescentLightCompensation = <span class="number">3</span>_000</span><br><span class="line"></span><br><span class="line"><span class="built_in">var</span> tint = <span class="number">0</span> <span class="comment">// 不调节</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> temperatureAndTintValues = AVCaptureWhiteBalanceTemperatureAndTintValues(temperature: incandescentLightCompensation, tint: tint)</span><br><span class="line"></span><br><span class="line"><span class="built_in">var</span> deviceGains = currentCameraDevice.deviceWhiteBalanceGainsForTemperatureAndTintValues(temperatureAndTintValues)</span><br><span class="line"></span><br><span class="line"><span class="params">...</span> <span class="comment">// 锁定，配置</span></span><br><span class="line"></span><br><span class="line">currentCameraDevice.setWhiteBalanceModeLockedWithDeviceWhiteBalanceGains(deviceGains) &#123;</span><br><span class="line"></span><br><span class="line">     (timestamp:CMTime) -&gt; <span class="literal">Void</span> <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="params">...</span> <span class="comment">// 解锁</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>实时人脸检测</strong></p>
+<p>使用AVCaptureMetadataOutput可以检测人脸和二维码。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> metadataOutput <span class="operator">=</span> <span class="type">AVCaptureMetadataOutput</span>()</span><br><span class="line"></span><br><span class="line">metadataOutput.setMetadataObjectsDelegate(<span class="keyword">self</span>, queue: <span class="keyword">self</span>.sessionQueue)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> session.canAddOutput(metadataOutput) &#123;</span><br><span class="line"></span><br><span class="line">     session.addOutput(metadataOutput)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">metadataOutput.metadataObjectTypes <span class="operator">=</span> [<span class="type">AVMetadataObjectTypeFace</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">captureOutput</span>(<span class="params">captureOutput</span>: <span class="type">AVCaptureOutput</span>!, <span class="params">didOutputMetadataObjects</span> <span class="params">metadataObjects</span>: [<span class="type">AnyObject</span>]<span class="operator">!</span>, <span class="params">fromConnection</span> <span class="params">connection</span>: <span class="type">AVCaptureConnection</span>!) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> metadataObject <span class="keyword">in</span> metadataObjects <span class="keyword">as</span> [<span class="type">AVMetadataObject</span>] &#123;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> metadataObject.type <span class="operator">==</span> <span class="type">AVMetadataObjectTypeFace</span> &#123;</span><br><span class="line"></span><br><span class="line">               <span class="keyword">var</span> transformedMetadataObject <span class="operator">=</span> previewLayer.transformedMetadataObjectForMetadataObject(metadataObject)</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>捕捉静态图片</strong></p>
+<p>捕捉高分辨率图像调用captureStillImageAsynchronouslyFromConnection(connection, completionHandler)。在视觉上反应图片捕捉何时开始以及何时结束可以使用KVO来观察AVCaptureStillImageOutput的isCapturingStillImage属性。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">dispatch_async</span><span class="params">(sessionQueue)</span></span> &#123; () -&gt; Void <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">     let connection = self<span class="selector-class">.stillCameraOutput</span><span class="selector-class">.connectionWithMediaType</span>(AVMediaTypeVideo)</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 将视频的旋转与设备同步</span></span><br><span class="line"></span><br><span class="line">     connection<span class="selector-class">.videoOrientation</span> = <span class="built_in">AVCaptureVideoOrientation</span>(rawValue: UIDevice<span class="selector-class">.currentDevice</span>()<span class="selector-class">.orientation</span>.rawValue)!</span><br><span class="line"></span><br><span class="line">     self<span class="selector-class">.stillCameraOutput</span><span class="selector-class">.captureStillImageAsynchronouslyFromConnection</span>(connection) &#123;</span><br><span class="line"></span><br><span class="line">          (imageDataSampleBuffer, error) -&gt; Void <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> error == nil &#123;</span><br><span class="line"></span><br><span class="line">               <span class="comment">// 如果使用 session .Photo 预设，或者在设备输出设置中明确进行了设置</span></span><br><span class="line"></span><br><span class="line">               <span class="comment">// 我们就能获得已经压缩为JPEG的数据</span></span><br><span class="line"></span><br><span class="line">               let imageData = AVCaptureStillImageOutput<span class="selector-class">.jpegStillImageNSDataRepresentation</span>(imageDataSampleBuffer)</span><br><span class="line"></span><br><span class="line">               <span class="comment">// 样本缓冲区也包含元数据，我们甚至可以按需修改它</span></span><br><span class="line"></span><br><span class="line">               let metadata:NSDictionary = <span class="built_in">CMCopyDictionaryOfAttachments</span>(nil, imageDataSampleBuffer, <span class="built_in">CMAttachmentMode</span>(kCMAttachmentMode_ShouldPropagate))<span class="selector-class">.takeUnretainedValue</span>()</span><br><span class="line"></span><br><span class="line">               <span class="keyword">if</span> let <span class="selector-tag">image</span> = <span class="built_in">UIImage</span>(data: imageData) &#123;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 保存图片，或者做些其他想做的事情</span></span><br><span class="line"></span><br><span class="line">                    ...</span><br><span class="line"></span><br><span class="line">               &#125;</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">               <span class="built_in">NSLog</span>(<span class="string">&quot;error while capturing still image: \(error)&quot;</span>)</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>分级捕捉</strong></p>
+<p>通过设定-1，0，-1三个不同曝光档数用HDR算法合并成一张。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">dispatch_async</span><span class="params">(sessionQueue)</span></span> &#123; () -&gt; Void <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">     let connection = self<span class="selector-class">.stillCameraOutput</span><span class="selector-class">.connectionWithMediaType</span>(AVMediaTypeVideo)</span><br><span class="line"></span><br><span class="line">     connection<span class="selector-class">.videoOrientation</span> = <span class="built_in">AVCaptureVideoOrientation</span>(rawValue: UIDevice<span class="selector-class">.currentDevice</span>()<span class="selector-class">.orientation</span>.rawValue)!</span><br><span class="line"></span><br><span class="line">     <span class="selector-tag">var</span> settings = <span class="selector-attr">[-1.0, 0.0, 1.0]</span><span class="selector-class">.map</span> &#123;</span><br><span class="line"></span><br><span class="line">(bias:Float) -&gt; AVCaptureAutoExposureBracketedStillImageSettings <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">          AVCaptureAutoExposureBracketedStillImageSettings<span class="selector-class">.autoExposureSettingsWithExposureTargetBias</span>(bias)</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="selector-tag">var</span> counter = settings<span class="selector-class">.count</span></span><br><span class="line"></span><br><span class="line">     self<span class="selector-class">.stillCameraOutput</span><span class="selector-class">.captureStillImageBracketAsynchronouslyFromConnection</span>(connection, withSettingsArray: settings) &#123;</span><br><span class="line"></span><br><span class="line">(sampleBuffer, settings, error) -&gt; Void <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">          ...</span><br><span class="line"></span><br><span class="line">          <span class="comment">// 保存 sampleBuffer(s)</span></span><br><span class="line"></span><br><span class="line">          <span class="comment">// 当计数为0，捕捉完成</span></span><br><span class="line"></span><br><span class="line">          counter--</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>操作图像</strong></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//将两个图片拼接，并在图片上加个区域强调</span></span><br><span class="line"></span><br><span class="line">-(<span class="built_in">UIImage</span>*)composeStereogramLeft:(<span class="built_in">UIImage</span> *)leftImage right:(<span class="built_in">UIImage</span> *)rightImage</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> w = leftImage.size.width;</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> h = leftImage.size.height;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIGraphicsBeginImageContext</span>(<span class="built_in">CGSizeMake</span>(w * <span class="number">2.0</span>, h + <span class="number">32.0</span>));</span><br><span class="line"></span><br><span class="line">     [leftImage drawAtPoint:<span class="built_in">CGPointMake</span>(<span class="number">0.0</span>, <span class="number">32.0</span>)];</span><br><span class="line"></span><br><span class="line">     [rightImage drawAtPoint:<span class="built_in">CGPointMake</span>(w, <span class="number">32.0</span>)];</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> leftCircleX = (w / <span class="number">2.0</span>) - <span class="number">8.0</span>;</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> rightCircleX = leftCircleX + w;</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> circleY = <span class="number">8.0</span>;</span><br><span class="line"></span><br><span class="line">     [[<span class="built_in">UIColor</span> blackColor] setFill];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIRectFill</span>(<span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, w * <span class="number">2.0</span>, <span class="number">32.0</span>));</span><br><span class="line"></span><br><span class="line">     [[<span class="built_in">UIColor</span> whiteColor] setFill];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CGRect</span> leftRect = <span class="built_in">CGRectMake</span>(leftCircleX, circleY, <span class="number">16.0</span>, <span class="number">16.0</span>);</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CGRect</span> rightRect = <span class="built_in">CGRectMake</span>(rightCircleX, circleY, <span class="number">16.0</span>, <span class="number">16.0</span>);</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIBezierPath</span> *path = [<span class="built_in">UIBezierPath</span> bezierPathWithOvalInRect:leftRect];</span><br><span class="line"></span><br><span class="line">     [path appendPath:[<span class="built_in">UIBezierPath</span> bezierPathWithOvalInRect:rightRect]];</span><br><span class="line"></span><br><span class="line">     [path fill];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIImage</span> *savedImg = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIGraphicsEndImageContext</span>();</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> savedImg;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用CGBitmapContextCreate创建位图绘制环境，然后可以遍历位图获得各个颜色通道值，维持一张图片中的绿色和蓝色的原值，然后将蓝色和绿色的值按一定方式计算后赋值给另一张图片的红色值。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//可以访问实际像素的所有信息，做任何处理，不过Core Image也会提供一些滤镜方便使用。</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">UInt8</span> *rightPtr = rightBitmap;</span><br><span class="line"></span><br><span class="line"><span class="built_in">UInt8</span> *leftPtr = leftBitmap;</span><br><span class="line"></span><br><span class="line"><span class="built_in">UInt8</span> r1, g1, b1;</span><br><span class="line"></span><br><span class="line"><span class="built_in">UInt8</span> r2, g2, b2;</span><br><span class="line"></span><br><span class="line"><span class="built_in">UInt8</span> ra, ga, ba;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSUInteger</span> idx = <span class="number">0</span>; idx &lt; bitmapByteCount; idx += <span class="number">4</span>) &#123;</span><br><span class="line"></span><br><span class="line">     r1 = rightPtr[<span class="number">0</span>]; g1 = rightPtr[<span class="number">1</span>]; b1 = rightPtr[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">     r2 = leftPtr[<span class="number">0</span>]; g2 = leftPtr[<span class="number">1</span>]; b2 = leftPtr[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">     <span class="comment">// r1/g1/b1 右侧图像，用于计算合并值</span></span><br><span class="line"></span><br><span class="line">     <span class="comment">// r2/g2/b2 左侧图像，用于被合并值赋值</span></span><br><span class="line"></span><br><span class="line">     <span class="comment">// ra/ga/ba 合并后的像素</span></span><br><span class="line"></span><br><span class="line">     ra = <span class="number">0.7</span> * g1 + <span class="number">0.3</span> * b1;</span><br><span class="line"></span><br><span class="line">     ga = b2;</span><br><span class="line"></span><br><span class="line">     ba = b2;</span><br><span class="line"></span><br><span class="line">     leftPtr[<span class="number">0</span>] = ra;</span><br><span class="line"></span><br><span class="line">     leftPtr[<span class="number">1</span>] = ga;</span><br><span class="line"></span><br><span class="line">     leftPtr[<span class="number">2</span>] = ba;</span><br><span class="line"></span><br><span class="line">     rightPtr += <span class="number">4</span>; <span class="comment">// 指向下一个像素 (4字节, 包括透明度 alpha 值)</span></span><br><span class="line"></span><br><span class="line">     leftPtr += <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">CGImageRef</span> composedImage = <span class="built_in">CGBitmapContextCreateImage</span>(_leftContext);</span><br><span class="line"></span><br><span class="line"><span class="built_in">UIImage</span> *retval = [<span class="built_in">UIImage</span> imageWithCGImage:composedImage];</span><br><span class="line"></span><br><span class="line"><span class="built_in">CGImageRelease</span>(composedImage);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> retval;</span><br></pre></td></tr></table></figure>
+
+<p><strong>元数据</strong></p>
+<p>存储图像信息的标准格式是Exif（可交换图像文件格式）。通常会保存照相时间日期，快门速度和光圈，设备支持还会包括GPS坐标。可以使用CGImageSourceCopyPropertiesAtIndex方法访问Exif信息。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/10/06/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="prev" title="图像处理">
+      <i class="fa fa-chevron-left"></i> 图像处理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="next" title="多线程编程">
+      多线程编程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

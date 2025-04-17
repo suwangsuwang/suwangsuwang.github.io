@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="#一、KVO原理##1. KVO 简介 KVO 是 Objective-C 对观察者设计模式的一种实现。KVO 提供一种机制，指定一个被观察对象，当对象某个属性发生改变时，对象会获得通知，并做出相应处理； 在 MVC 设计架构的项目，KVO机制很适合实现 model 模型和 View 视图之间的通讯。 ##2. 实现原理  KVO 的实现依赖于 Objective-C 强大的 Runtime。当观">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KVO 、category实现原理">
+<meta property="og:url" content="https://suwangsuwang.github.io/2016/05/06/KVO-%E3%80%81category%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="#一、KVO原理##1. KVO 简介 KVO 是 Objective-C 对观察者设计模式的一种实现。KVO 提供一种机制，指定一个被观察对象，当对象某个属性发生改变时，对象会获得通知，并做出相应处理； 在 MVC 设计架构的项目，KVO机制很适合实现 model 模型和 View 视图之间的通讯。 ##2. 实现原理  KVO 的实现依赖于 Objective-C 强大的 Runtime。当观">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-05-06T08:22:23.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:27.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2016/05/06/KVO-%E3%80%81category%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>KVO 、category实现原理 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/05/06/KVO-%E3%80%81category%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          KVO 、category实现原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-05-06 16:22:23" itemprop="dateCreated datePublished" datetime="2016-05-06T16:22:23+08:00">2016-05-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:27" itemprop="dateModified" datetime="2023-06-07T23:20:27+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>#一、KVO原理<br>##1. KVO 简介</p>
+<p>KVO 是 Objective-C 对观察者设计模式的一种实现。KVO 提供一种机制，指定一个被观察对象，当对象某个属性发生改变时，对象会获得通知，并做出相应处理；</p>
+<p>在 MVC 设计架构的项目，KVO机制很适合实现 model 模型和 View 视图之间的通讯。</p>
+<p>##2. 实现原理<br>  KVO 的实现依赖于 Objective-C 强大的 Runtime。<br>当观察某对象α时，KVO 机制动态创建一个对象α当前类的子类，并为这个新的子类重写被观察属性 keyPath 的 setter 方法。setter 方法随后负责通知观察对象属性的改变状况。</p>
+<p>##3. 深入剖析：<br>Apple 使用了 isa-swizzling 来实现 KVO。当观察对象α时，KVO 机制动态创建一个新的名为：NSKVONotifying_α的新类，该类继承自对象α的本类，且 KVO 为 NSKVONotifying_α重写观察属性的 setter 方法，setter 方法会负责在调用原setter 方法之前和之后，通知所有观察对象属性值的更改情况。</p>
+<p>NSKVONotifying_α类剖析：在这个过程，被观察对象的 isa 指针从原来的α类，被 KVO 机制修改为指向系统新创建的子类 NSKVONotifying_α类，来实现当前类属性值改变的监听。</p>
+<p>所以当我们从应用层面上看来，完全没有意识到有新的类出现，这是系统对 KVO 的底层实现过程，此时如果我们创建一个新的名为“NSKVONotifying_α”的类，就会发现系统运行到注册 KVO 的那段代码时程序就会崩溃。因为系统在注册监听的时候创建了名为 NSKVONotifying_α的中间类，并指向这个中间类。</p>
+<p>（isa 指针的作用： 每个对象都有 isa 指针，指向该对象的类，它告诉 Runtime 系统这个对象的类是什么。所以对象注册为观察者时，isa 指针指向新子类，那么这个被观察的对象就神奇地变成新子类的对象（或实例）了。）因而在该对象上对 setter 的调用就会调用已重写的 setter，从而激活键值通知机制。</p>
+<p>子类 setter 方法剖析：KVO 的键值观察通知依赖于 NSOjbect 的两个方法：</p>
+<p>willChangeValueForKey：和 didChangeValueForKey：，在存取数值的前后分别调用2个方法：</p>
+<p> 被观察属性发生改变之前，willChangeValueForKey：被调用，通知系统该 keyPath 的属性值即将变更；<br> 当改变发生后，didChangeValueForKey：被调用，通知系统该 keyPath 的属性值已经变更；<br> 之后，observeValueForKey:ofObject:change:context:也会被调用。且重写观察属性的 setter 方法这种继承方式的注入是在运行时而不是编译时实现的。</p>
+<span id="more"></span>
+
+<p>KVO 为子类的观察者属性重写调用存取方法的工作原理在代码中相当于：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-  (<span class="type">void</span>)setName:(<span class="built_in">NSString</span> *)newName&#123;</span><br><span class="line">    [<span class="keyword">self</span> willChangeValueForKey:<span class="string">@&quot;name&quot;</span>];</span><br><span class="line">    [<span class="variable language_">super</span> setValue:newName forKey:<span class="string">@&quot;name&quot;</span>];</span><br><span class="line">    [<span class="keyword">self</span> didiChangeValueForKey:<span class="string">@&quot;name&quot;</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>##4.特点：</p>
+<p>观察者观察的是属性，只有遵循 KVO 变更属性值的方式才会执行 KVO 的回调方法，例如是否执行了 setter 方法、或者是否使用了 KVC 赋值。如果赋值没有通过 setter 方法或者 KVC，而是直接修改属性对应的成员变量，例如：仅调用_name &#x3D; @”newName”,这事是不会触发 KVO 机制，更加不会调用回调方法的。所以使用 KVO 机制的前提是遵循 KVO 的属性设置方式来变更属性值。</p>
+<p>##5.步骤</p>
+<ul>
+<li>1.注册观察者，实施监听；</li>
+<li>2.在回调方法中处理属性发生的变化；</li>
+<li>3.移除观察者</li>
+</ul>
+<p>##6. 实现方法<br> A. 注册观察者:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第一个参数 observer：观察者（这里观察 self.myKVO 对象的属性变化）</span></span><br><span class="line"><span class="comment">//第二个参数 keyPath: 被观察的属性名称（这里 self.myKVO 中 num属性值的改变）</span></span><br><span class="line"><span class="comment">//第三个参数 options：观察属性的新值、旧值等的一些配置(枚举值，可以根据需要设置，例如这里可以使用两项)</span></span><br><span class="line"><span class="comment">//第四个参数 context： 上下文，可以为 kvo 的回调方法传值（例如设定为一个放置数据的字典）</span></span><br><span class="line">[<span class="keyword">self</span>.myKVO addObserver:<span class="keyword">self</span> forKeyPath:<span class="string">@&quot;num&quot;</span> options: <span class="built_in">NSKeyValueObservingOptionOld</span>|<span class="built_in">NSKeyValueObservingOpitonNew</span> context:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
+
+<p>B.属性（keyPath）的值发生变化时，收到通知，调用以下方法：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//keyPath:属性名称</span></span><br><span class="line"><span class="comment">//object： 被观察的对象</span></span><br><span class="line"><span class="comment">//change：变化前后的值都存储在 change 字典中</span></span><br><span class="line"><span class="comment">//context： 注册观察者时，context 传过来的值</span></span><br><span class="line">- (<span class="type">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath ofObject:(<span class="type">id</span>)object change:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSString</span> *,<span class="type">id</span>&gt; *) change context:(<span class="type">void</span> *)context&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>##7.拓展</p>
+<p>1.KVC 和 KVO 的不同<br>KVC（键值编码），即 Key-Value Coding,一个非正式的 Protocol，使用字符串（键）访问一个对象实例变量的机制。而不是通过调用 Setter、Getter 方法等显式的存取方法去访问。KVO（键值监听），即 Key-Value Observing,它提供一种机制，当指定的对象的属性被修改后，对象就会接受到通知，前提是执行了 setter 方法、或者使用了 KVC 赋值。</p>
+<p>2.和 notification（通知）的区别？<br>notification 比 KVO 多了发送通知的一步。<br>两者都是一对多，但是对象之间直接的交互，notification 明显很多，需要 notificationCenter 来作为中间交互。而 KVO 如我们介绍的，设置观察者-&gt;处理属性变化，</p>
+<p>notification 的优点是监听不局限与属性的变化，还可以对多种多样的状态变化进行监听，监听范围广，例如键盘、前后台等系统通知的使用也更更显灵活方便。</p>
+<ol start="3">
+<li>与 delegate 的不同</li>
+</ol>
+<p>和 delegate 一样，KVO 和 NSNotification 的作用都是类与类之间的通信。但是与 delegate 不同的是：<br>这两个都是负责发送接收通知，剩下的事情由系统处理，所以不同返回值；而 delegate 则需要通信的对象通过变量（代理）联系；<br>delegate 一般是一对一，而这两个可以一对多。</p>
+<p>#二、Category实现原理</p>
+<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p>category 是 Objective-C 2.0 之后添加的语言特性。主要作用是为已经存在的类添加方法。还有以下两种用法：</p>
+<p>可以把类的实现分开在几个不同的文件里面。1）可以减少单个文件的体积, 2)可以把不同的功能组织到不同的 category 里 3）可以由多个开发者共同完成一个类 4）可以按需加载想要的 category 等等</p>
+<p>声明私有方法。</p>
+<p>##2. 比较 category 和 extension</p>
+<p>extension 在编译期决定，它是类的一部分，在编译期和头文件里的@interface 以及实现文件里的@implement 一起形成一个完整的类，它伴随类的产生而产生，消亡而消亡。extension 一般用来隐藏类的私有信息，你必须有一个类的源码才能为一个类添加 extension，所以无法为系统的类添加 extension。</p>
+<p>但是 category 实在运行期决定的，就 category 和 extension 的区别来看，extension 可以添加实例变量，而 category 无法添加实例变量（因为在运行期，对象的内存布局已经确定，如果添加实例变量就会破坏类的内部布局，这对编译型语言来说是灾难性的）。</p>
+<p>##3.  category 原理</p>
+<p>所有 OC 类和对象，在 Runtime 层都是用 struct 表示的，category 也不例外，在 runtime 层，category 用结构体 category_t (在 objc-runtime-new.h 中可以找到此定义)，它包括了：</p>
+<p>1）类的名字（name）<br><br>2）类（cls） <br><br>3）category 中所有给类添加的实例方法的列表（instanceMethods）<br><br>4）category 中所有添加的类方法的列表（classMethods）<br><br>5）category 实现的所有协议的列表（Protocols）<br><br>6）category 中添加的所有属性（instanceProperties）<br></p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef  <span class="keyword">struct</span> <span class="type">category_t</span> &#123;</span><br><span class="line">        const  char  * name;</span><br><span class="line">        classref_t  <span class="keyword">cls</span>;</span><br><span class="line">        <span class="keyword">struct</span>  <span class="type">method_list_t</span>  *instanceMethods;</span><br><span class="line">        <span class="keyword">struct</span>  <span class="type">method_list_t</span>  * classMethods;</span><br><span class="line">        <span class="keyword">struct</span>  <span class="type">protocol_list_t</span>  * protocols;</span><br><span class="line">        <span class="keyword">struct</span>  <span class="type">property_list_t</span>  * instanceProperties;</span><br><span class="line">&#125; category_t;</span><br></pre></td></tr></table></figure>
+
+<p>从 category 的定义也可以看出 category 的可为（可以添加实例方法，类方法，甚至可以实现协议，添加属性）和不可为（无法添加实例变量）。<br><br>MyClass.h:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import  <span class="string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MyClass</span>:<span class="title">NSObject</span></span></span><br><span class="line">- (<span class="type">void</span>)printName;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MyClass</span>(<span class="title">MyAddition</span>)</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">copy</span>) <span class="built_in">NSString</span> *name;</span><br><span class="line">- (<span class="type">void</span>)printName;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>MyClass.m</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import<span class="string">&quot;MyClass.h&quot;</span></span></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">MyClass</span></span></span><br><span class="line">- (<span class="type">void</span>)printName&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>,<span class="string">@&quot;MyClass&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">MyClass</span>(<span class="title">MyAddition</span>)</span></span><br><span class="line">- (<span class="type">void</span>)printName&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@&quot;%@&quot;</span>,<span class="string">@&quot;MyAddition&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>##4. category 和关联对象</p>
+<p>在 category 里是无法为 category 添加实例变量的。但是我们很多时候需要在 category 中添加和对象关联的值，这个时候可以求助关联对象来实现。</p>
+<p>MyClass + Category.h:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import  “MyClass.h”</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MyClass</span>(<span class="title">Category1</span>)</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">copy</span>) <span class="built_in">NSString</span> *name;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p>MyClass+Category.m:</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="string">&quot;MyClass+Category.h&quot;</span></span></span><br><span class="line"><span class="meta">#import <span class="string">&lt;objc/runtime.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">MyClass</span>(<span class="title">Category</span>)</span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)setName:(<span class="built_in">NSString</span> *)name&#123;</span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, <span class="string">&quot;name&quot;</span>, name, OBJC_ASSOCIATION_COPY);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="built_in">NSString</span> *)name&#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">NSString</span> *nameObject = objc_getAssociatedObject(<span class="keyword">self</span>, <span class="string">&quot;name&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> nameObject;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span> </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/03/05/Auto-Layout/" rel="prev" title="Auto-Layout">
+      <i class="fa fa-chevron-left"></i> Auto-Layout
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/05/23/Markdown-%E5%85%A5%E9%97%A8/" rel="next" title="Markdown 入门">
+      Markdown 入门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1. 简介</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

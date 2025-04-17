@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="before we start, what we have to konw is that iPhone X is the future.   ##Creating apps for iPhone X iPhone X features an all-screen Super Retina display for more immersive app experiences and Face I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Update your apps for iPhone X">
+<meta property="og:url" content="https://suwangsuwang.github.io/2017/11/05/Update-your-apps-for-iPhone-X/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="before we start, what we have to konw is that iPhone X is the future.   ##Creating apps for iPhone X iPhone X features an all-screen Super Retina display for more immersive app experiences and Face I">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-c3ea928e6208d2dd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-431be6893ae1ab20.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-4d953aef30ab7899.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-aff50fe6102ea074.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-6a4650e84ea8d8c8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-64d05e463d3f3845.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-cfdccfaf65992bfe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-d0ba4a725847922d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-31d63b4f2b531075.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-11-05T02:25:00.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:19.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1064761-c3ea928e6208d2dd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2017/11/05/Update-your-apps-for-iPhone-X/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Update your apps for iPhone X | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/11/05/Update-your-apps-for-iPhone-X/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Update your apps for iPhone X
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-05 10:25:00" itemprop="dateCreated datePublished" datetime="2017-11-05T10:25:00+08:00">2017-11-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:19" itemprop="dateModified" datetime="2023-06-07T23:20:19+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>before we start, what we have to konw is that iPhone X is the future.</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-c3ea928e6208d2dd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="iphone-x.png"></p>
+<p>##Creating apps for iPhone X</p>
+<p>iPhone X features an all-screen Super Retina display for more immersive app experiences and Face ID,a secure new way to unlock,authenticate,and pay. The TrueDepth camera works with ARKit,and the A11 Bionic chip is designed for CoreML and Metal2.</p>
+<p>###Super Retina display<br>And now ,let’s try to figure out the Retina display. With iPhone X,the device  is the display. An all-new 5.8’’ Super Retina display employs new technologies to precisely follow the curves of the design,clear to the elegantly rounded corners, so your apps look incredible. It supports High Dynamic Range (HDR) with a 1,000,000 to 1 contrast ratio, wide color support, and the best color accuracy in the industry, enabling amazing viewing experiences.</p>
+<p>So we have to make sure we are ready to take advantage of the Super Retina display by respecting safe areas, supporting adaptive layouts,and more.</p>
+<p>###Run and Test your apps</p>
+<p>Testing on a device and trying to find and address UI issues in our app ,and make sure your app looks great on iPhone X.</p>
+<p>Enable full screen native resolution. Our app will run in Full Screen Display Mode on iPhone X if your project’s base SDK is set to iOS 11 and you have a Launch Storyboard or iPhone X launch image.</p>
+<span id="more"></span>
+
+<p>Verify all parts of our app. Make sure that your UI displays correctly and no elements are mispositioned, overlapping,incorrectly scaled, or clipped. If you discover issues ,use the <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/uikit/uiview/2891102-safearealayoutguide">safe area guides</a> and layout to correctly position UI elements.</p>
+<p>###Respect safe Areas</p>
+<p>Your layout should fill the all-screen Super Retina display while content and controls appear correctly and are easily tappable. Use these safe areas to make sure your app works properly with the new dimensions of iPhone X.</p>
+<p>Apps with custom layouts can also easily support iPhone X,especially when our app uses Auto Layout and adheres to these guidelines.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-431be6893ae1ab20.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="safe-area.png"></p>
+<p>###Status bar.<br>Allow the proper amount of space below the status bar based on the safe area.Avoid assuming a value for the status bar height, as it may cause your content to be obscured or mispositioned below the status bar.<br><img src="http://upload-images.jianshu.io/upload_images/1064761-4d953aef30ab7899.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Status bar.png"></p>
+<p>###Rounded display corners and sensor housing.<br>Keep content and controls away from the corners and sensor housing to allow your app to fill the screen without getting clipped.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-aff50fe6102ea074.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Rounded display corners and sensor housing.png"></p>
+<h3 id="Home-Indicator"><a href="#Home-Indicator" class="headerlink" title="Home  Indicator."></a>Home  Indicator.</h3><p>Make sure your app doesn’t interfere with Home Indicator, so your content and controls remain clearly viewable and tappable at all times.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-6a4650e84ea8d8c8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Home  Indicator.png"></p>
+<p>###Screen Edge Gestures.<br>The display on iPhone X  uses screen edge gestures to provide access to home screen, app switcher, Notification Center, and Control Center. Avoid interfering with these gestures. Move Controls into the safe area and adjust your UI. In rare cases, you may consider using edge protect, in which the first swipe invokes the app-specific gesture and a second-swipe invokes the system gesture.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-64d05e463d3f3845.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Screen Edge Gestures.png"></p>
+<p>###Support Various Aspect Ratios and Orientations</p>
+<p>The screen height and aspect ratio of iPhone X is different from other iPhone devices. In portrait orientation, the width of the display on iPhoneX matches  the width of the 4.7” displays of previous models.<br>However,the display on iPhone X is 145 points taller than a 4.7” display.</p>
+<p>check that your code handles a different screen aspect ratio.Many apps position content based on a particular width,height,or aspect ratio. Verify that your content scales and is positioned correctly.<br><img src="http://upload-images.jianshu.io/upload_images/1064761-cfdccfaf65992bfe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Support Various Aspect Ratios and Orientations.png"></p>
+<p>###Test your app in landscape orientation.<br>while you may discover some issues in portrait orientation, the majority of issues will likely appear in landscape orientation. Be sure to test all of your UI with the device rotated,both to the left and to the right.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-d0ba4a725847922d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="landscape orientation.png"></p>
+<p>###Scale videos accordingly.<br>Video content on iPhone X should fill the display. However,if this results in any cropping on the top  or bottom,or to much cropping on the side , the video should be scaled to fit the screen.While AVPlayerViewController manages this automatically,custom video players based on AVPlayerLayer need to select an appropriate initial video gravity setting and allow users to switch between aspect and aspectFill viewing modes based on their preference.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-31d63b4f2b531075.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Scale videos accordingly.png"></p>
+<p> All the them  is just come from apple. if you want to learn more<br>try to visit the official websites.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/10/05/RunLoop/" rel="prev" title="RunLoop">
+      <i class="fa fa-chevron-left"></i> RunLoop
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/19/iOS%E6%9E%B6%E6%9E%84/" rel="next" title="iOS 架构">
+      iOS 架构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Home-Indicator"><span class="nav-number">1.</span> <span class="nav-text">Home  Indicator.</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

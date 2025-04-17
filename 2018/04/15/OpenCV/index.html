@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍OpenCV是开源计算机视觉和机器学习库。包含成千上万优化过的算法。项目地址：http:&#x2F;&#x2F;opencv.org&#x2F;about.html。官方文档：http:&#x2F;&#x2F;docs.opencv.org&#x2F;modules&#x2F;core&#x2F;doc&#x2F;intro.html。OpenCV已支持OpenCL OpenGL，也支持iOS和Android。OpenCV的API是C++的，所以在iOS中最佳实践是将用到OpenC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV">
+<meta property="og:url" content="https://suwangsuwang.github.io/2018/04/15/OpenCV/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="介绍OpenCV是开源计算机视觉和机器学习库。包含成千上万优化过的算法。项目地址：http:&#x2F;&#x2F;opencv.org&#x2F;about.html。官方文档：http:&#x2F;&#x2F;docs.opencv.org&#x2F;modules&#x2F;core&#x2F;doc&#x2F;intro.html。OpenCV已支持OpenCL OpenGL，也支持iOS和Android。OpenCV的API是C++的，所以在iOS中最佳实践是将用到OpenC">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-04-15T11:02:01.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:24.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2018/04/15/OpenCV/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>OpenCV | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/04/15/OpenCV/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OpenCV
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-15 19:02:01" itemprop="dateCreated datePublished" datetime="2018-04-15T19:02:01+08:00">2018-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:24" itemprop="dateModified" datetime="2023-06-07T23:20:24+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>OpenCV是开源计算机视觉和机器学习库。包含成千上万优化过的算法。项目地址：<a target="_blank" rel="noopener" href="http://opencv.org/about.html">http://opencv.org/about.html</a>。官方文档：<a target="_blank" rel="noopener" href="http://docs.opencv.org/modules/core/doc/intro.html">http://docs.opencv.org/modules/core/doc/intro.html</a>。OpenCV已支持OpenCL OpenGL，也支持iOS和Android。OpenCV的API是C++的，所以在iOS中最佳实践是将用到OpenCV功能写一层Objective-C++封装。这些封装把OpenCV的C++API转化为安全的Objective-C API。</p>
+<h1 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h1><ul>
+<li>core：简洁核心模块，基本函数，基本数据结构</li>
+<li>imgproc：图像处理模块，线性和非线性图像滤波，几何图像转换，颜色空间转换，直方图等。</li>
+<li>video：视频分析模块，运动估计，背景消除，物体跟踪算法</li>
+<li>calib3d：基本多视角几何算法，单体和立体相机的标定，对象姿势估计，双目立体匹配算法和元素的三维重建</li>
+<li>features2d：包含了显著特征检测算法，描述算子和算子匹配算法</li>
+<li>objdetect：物体检测和一些预定义的物体的检测（如人脸，眼睛，杯子，人，汽车等）</li>
+<li>ml：多种机器学习算法，如K均值，支持向量机和神经网络</li>
+<li>highgui：简单易用接口，有视频捕捉，图像和视频编码功能，简单UI接口，iOS的是其中一个子集</li>
+<li>gpu：GPU加速算法，iOS不可用</li>
+<li>ocl：OpenCL通用算法，iOS不可用</li>
+<li>其它辅助模块，如用户贡献的算法</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="基础类和操作"><a href="#基础类和操作" class="headerlink" title="基础类和操作"></a>基础类和操作</h1><p>OpenCV有几百个类，几个核心类可以参考文档：<a target="_blank" rel="noopener" href="http://docs.opencv.org/modules/core/doc/core.html">http://docs.opencv.org/modules/core/doc/core.html</a></p>
+<p>cv::Mat：核心数据结构，可以用来表示N维矩阵，图像是2维矩阵的，cv::Mat是OpenCV中用的最多的。一个cv::Mat实例作用就是图像数据头，包含图像格式信息。图像中任一像素地址都可通过下面的指针运算得到：</p>
+<figure class="highlight stan"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uchar *pixelPtr = cvMat.<span class="title">data</span> + rowIndex * cvMat.<span class="built_in">step</span>[<span class="number">0</span>] + colIndex * cvMat.<span class="built_in">step</span>[<span class="number">1</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>每个像素的数据格式可以通过type()方法获得，这些数据格式包括：</p>
+<ul>
+<li>常用的每通道8位无符号整数的灰度图（1通道，CV_8UC1）</li>
+<li>常用的彩色图（3通道，CV_8UC3）</li>
+<li>不常用的CV_16SC3（每像素3通道，每通道使用16位有符号整数）</li>
+<li>不常用的CV_64FC4（每像素4通道，每通道使用64位浮点数）</li>
+</ul>
+<p>cv::Algorithm：很多算法的抽象基类。</p>
+<h1 id="iOS中使用OpenCV"><a href="#iOS中使用OpenCV" class="headerlink" title="iOS中使用OpenCV"></a>iOS中使用OpenCV</h1><h2 id="添加到自己项目中"><a href="#添加到自己项目中" class="headerlink" title="添加到自己项目中"></a>添加到自己项目中</h2><ul>
+<li>CocoaPods：pod “OpenCV”</li>
+<li>下载官方iOS包：<a target="_blank" rel="noopener" href="http://opencv.org/downloads.html">http://opencv.org/downloads.html</a></li>
+<li>在GitHub下代码自己编译：GitHub地址<a target="_blank" rel="noopener" href="https://github.com/Itseez/opencv">https://github.com/Itseez/opencv</a>，编译教程<a target="_blank" rel="noopener" href="http://docs.opencv.org/doc/tutorials/introduction/ios_install/ios_install.html#ios-installation">http://docs.opencv.org/doc/tutorials/introduction/ios_install&#x2F;ios_install.html#ios-installation</a></li>
+</ul>
+<h2 id="Objective-C"><a href="#Objective-C" class="headerlink" title="Objective-C++"></a>Objective-C++</h2><p>OpenCV的API在Objective-C++文件中使用，这里内存管理是需要注意的，ARC是无效的，所以assign需要在dealloc里将C++对象正确释放掉。更多的混用C++和Objective-C的细节参考<a target="_blank" rel="noopener" href="https://twitter.com/mattjgalloway">Matt Galloway</a>的教程：<a target="_blank" rel="noopener" href="http://www.raywenderlich.com/62989/introduction-c-ios-developers-part-1">http://www.raywenderlich.com/62989/introduction-c-ios-developers-part-1</a></p>
+<h2 id="人脸识别器范例"><a href="#人脸识别器范例" class="headerlink" title="人脸识别器范例"></a>人脸识别器范例</h2><p>范例源码：<a target="_blank" rel="noopener" href="https://github.com/objcio/issue-21-OpenCV-FaceRec">https://github.com/objcio/issue-21-OpenCV-FaceRec</a>。范例是从iPhone摄像头获取视频流进行人脸的持续检测在屏幕上标出。用户点击一个脸孔会识别这个人，结果正确点“Correct”，错误要选择一个人名。人脸识别器</p>
+<h3 id="视频拍摄"><a href="#视频拍摄" class="headerlink" title="视频拍摄"></a>视频拍摄</h3><p>OpenCV的highgui模块有个类CvVideoCamera，这个类把iPhone的摄像机抽象出来，通过一个代理(void)processImage:(cv::Mat&amp;)image来获得视频流。实例可以这样设置：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CvVideoCamera *videoCamera = [[CvVideoCamera alloc] initWithParentView:view];</span><br><span class="line"></span><br><span class="line">videoCamera.defaultAVCaptureDevicePosition = <span class="built_in">AVCaptureDevicePositionFront</span>;</span><br><span class="line"></span><br><span class="line">videoCamera.defaultAVCaptureSessionPreset = <span class="built_in">AVCaptureSessionPreset640x480</span>;</span><br><span class="line"></span><br><span class="line">videoCamera.defaultAVCaptureVideoOrientation = <span class="built_in">AVCaptureVideoOrientationPortrait</span>;</span><br><span class="line"></span><br><span class="line">videoCamera.defaultFPS = <span class="number">30</span>;</span><br><span class="line"></span><br><span class="line">videoCamera.grayscaleMode = <span class="literal">NO</span>;</span><br><span class="line"></span><br><span class="line">videoCamera.delegate = <span class="keyword">self</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="人脸检测"><a href="#人脸检测" class="headerlink" title="人脸检测"></a>人脸检测</h3><p>用优化过的Core Image提供的CIDetector类。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">CIDetector</span> *faceDetector = [<span class="built_in">CIDetector</span> detectorOfType:<span class="built_in">CIDetectorTypeFace</span> context:context options:@&#123;<span class="built_in">CIDetectorAccuracy</span>: <span class="built_in">CIDetectorAccuracyHigh</span>&#125;];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSArray</span> *faces = [faceDetector featuresInImage:image]; <span class="comment">//faces中保存着每个面孔的CIFaceFeature实例。这个实例里有这个面孔的位置和宽高，眼睛，嘴位置等</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用OpenCV提供的一套物体检测功能，经过训练能够检测任何需要的物体。这个库自带了可以直接用的检测参数，比如脸，眼睛，嘴，身体，上半身，下半身和笑脸等。这些检测器称为Haar特征检测器。关于训练和检测过程可以参考这个论文<a target="_blank" rel="noopener" href="http://www.multimedia-computing.de/mediawiki//images/5/52/MRL-TR-May02-revised-Dec02.pdf">http://www.multimedia-computing.de/mediawiki//images/5/52/MRL-TR-May02-revised-Dec02.pdf</a></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 正面人脸检测器训练参数的文件路径</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *faceCascadePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@&quot;haarcascade_frontalface_alt2&quot;</span></span><br><span class="line"></span><br><span class="line">ofType:<span class="string">@&quot;xml&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="built_in">CFIndex</span> <span class="built_in">CASCADE_NAME_LEN</span> = <span class="number">2048</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span> *<span class="built_in">CASCADE_NAME</span> = (<span class="type">char</span> *) malloc(<span class="built_in">CASCADE_NAME_LEN</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">CFStringGetFileSystemRepresentation</span>( (<span class="built_in">CFStringRef</span>)faceCascadePath, <span class="built_in">CASCADE_NAME</span>, <span class="built_in">CASCADE_NAME_LEN</span>);</span><br><span class="line"></span><br><span class="line">CascadeClassifier faceDetector; <span class="comment">//这些参数可以在OpenCV包的data/haarcascades文件夹中找到</span></span><br><span class="line"></span><br><span class="line">faceDetector.load(<span class="built_in">CASCADE_NAME</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//开始人脸检测</span></span><br><span class="line"></span><br><span class="line">cv::Mat img;</span><br><span class="line"></span><br><span class="line">vector&lt;cv::Rect&gt; faceRects;</span><br><span class="line"></span><br><span class="line"><span class="type">double</span> scalingFactor = <span class="number">1.1</span>; <span class="comment">//用不同的尺度遍历检测不同大小的人脸，scalingFactor决定每次遍历尺度会变大多少倍。</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> minNeighbors = <span class="number">2</span>; <span class="comment">//拥有少于minNeighbors个符合条件的邻居像素人脸区域会被拒绝掉。</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> flags = <span class="number">0</span>; <span class="comment">//1.x的遗留物，始终设置为0</span></span><br><span class="line"></span><br><span class="line">cv::Size minimumSize(<span class="number">30</span>,<span class="number">30</span>); <span class="comment">//寻找的人脸区域大小的最小值</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//faceRects向量会包含对识别获得的所有人脸区域。识别的人脸图像可以通过cv::Mat的()运算符提取出，方式为：cv::Mat faceImg = img(aFaceRect)</span></span><br><span class="line"></span><br><span class="line">faceDetector.detectMultiScale(img, faceRects,</span><br><span class="line"></span><br><span class="line">     scalingFactor, minNeighbors, flags</span><br><span class="line"></span><br><span class="line">     cv::Size(<span class="number">30</span>, <span class="number">30</span>) );</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="人脸识别"><a href="#人脸识别" class="headerlink" title="人脸识别"></a>人脸识别</h3><p>OpenCV自带三个人脸识别算法：Eigenfaces，Fisherfaces和局部二值模式直方图（LBPH）。详细参考OpenCV的文档：<a target="_blank" rel="noopener" href="http://docs.opencv.org/modules/contrib/doc/facerec/facerec_tutorial.html#local-binary-patterns-histograms">http://docs.opencv.org/modules/contrib/doc/facerec/facerec_tutorial.html#local-binary-patterns-histograms</a></p>
+<p>下面的代码使用的是LBPH算法，它会根据用户输入自动更新，而不需要在每添加一个人或纠正一次出错的判断都要重新进行一次彻底的训练。</p>
+<p>使用Objective-C++先将其封装，封装中暴露以下函数</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">+ (FJFaceRecognizer *)faceRecognizerWithFile:(<span class="built_in">NSString</span> *)path;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)predict:(<span class="built_in">UIImage</span>*)img confidence:(<span class="type">double</span> *)confidence;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)updateWithFace:(<span class="built_in">UIImage</span> *)img name:(<span class="built_in">NSString</span> *)name;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个实例</span></span><br><span class="line"></span><br><span class="line">+ (FJFaceRecognizer *)faceRecognizerWithFile:(<span class="built_in">NSString</span> *)path &#123;</span><br><span class="line"></span><br><span class="line">     FJFaceRecognizer *fr = [FJFaceRecognizer new];</span><br><span class="line"></span><br><span class="line">     fr-&gt;_faceClassifier = createLBPHFaceRecognizer();</span><br><span class="line"></span><br><span class="line">     fr-&gt;_faceClassifier-&gt;load(path.UTF8String);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> fr;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//预测</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)predict:(<span class="built_in">UIImage</span>*)img confidence:(<span class="type">double</span> *)confidence &#123;</span><br><span class="line"></span><br><span class="line">     cv::Mat src = [img cvMatRepresentationGray]; <span class="comment">// UIImage 转化为 cv::Mat</span></span><br><span class="line"></span><br><span class="line">     <span class="type">int</span> label;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>-&gt;_faceClassifier-&gt;predict(src, label, *confidence);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> _labelsArray[label]; <span class="comment">//_labelsArray是int和string对应关系数组</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过用户的选择更新人脸识别器</span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)updateWithFace:(<span class="built_in">UIImage</span> *)img name:(<span class="built_in">NSString</span> *)name &#123;</span><br><span class="line"></span><br><span class="line">     cv::Mat src = [img cvMatRepresentationGray];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSInteger</span> label = [_labelsArray indexOfObject:name];</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (label == <span class="built_in">NSNotFound</span>) &#123;</span><br><span class="line"></span><br><span class="line">          [_labelsArray addObject:name];</span><br><span class="line"></span><br><span class="line">          label = [_labelsArray indexOfObject:name];</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     vector&lt;cv::Mat&gt; images = vector&lt;cv::Mat&gt;();</span><br><span class="line"></span><br><span class="line">     images.push_back(src);</span><br><span class="line"></span><br><span class="line">     vector&lt;<span class="type">int</span>&gt; labels = vector&lt;<span class="type">int</span>&gt;();</span><br><span class="line"></span><br><span class="line">     labels.push_back((<span class="type">int</span>)label);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>-&gt;_faceClassifier-&gt;update(images, labels);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>预测，反馈，更新循环，这就是监督式学习：<a target="_blank" rel="noopener" href="http://zh.wikipedia.org/wiki/%E7%9B%A3%E7%9D%A3%E5%BC%8F%E5%AD%B8%E7%BF%92">http://zh.wikipedia.org/wiki/%E7%9B%A3%E7%9D%A3%E5%BC%8F%E5%AD%B8%E7%BF%92</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/05/Masonry/" rel="prev" title="Masonry">
+      <i class="fa fa-chevron-left"></i> Masonry
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/05/Photo/" rel="next" title="Photo">
+      Photo <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97"><span class="nav-number">2.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%92%8C%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">基础类和操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS%E4%B8%AD%E4%BD%BF%E7%94%A8OpenCV"><span class="nav-number">4.</span> <span class="nav-text">iOS中使用OpenCV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%88%B0%E8%87%AA%E5%B7%B1%E9%A1%B9%E7%9B%AE%E4%B8%AD"><span class="nav-number">4.1.</span> <span class="nav-text">添加到自己项目中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Objective-C"><span class="nav-number">4.2.</span> <span class="nav-text">Objective-C++</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB%E5%99%A8%E8%8C%83%E4%BE%8B"><span class="nav-number">4.3.</span> <span class="nav-text">人脸识别器范例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E6%8B%8D%E6%91%84"><span class="nav-number">4.3.1.</span> <span class="nav-text">视频拍摄</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B"><span class="nav-number">4.3.2.</span> <span class="nav-text">人脸检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%BA%E8%84%B8%E8%AF%86%E5%88%AB"><span class="nav-number">4.3.3.</span> <span class="nav-text">人脸识别</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

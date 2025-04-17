@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="FRP全称Function Reactive Programming，从名称就能够看出来这个模型关键就是Function Programming和Reactive Programming的结合。那么就先从函数式编程说起。说函数式编程前先聊聊链式编程，先看看一个开源Alert控件的头文件里定义的接口方法的写法。 12345678910111213141516171819202122232425262">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ReactiveCocoa">
+<meta property="og:url" content="https://suwangsuwang.github.io/2018/08/14/ReactiveCocoa/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="FRP全称Function Reactive Programming，从名称就能够看出来这个模型关键就是Function Programming和Reactive Programming的结合。那么就先从函数式编程说起。说函数式编程前先聊聊链式编程，先看看一个开源Alert控件的头文件里定义的接口方法的写法。 12345678910111213141516171819202122232425262">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-08-14T11:24:39.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:24.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2018/08/14/ReactiveCocoa/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ReactiveCocoa | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/08/14/ReactiveCocoa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ReactiveCocoa
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-14 19:24:39" itemprop="dateCreated datePublished" datetime="2018-08-14T19:24:39+08:00">2018-08-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:24" itemprop="dateModified" datetime="2023-06-07T23:20:24+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>FRP全称Function Reactive Programming，从名称就能够看出来这个模型关键就是Function Programming和Reactive Programming的结合。那么就先从函数式编程说起。说函数式编程前先聊聊链式编程，先看看一个开源Alert控件的头文件里定义的接口方法的写法。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> *  自定义样式的alertView</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">instancetype</span>)showAlertWithTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line"></span><br><span class="line">                           message:(<span class="built_in">NSString</span> *)message</span><br><span class="line"></span><br><span class="line">                        completion:(PXAlertViewCompletionBlock)completion</span><br><span class="line"></span><br><span class="line">                       cancelTitle:(<span class="built_in">NSString</span> *)cancelTitle</span><br><span class="line"></span><br><span class="line">                       otherTitles:(<span class="built_in">NSString</span> *)otherTitles, ... <span class="built_in">NS_REQUIRES_NIL_TERMINATION</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> * @param otherTitles Must be a NSArray containing type NSString, or set to nil for no otherTitles.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">instancetype</span>)showAlertWithTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line"></span><br><span class="line">                       contentView:(<span class="built_in">UIView</span> *)view</span><br><span class="line"></span><br><span class="line">                       secondTitle:(<span class="built_in">NSString</span> *)secondTitle</span><br><span class="line"></span><br><span class="line">                           message:(<span class="built_in">NSString</span> *)message</span><br><span class="line"></span><br><span class="line">                       cancelTitle:(<span class="built_in">NSString</span> *)cancelTitle</span><br><span class="line"></span><br><span class="line">                       otherTitles:(<span class="built_in">NSArray</span> *)otherTitles</span><br><span class="line"></span><br><span class="line">                          btnStyle:(<span class="type">BOOL</span>)btnStyle</span><br><span class="line"></span><br><span class="line">                        completion:(PXAlertViewCompletionBlock)completion;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>库里还有更多这样的组合，这么写是没有什么问题，无非是为了更方便组合使用而啰嗦了点，但是如果现在要添加一个AttributeString，那么所有组合接口都需要修改，每次调用接口方法如果不需要用Attribuite的地方还要去设置nil，这样会很不易于扩展。下面举个上报日志接口的例子。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">@interface</span> SMLogger : NSObject</span><br><span class="line"></span><br><span class="line">//初始化</span><br><span class="line"></span><br><span class="line">+ (SMLogger *)create;</span><br><span class="line"></span><br><span class="line"><span class="comment">//可选设置</span></span><br><span class="line"></span><br><span class="line">- (SMLogger *)<span class="selector-tag">object</span>:(id)obj;                        <span class="comment">//object对象记录</span></span><br><span class="line"></span><br><span class="line">- (SMLogger *)message:(NSString *)msg;               <span class="comment">//描述</span></span><br><span class="line"></span><br><span class="line">- (SMLogger *)classify:(SMProjectClassify)classify;  <span class="comment">//分类</span></span><br><span class="line"></span><br><span class="line">- (SMLogger *)level:(SMLoggerLevel)level;            <span class="comment">//级别</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//最后需要执行这个方法进行保存，什么都不设置也会记录文件名，函数名，行数等信息</span></span><br><span class="line"></span><br><span class="line">- (void)save;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line">//宏</span><br><span class="line"></span><br><span class="line">FOUNDATION_EXPORT void SMLoggerDebugFunc(DCProjectClassify classify, DCLoggerLevel level, NSString *format, ...) NS_FORMAT_FUNCTION(<span class="number">3</span>,<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//debug方式打印日志，不会上报</span></span><br><span class="line"></span><br><span class="line"><span class="selector-id">#define</span> <span class="built_in">SMLoggerDebug</span>(frmt, ...) \</span><br><span class="line"></span><br><span class="line">do &#123; <span class="built_in">SMLoggerDebugFunc</span>(SMProjectClassifyNormal,DCLoggerLevelDebug,frmt, ##__VA_ARGS__);&#125; <span class="built_in">while</span>(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//简单的上报日志</span></span><br><span class="line"></span><br><span class="line"><span class="selector-id">#define</span> <span class="built_in">SMLoggerSimple</span>(frmt, ...) \</span><br><span class="line"></span><br><span class="line">do &#123; <span class="built_in">SMLoggerDebugFunc</span>(SMProjectClassifyNormal,SMLoggerLevelDebug,frmt, ##__VA_ARGS__);&#125; <span class="built_in">while</span>(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//自定义classify和level的日志，可上报</span></span><br><span class="line"></span><br><span class="line"><span class="selector-id">#define</span> <span class="built_in">SMLoggerCustom</span>(classify,level,frmt, ...) \</span><br><span class="line"></span><br><span class="line">do &#123; <span class="built_in">SMLoggerDebugFunc</span>(classify,level,frmt, ##__VA_ARGS__);&#125; <span class="built_in">while</span>(<span class="number">0</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>从这个头文件可以看出，对接口所需的参数不用将各种组合一一定义，只需要按照需要组合即可，而且做这个日志接口时发现后续维护过程中会增加越来越多的功能和需要更多的input数据。比如每条日志添加应用生命周期唯一编号，产品线每次切换唯一编号这样需要在特定场景需要添加的input支持。采用这种方式会更加易于扩展。写的时候会是[[[[DCLogger create] message:@”此处必改”] classify:DCProjectClassifyTradeHome] save]; 这样，对于不是特定场所较通用的场景可以使用宏来定义，内部实现还是按照前者的来实现，看起来是[DCLogger loggerWithMessage:@”此处必改”];，这样就能够同时满足常用场景和特殊场景的调用需求。</p>
+<p>有了链式编程这种易于扩展方式的编程方式再来构造函数式编程，函数编程主要思路就是用有输入输出的函数作为参数将运算过程尽量写成一系列嵌套的函数调用，下面我构造一个需求来看看函数式编程的例子。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSUInteger</span>, SMStudentGender) &#123;</span><br><span class="line"></span><br><span class="line">    SMStudentGenderMale,</span><br><span class="line"></span><br><span class="line">    SMStudentGenderFemale</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">BOOL</span>(^SatisfyActionBlock)(<span class="built_in">NSUInteger</span> credit);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">SMStudent</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) SMCreditSubject *creditSubject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="type">BOOL</span> isSatisfyCredit;</span><br><span class="line"></span><br><span class="line">+ (SMStudent *)create;</span><br><span class="line"></span><br><span class="line">- (SMStudent *)name:(<span class="built_in">NSString</span> *)name;</span><br><span class="line"></span><br><span class="line">- (SMStudent *)gender:(SMStudentGender)gender;</span><br><span class="line"></span><br><span class="line">- (SMStudent *)studentNumber:(<span class="built_in">NSUInteger</span>)number;</span><br><span class="line"></span><br><span class="line"><span class="comment">//积分相关</span></span><br><span class="line"></span><br><span class="line">- (SMStudent *)sendCredit:(<span class="built_in">NSUInteger</span>(^)(<span class="built_in">NSUInteger</span> credit))updateCreditBlock;</span><br><span class="line"></span><br><span class="line">- (SMStudent *)filterIsASatisfyCredit:(SatisfyActionBlock)satisfyBlock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这个例子中，sendCredit的block函数参数会处理当前的积分这个数据然后返回给SMStudent记录下来，filterIsASatisfyCredit的block函数参数会处理是否达到合格的积分判断返回是或否的BOOL值给SMStudent记录下来。实现代码如下</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//present</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>.student <span class="operator">=</span> [[[[[<span class="type">SMStudent</span> create]</span><br><span class="line"></span><br><span class="line">                   name:@<span class="string">&quot;ming&quot;</span>]</span><br><span class="line"></span><br><span class="line">                  gender:<span class="type">SMStudentGenderMale</span>]</span><br><span class="line"></span><br><span class="line">                 studentNumber:<span class="number">345</span>]</span><br><span class="line"></span><br><span class="line">                filterIsASatisfyCredit:<span class="operator">^</span><span class="type">BOOL</span>(<span class="type">NSUInteger</span> credit)&#123;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (credit <span class="operator">&gt;=</span> <span class="number">70</span>) &#123;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">self</span>.isSatisfyLabel.text <span class="operator">=</span> @<span class="string">&quot;合格&quot;</span>;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">self</span>.isSatisfyLabel.textColor <span class="operator">=</span> [<span class="type">UIColor</span> redColor];</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">return</span> <span class="type">YES</span>;</span><br><span class="line"></span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">self</span>.isSatisfyLabel.text <span class="operator">=</span> @<span class="string">&quot;不合格&quot;</span>;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">return</span> <span class="type">NO</span>;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                &#125;];</span><br><span class="line"></span><br><span class="line"><span class="meta">@weakify</span>(<span class="keyword">self</span>);</span><br><span class="line"></span><br><span class="line">[[<span class="keyword">self</span>.testButton rac_signalForControlEvents:<span class="type">UIControlEventTouchUpInside</span>] subscribeNext:<span class="operator">^</span>(id x) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@strongify</span>(<span class="keyword">self</span>);</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span>.student sendCredit:<span class="operator">^</span><span class="type">NSUInteger</span>(<span class="type">NSUInteger</span> credit) &#123;</span><br><span class="line"></span><br><span class="line">        credit <span class="operator">+=</span> <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">NSLog</span>(@<span class="string">&quot;current credit %lu&quot;</span>,credit);</span><br><span class="line"></span><br><span class="line">        [<span class="keyword">self</span>.student.creditSubject sendNext:credit];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> credit;</span><br><span class="line"></span><br><span class="line">    &#125;];</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.student.creditSubject subscribeNext:<span class="operator">^</span>(<span class="type">NSUInteger</span> credit) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">NSLog</span>(@<span class="string">&quot;第一个订阅的credit处理积分%lu&quot;</span>,credit);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.currentCreditLabel.text <span class="operator">=</span> [<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;%lu&quot;</span>,credit];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (credit <span class="operator">&lt;</span> <span class="number">30</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.currentCreditLabel.textColor <span class="operator">=</span> [<span class="type">UIColor</span> lightGrayColor];</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(credit <span class="operator">&lt;</span> <span class="number">70</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.currentCreditLabel.textColor <span class="operator">=</span> [<span class="type">UIColor</span> purpleColor];</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.currentCreditLabel.textColor <span class="operator">=</span> [<span class="type">UIColor</span> redColor];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.student.creditSubject subscribeNext:<span class="operator">^</span>(<span class="type">NSUInteger</span> credit) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">NSLog</span>(@<span class="string">&quot;第二个订阅的credit处理积分%lu&quot;</span>,credit);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="operator">!</span>(credit <span class="operator">&gt;</span> <span class="number">0</span>)) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.currentCreditLabel.text <span class="operator">=</span> @<span class="string">&quot;0&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.isSatisfyLabel.text <span class="operator">=</span> @<span class="string">&quot;未设置&quot;</span>;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>每次按钮点击都会增加5个积分，达到70个积分就算合格了。上面的例子里可以看到一个对每次积分变化有不同的观察者处理的操作代码，这里并没有使用ReactiveCocoa里的信号，而是自己实现了一个特定的积分的类似信号的对象，方法名也用的是一样的。实现这个对象也是用的函数式编程方式。下面我的具体的实现代码</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">SMCreditSubject</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">void</span>(^SubscribeNextActionBlock)(<span class="built_in">NSUInteger</span> credit);</span><br><span class="line"></span><br><span class="line">+ (SMCreditSubject *)create;</span><br><span class="line"></span><br><span class="line">- (SMCreditSubject *)sendNext:(<span class="built_in">NSUInteger</span>)credit;</span><br><span class="line"></span><br><span class="line">- (SMCreditSubject *)subscribeNext:(SubscribeNextActionBlock)block;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">SMCreditSubject</span>()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSUInteger</span> credit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) SubscribeNextActionBlock subscribeNextBlock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSMutableArray</span> *blockArray;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">SMCreditSubject</span></span></span><br><span class="line"></span><br><span class="line">+ (SMCreditSubject *)create &#123;</span><br><span class="line"></span><br><span class="line">    SMCreditSubject *subject = [[<span class="keyword">self</span> alloc] init];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> subject;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (SMCreditSubject *)sendNext:(<span class="built_in">NSUInteger</span>)credit &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.credit = credit;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.blockArray.count &gt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (SubscribeNextActionBlock block <span class="keyword">in</span> <span class="keyword">self</span>.blockArray) &#123;</span><br><span class="line"></span><br><span class="line">            block(<span class="keyword">self</span>.credit);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (SMCreditSubject *)subscribeNext:(SubscribeNextActionBlock)block &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (block) &#123;</span><br><span class="line"></span><br><span class="line">        block(<span class="keyword">self</span>.credit);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span>.blockArray addObject:block];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> mark - Getter</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSMutableArray</span> *)blockArray &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!_blockArray) &#123;</span><br><span class="line"></span><br><span class="line">        _blockArray = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> _blockArray;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Demo地址：<a target="_blank" rel="noopener" href="https://github.com/ming1016/RACStudy">https://github.com/ming1016/RACStudy</a></p>
+<p>主要思路就是subscribeNext时将参数block的实现输入添加到一个数组中，sendNext时记录输入的积分，同时遍历那个记录subscribeNext的block的数组使那些block再按照新积分再实现一次输入，达到更新积分通知多个subscriber来实现新值的效果。</p>
+<p>除了block还可以将每次sendNext的积分放入一个数组记录每次的积分变化，在RAC中的Signal就是这样处理的，如下图，这样新加入的subscirber能够读取到积分变化历史记录。</p>
+<p>所以不用ReactiveCocoa库也能够按照函数式编程方式改造现有项目达到同样的效果。</p>
+<p>上面的例子也能够看出FRP的另一个响应式编程的特性。说响应式编程之前可以先看看我之前关于解耦的那篇文章里的Demo<a target="_blank" rel="noopener" href="https://github.com/ming1016/DecoupleDemo">https://github.com/ming1016/DecoupleDemo</a>，里面使用了Model作为连接视图，请求存储和控制器之间的纽带，通过KVO使它们能够通过Model的属性来相互监听来避免它们之间的相互依赖达到解耦的效果。</p>
+<p>像上面的例子那样其实也能够达到同样的效果，创建一个Model然后通过各个Subject来贯穿视图层和数据层进行send值和多subscribe值的处理。</p>
+<p>了解了这种编程模型，再去了解下ReactiveCocoa使用的三种设计模式就能够更容易的将它学以致用了，下面配上这三种贯穿ReactiveCocoa的设计模式，看这些图里的方法名是不是很眼熟。</p>
+<p>ReactiveCocoa里面还有很多可以学习的地方，比如宏的运用，可以看看sunnyxx的那篇《Reactive Cocoa Tutorial [1] &#x3D; 神奇的Macros》<a target="_blank" rel="noopener" href="http://blog.sunnyxx.com/2014/03/06/rac_1_macros/">http://blog.sunnyxx.com/2014/03/06/rac_1_macros&#x2F;</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/07/28/%E7%A8%8B%E5%BA%8F%E7%98%A6%E8%BA%AB/" rel="prev" title="程序瘦身">
+      <i class="fa fa-chevron-left"></i> 程序瘦身
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/09/10/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="next" title="设计模式">
+      设计模式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

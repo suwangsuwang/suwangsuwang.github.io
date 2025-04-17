@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="UINavigationControllerDelegate中相关方法12345678910111213141516171819202122232425- (id&lt;UIViewControllerAnimatedTransitioning&gt;)     navigationController:(UINavigationController *)navigationController">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Controller 转换">
+<meta property="og:url" content="https://suwangsuwang.github.io/2018/06/04/Controller-%E8%BD%AC%E6%8D%A2/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="UINavigationControllerDelegate中相关方法12345678910111213141516171819202122232425- (id&lt;UIViewControllerAnimatedTransitioning&gt;)     navigationController:(UINavigationController *)navigationController">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-06-04T04:34:34.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:34.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2018/06/04/Controller-%E8%BD%AC%E6%8D%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Controller 转换 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/06/04/Controller-%E8%BD%AC%E6%8D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Controller 转换
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-04 12:34:34" itemprop="dateCreated datePublished" datetime="2018-06-04T12:34:34+08:00">2018-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:34" itemprop="dateModified" datetime="2023-06-07T23:20:34+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="UINavigationControllerDelegate中相关方法"><a href="#UINavigationControllerDelegate中相关方法" class="headerlink" title="UINavigationControllerDelegate中相关方法"></a>UINavigationControllerDelegate中相关方法</h1><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="type">id</span>&lt;<span class="built_in">UIViewControllerAnimatedTransitioning</span>&gt;)</span><br><span class="line"></span><br><span class="line">     navigationController:(<span class="built_in">UINavigationController</span> *)navigationController</span><br><span class="line"></span><br><span class="line">     animationControllerForOperation:(<span class="built_in">UINavigationControllerOperation</span>)operation</span><br><span class="line"></span><br><span class="line">     fromViewController:(<span class="built_in">UIViewController</span>*)fromVC</span><br><span class="line"></span><br><span class="line">     toViewController:(<span class="built_in">UIViewController</span>*)toVC</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (operation == <span class="built_in">UINavigationControllerOperationPush</span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//可以给每个转场创建新的animator对象，或者共用同一个animator     </span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">self</span>.animator;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h1 id="创建一个自定义的动画类"><a href="#创建一个自定义的动画类" class="headerlink" title="创建一个自定义的动画类"></a>创建一个自定义的动画类</h1><p>示例代码下载地址：<a target="_blank" rel="noopener" href="https://github.com/objcio/issue5-view-controller-transitions">https://github.com/objcio/issue5-view-controller-transitions</a></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//实现这个协议</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Animator</span> : <span class="title">NSObject</span> &lt;<span class="title">UIViewControllerAnimatedTransitioning</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//动画持续时间</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSTimeInterval</span>)transitionDuration:(<span class="type">id</span> &lt;<span class="built_in">UIViewControllerContextTransitioning</span>&gt;)transitionContext</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="number">0.25</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//动画执行效果</span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)animateTransition:(<span class="type">id</span>&lt;<span class="built_in">UIViewControllerContextTransitioning</span>&gt;)transitionContext</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIViewController</span>* toViewController = [transitionContext viewControllerForKey:<span class="built_in">UITransitionContextToViewControllerKey</span>];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIViewController</span>* fromViewController = [transitionContext viewControllerForKey:<span class="built_in">UITransitionContextFromViewControllerKey</span>];</span><br><span class="line"></span><br><span class="line">     [[transitionContext containerView] addSubview:toViewController.view];</span><br><span class="line"></span><br><span class="line">     toViewController.view.alpha = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">     [<span class="built_in">UIView</span> animateWithDuration:[<span class="keyword">self</span> transitionDuration:transitionContext] animations:^&#123;</span><br><span class="line"></span><br><span class="line">          fromViewController.view.transform = <span class="built_in">CGAffineTransformMakeScale</span>(<span class="number">0.1</span>, <span class="number">0.1</span>);</span><br><span class="line"></span><br><span class="line">          toViewController.view.alpha = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">     &#125; completion:^(<span class="type">BOOL</span> finished) &#123;</span><br><span class="line"></span><br><span class="line">          fromViewController.view.transform = <span class="built_in">CGAffineTransformIdentity</span>;</span><br><span class="line"></span><br><span class="line">          [transitionContext completeTransition:![transitionContext transitionWasCancelled]];</span><br><span class="line"></span><br><span class="line">     &#125;];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实现交互式转场动画，只需要覆盖另一个UINavigationControllerDelegate的方法</span></span><br><span class="line"></span><br><span class="line">- (<span class="type">id</span> &lt;<span class="built_in">UIViewControllerInteractiveTransitioning</span>&gt;)navigationController:(<span class="built_in">UINavigationController</span>*)navigationController</span><br><span class="line"></span><br><span class="line">     interactionControllerForAnimationController:(<span class="type">id</span> &lt;<span class="built_in">UIViewControllerAnimatedTransitioning</span>&gt;)animationController</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//返回的是UIPercentDrivenInteractionTransition类的一个实例 </span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">self</span>.interactionController;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个拖动手势Pan Rcognizer</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (panGestureRecognizer.state == <span class="built_in">UIGestureRecognizerStateBegan</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//当用户从屏幕右半部分开始触摸时，把下次动画效果设置为交互式</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (location.x &gt; <span class="built_in">CGRectGetMidX</span>(view.bounds)) &#123;</span><br><span class="line"></span><br><span class="line">          navigationControllerDelegate.interactionController = [[<span class="built_in">UIPercentDrivenInteractiveTransition</span> alloc] init];</span><br><span class="line"></span><br><span class="line">     [<span class="keyword">self</span> performSegueWithIdentifier:PushSegueIdentifier sender:<span class="keyword">self</span>];</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (panGestureRecognizer.state == <span class="built_in">UIGestureRecognizerStateChanged</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//根据用户手指拖动的距离计算一个百分比，切换的动画效果也跟这个百分比走。</span></span><br><span class="line"></span><br><span class="line">     <span class="built_in">CGFloat</span> d = (translation.x / <span class="built_in">CGRectGetWidth</span>(view.bounds)) * <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">     [interactionController updateInteractiveTransition:d];</span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (panGestureRecognizer.state == <span class="built_in">UIGestureRecognizerStateEnded</span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//根据用户手势的停止状态来判断该操作是结束还是取消</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> ([panGestureRecognizer velocityInView:view].x &lt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">          [interactionController finishInteractiveTransition];</span><br><span class="line"></span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">          [interactionController cancelInteractiveTransition];</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     navigationControllerDelegate.interactionController = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="用GPUImage做转场动画"><a href="#用GPUImage做转场动画" class="headerlink" title="用GPUImage做转场动画"></a>用GPUImage做转场动画</h1><p>示例代码地址：<a target="_blank" rel="noopener" href="https://github.com/FangYiXiong/ViewControllerTransitionsDemo/tree/master/issue5-demo2%EF%BC%88GPUImage%EF%BC%89">https://github.com/FangYiXiong/ViewControllerTransitionsDemo/tree/master/issue5-demo2%EF%BC%88GPUImage%EF%BC%89</a><br>实现的效果是两个view controller像素化，然后相互消融在一起。<br>先创建一个自定义类，实现UIViewControllerAnimatedTransitioning 和 UIViewControllerInteractiveTransitioning两个协议。将图片一次性加载到GPU中。直接用OpenGL画图使用GPUImage封装好的接口。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="variable">@interface</span> <span class="attribute">GPUImageAnimator </span>: NSObject</span><br><span class="line"></span><br><span class="line">     &lt;UIViewControllerAnimatedTransitioning,</span><br><span class="line"></span><br><span class="line">     UIViewControllerInteractiveTransitioning&gt;</span><br><span class="line"></span><br><span class="line"><span class="variable">@property</span> (nonatomic) BOOL interactive;</span><br><span class="line"></span><br><span class="line"><span class="variable">@property</span> (nonatomic) CGFloat progress;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">finishInteractiveTransition</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">-</span> (void)<span class="selector-tag">cancelInteractiveTransition</span>;</span><br><span class="line"></span><br><span class="line">@<span class="selector-tag">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>创建滤镜链filter chain也很直观。GPUImage没有提供动画效果，可以使用CADisplayLink完成渲染一帧就更新下一滤镜的动态滤镜效果。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">self</span>.displayLink <span class="operator">=</span> [<span class="type">CADisplayLink</span> displayLinkWithTarget:<span class="keyword">self</span> selector:<span class="meta">@selector</span>(frame:)];</span><br><span class="line"></span><br><span class="line">[<span class="keyword">self</span>.displayLink addToRunLoop:[<span class="type">NSRunLoop</span> mainRunLoop] forMode:<span class="type">NSRunLoopCommonModes</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//在frame方法中，可以根据时间来更新动画，相应的更新滤镜：</span></span><br><span class="line"></span><br><span class="line"><span class="operator">-</span> (void)frame:(<span class="type">CADisplayLink</span><span class="operator">*</span>)link</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>.progress <span class="operator">=</span> <span class="type">MAX</span>(<span class="number">0</span>, <span class="type">MIN</span>((link.timestamp <span class="operator">-</span> <span class="keyword">self</span>.startTime) <span class="operator">/</span> duration, <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>.blend.mix <span class="operator">=</span> <span class="keyword">self</span>.progress;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>.sourcePixellateFilter.fractionalWidthOfAPixel <span class="operator">=</span> <span class="keyword">self</span>.progress <span class="operator">*</span><span class="number">0.1</span>;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>.targetPixellateFilter.fractionalWidthOfAPixel <span class="operator">=</span> (<span class="number">1</span><span class="operator">-</span> <span class="keyword">self</span>.progress)<span class="operator">*</span><span class="number">0.1</span>;</span><br><span class="line"></span><br><span class="line">     [<span class="keyword">self</span> triggerRenderOfNextFrame];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>GPUImage开源库地址：<a target="_blank" rel="noopener" href="https://github.com/BradLarson/GPUImage">https://github.com/BradLarson/GPUImage</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/16/UIVieiw/" rel="prev" title="UIView">
+      <i class="fa fa-chevron-left"></i> UIView
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/06/17/%E6%96%AD%E7%82%B9%E5%92%8C%E8%B0%83%E8%AF%95%E5%99%A8%E4%BA%A4%E4%BA%92/" rel="next" title="调试">
+      调试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UINavigationControllerDelegate%E4%B8%AD%E7%9B%B8%E5%85%B3%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">UINavigationControllerDelegate中相关方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E5%8A%A8%E7%94%BB%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">创建一个自定义的动画类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8GPUImage%E5%81%9A%E8%BD%AC%E5%9C%BA%E5%8A%A8%E7%94%BB"><span class="nav-number">3.</span> <span class="nav-text">用GPUImage做转场动画</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

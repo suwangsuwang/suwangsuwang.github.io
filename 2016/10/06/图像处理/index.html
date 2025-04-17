@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Shader着色器Shader出现在OpenGL ES 2.0中，允许创建自己的Shader。必须同时创建两个Shader，分别是Vertex shader和Fragment shader. Shader工具Shader会有很多坑，不过一些工具能够帮助你跳过这些坑  GPUImage：https:&#x2F;&#x2F;github.com&#x2F;BradLarson&#x2F;GPUImage ShaderToy：https:&#x2F;&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图像处理">
+<meta property="og:url" content="https://suwangsuwang.github.io/2016/10/06/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="Shader着色器Shader出现在OpenGL ES 2.0中，允许创建自己的Shader。必须同时创建两个Shader，分别是Vertex shader和Fragment shader. Shader工具Shader会有很多坑，不过一些工具能够帮助你跳过这些坑  GPUImage：https:&#x2F;&#x2F;github.com&#x2F;BradLarson&#x2F;GPUImage ShaderToy：https:&#x2F;&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-10-06T04:25:24.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:32.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2016/10/06/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>图像处理 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/10/06/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          图像处理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-10-06 12:25:24" itemprop="dateCreated datePublished" datetime="2016-10-06T12:25:24+08:00">2016-10-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:32" itemprop="dateModified" datetime="2023-06-07T23:20:32+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Shader着色器"><a href="#Shader着色器" class="headerlink" title="Shader着色器"></a>Shader着色器</h1><p>Shader出现在OpenGL ES 2.0中，允许创建自己的Shader。必须同时创建两个Shader，分别是Vertex shader和Fragment shader.</p>
+<h1 id="Shader工具"><a href="#Shader工具" class="headerlink" title="Shader工具"></a>Shader工具</h1><p>Shader会有很多坑，不过一些工具能够帮助你跳过这些坑</p>
+<ul>
+<li>GPUImage：<a target="_blank" rel="noopener" href="https://github.com/BradLarson/GPUImage">https://github.com/BradLarson/GPUImage</a></li>
+<li>ShaderToy：<a target="_blank" rel="noopener" href="https://www.shadertoy.com/">https://www.shadertoy.com/</a></li>
+<li>Shaderific：<a target="_blank" rel="noopener" href="http://www.shaderific.com/">http://www.shaderific.com/</a></li>
+<li>Quartz Composer：官方工具</li>
+</ul>
+<h1 id="Shader使用范例"><a href="#Shader使用范例" class="headerlink" title="Shader使用范例"></a>Shader使用范例</h1><h2 id="Vertex-shader"><a href="#Vertex-shader" class="headerlink" title="Vertex shader"></a>Vertex shader</h2><span id="more"></span>
+
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">attribute vec4 position;</span><br><span class="line"></span><br><span class="line">attribute vec4 inputTextureCoordinate；</span><br><span class="line"></span><br><span class="line">varying vec2 textureCoordinate;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     gl_position = position;</span><br><span class="line"></span><br><span class="line">     textureCoordinate = inputTextureCoordinate.xy;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Fragment-shader"><a href="#Fragment-shader" class="headerlink" title="Fragment shader"></a>Fragment shader</h2><p>直通滤镜</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">varying highp vec2 textureCoordinate; <span class="comment">//highp属性负责变量精度，这个被加入可以提高效率</span></span><br><span class="line"></span><br><span class="line">uniform sampler2D inputImageTexture; <span class="comment">//接收一个图片的引用，当做2D的纹理，这个数据类型就是smpler2D。</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     gl_FragColor = texture2D(inputImageTexture, textureCoordinate); <span class="comment">//texture是GLSL（着色语言）特有的方法</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="GLSL着色语言"><a href="#GLSL着色语言" class="headerlink" title="GLSL着色语言"></a>GLSL着色语言</h1><h2 id="GLSL的官方快速入门指导"><a href="#GLSL的官方快速入门指导" class="headerlink" title="GLSL的官方快速入门指导"></a>GLSL的官方快速入门指导</h2><ul>
+<li>OpenGL ES：<a target="_blank" rel="noopener" href="https://www.khronos.org/opengles/sdk/docs/reference_cards/OpenGL-ES-2_0-Reference-card.pdf">https://www.khronos.org/opengles/sdk/docs/reference_cards&#x2F;OpenGL-ES-2_0-Reference-card.pdf</a></li>
+<li>OpenGL：<a target="_blank" rel="noopener" href="https://www.khronos.org/files/opengl-quick-reference-card.pdf">https://www.khronos.org/files/opengl-quick-reference-card.pdf</a></li>
+</ul>
+<h2 id="变量赋值"><a href="#变量赋值" class="headerlink" title="变量赋值"></a>变量赋值</h2><p>三个可以赋值给我们的变量的标签</p>
+<ul>
+<li>Uniforms：在渲染循环里作为不变的输入值</li>
+<li>Attributes：随顶点位置不同会变的输入值</li>
+<li>Varyings：用来在Vertex shader和Fragment shader之间传递信息的，比如在Vertex shader中写入varying值，然后就可以在Fragment shader中读取和处理</li>
+</ul>
+<h2 id="向量"><a href="#向量" class="headerlink" title="向量"></a>向量</h2><p>有很多种向量，但是有三种会经常看到</p>
+<ul>
+<li>vec2：两个浮点数，适合在Fragment shader中保存X和Y坐标的情况</li>
+<li>vec3：三个浮点数</li>
+<li>vec4：四个浮点数，在图像处理中持续追踪每个像素的R,G,V,A这四个值。</li>
+</ul>
+<h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><p>是浮点数组的数组。三个经常处理的矩阵对象</p>
+<ul>
+<li>mat2：相当于保存了两个vec2对象的值或四个浮点数。</li>
+<li>mat3</li>
+<li>mat4</li>
+</ul>
+<h2 id="向量和矩阵运算"><a href="#向量和矩阵运算" class="headerlink" title="向量和矩阵运算"></a>向量和矩阵运算</h2><p>线性代数发挥作用的地方。想知道线性代数如何工作可以看这个资源站：<a target="_blank" rel="noopener" href="http://betterexplained.com/articles/linear-algebra-guide/">http://betterexplained.com/articles/linear-algebra-guide/</a></p>
+<p>线性代数可以一次在很多值上进行并行操作，so，正好适合需求，GLSL内建了很多函数可以处理庞大的计算转换</p>
+<h2 id="GLSL特有函数"><a href="#GLSL特有函数" class="headerlink" title="GLSL特有函数"></a>GLSL特有函数</h2><p>GLSL内建的函数可以在Shaderific网站上找到：<a target="_blank" rel="noopener" href="http://www.shaderific.com/glsl-functions">http://www.shaderific.com/glsl-functions</a>。很多C语言数学库基本数学运算都有对应的函数。</p>
+<ul>
+<li>step()：GPU处理条件逻辑不是很好。step()允许在不产生分支的前提下实现条件逻辑。传入step()函数的值小于阈值就返回0.0，大于等于阈值就返回1.0。</li>
+<li>mix()：将两个颜色值混合为一个。</li>
+<li>clamp()：可以确保值在一个区间内。</li>
+</ul>
+<h2 id="复杂的Shader的例子"><a href="#复杂的Shader的例子" class="headerlink" title="复杂的Shader的例子"></a>复杂的Shader的例子</h2><p>一个饱和度调节的Fragment shader的例子，出自《图形着色器：理论和实践》这本书。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">varying highp vec2 textureCoordinate; <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">uniform sampler2D inputImageTexture;</span><br><span class="line"></span><br><span class="line">uniform lowp <span class="type">float</span> saturation;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mediump vec3 luminanceWeighting = vec3(<span class="number">0.2125</span>, <span class="number">0.7154</span>, <span class="number">0.0721</span>); <span class="comment">//光亮度里三个值相加要为1，各个值代表着颜色的百分比，中间是绿色的值，70%的比重会让效果更好点。</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate); <span class="comment">//根据坐标取样图片颜色信息</span></span><br><span class="line"></span><br><span class="line">     lowp <span class="type">float</span> luminance = dot(textureColor.rgb, luminanceWeighting); <span class="comment">//GLSL中的点乘运算，线性代数的点运算符相乘两个数字。点乘计算需要将纹理颜色信息和相对应的亮度权重相乘。然后取出所有的三个值相加到一起计算得到这个像素的中和亮度值。</span></span><br><span class="line"></span><br><span class="line">     lowp vec3 greyScaleColor = vec3(luminance); <span class="comment">//创建一个三个值都是亮度信息的vec3，如果只指定一个值，编译器会将其它的都设置成这个值</span></span><br><span class="line"></span><br><span class="line">     gl_FragColor = vec4(mix(greyScaleColor, textureColor.rgb, saturation), textureColor.w); <span class="comment">//用mix函数把计算的灰度值，初识的纹理颜色和得到的饱和度信息结合起来。</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="球形滤镜示例"><a href="#球形滤镜示例" class="headerlink" title="球形滤镜示例"></a>球形滤镜示例</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">varying highp vec2 textureCoordinate;</span><br><span class="line"></span><br><span class="line">uniform sampler2D inputImageTexture;</span><br><span class="line"></span><br><span class="line">uniform highp vec2 center;</span><br><span class="line"></span><br><span class="line">uniform highp <span class="type">float</span> radius;</span><br><span class="line"></span><br><span class="line">uniform highp <span class="type">float</span> aspectRatio;</span><br><span class="line"></span><br><span class="line">uniform highp <span class="type">float</span> refractiveIndex;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     highp vec2 textureCoordinateToUse = vec2(textureCoordinate.x, (textureCoordinate.y * aspectRatio + <span class="number">0.5</span> - <span class="number">0.5</span> * aspectRatio)); <span class="comment">//归一化坐标空间需要考虑屏幕是一个单位宽和一个单位长。</span></span><br><span class="line"></span><br><span class="line">     highp <span class="type">float</span> distanceFromCenter = distance(center, textureCoordinateToUse); <span class="comment">//计算特定像素点距离球形的中心有多远。使用GLSL内建的distance()函数，用勾股定律计算出中心坐标和长宽比矫正过的纹理坐标的距离</span></span><br><span class="line"></span><br><span class="line">     lowp <span class="type">float</span> checkForPresenceWithinSphere = step(distanceFromCenter, radius); <span class="comment">//计算片段是否在球体内。</span></span><br><span class="line"></span><br><span class="line">     distanceFromCenter = distanceFromCenter / radius;  <span class="comment">//标准化到球心的距离，重新设置distanceFromCenter</span></span><br><span class="line"></span><br><span class="line">     highp <span class="type">float</span> normalizedDepth = radius * sqrt(<span class="number">1.0</span> - distanceFromCenter * distanceFromCenter); <span class="comment">//模拟一个玻璃球，需要计算球的“深度”是多少。</span></span><br><span class="line"></span><br><span class="line">     highp vec3 sphereNormal = normalize(vec3(textureCoordinateToUse - center, normalizedDepth)); <span class="comment">//归一化</span></span><br><span class="line"></span><br><span class="line">     highp vec3 refractedVector = refract(vec3(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">-1.0</span>), sphereNormal, refractiveIndex); <span class="comment">//GLSL的refract()函数以刚才创建的球法线和折射率来计算当光线通过球时从任意一个点看起来如何。</span></span><br><span class="line"></span><br><span class="line">     gl_FragColor = texture2D(inputImageTexture, (refractedVector.xy + <span class="number">1.0</span>) * <span class="number">0.5</span>) * checkForPresenceWithinSphere; <span class="comment">//最后凑齐所有计算需要的颜色信息。</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="调试Shader"><a href="#调试Shader" class="headerlink" title="调试Shader"></a>调试Shader</h2><p>使用gl_FragColor调试代码。GPUImage是个开源的资源有些很酷的shader，非常好的学习shader的方式，可以拿一个你觉得很有意思的shader对着源码一点点看下去。GPUImage还有一个shader设计器<a target="_blank" rel="noopener" href="https://github.com/BradLarson/GPUImage/tree/master/examples/Mac/ShaderDesigner">https://github.com/BradLarson/GPUImage/tree/master/examples/Mac/ShaderDesigner</a> 的Mac应用，可以测试shader而不用准备OpenGL代码。</p>
+<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><p>简单的方法达到调优目的，可以用下载Imagination Technologies PowerVR SDK<a target="_blank" rel="noopener" href="http://community.imgtec.com/developers/powervr/">http://community.imgtec.com/developers/powervr/</a>这个工具帮助分析shader</p>
+<ul>
+<li>消除条件逻辑：使用step()这样的函数</li>
+<li>减少依赖纹理的读取：如果希望从附近像素取样而不是计算Fragment shader相邻像素的偏差，最好在Vertex shader中计算然后把结果以varying的方式传入Fragment shader里。</li>
+<li>计算尽量简单：能够得到一个近似值就尽量用，不要用类似sin()，cos()，tan()的比较消耗的操作。</li>
+<li>尽可能的将计算放到Vertex上：如果计算在图片上会有相同的结果或线性变化最好这样做。因为Vertex shader对每个顶点运行一次，而Fragment shader会在每个像素上运行一次。</li>
+<li>移动设备使用合适的精度：在向量上使用低精度的值会变得更快。两个lowp vec4相加可以在一个时钟周期内完成，两个highp vec4相加则需要四个时钟周期。</li>
+</ul>
+<h1 id="边界探测"><a href="#边界探测" class="headerlink" title="边界探测"></a>边界探测</h1><p>基于OpenCV库，不过这些步骤在GPUImage中都有完整的实现</p>
+<h2 id="Sobel边界探测"><a href="#Sobel边界探测" class="headerlink" title="Sobel边界探测"></a>Sobel边界探测</h2><p>这种操作在滤镜方面比机器视觉方面多。Sobel边界探测用于探测边界的出现位置，边界是由明变暗或者由暗变明的区域。在被处理的图片中一个像素的亮度反映了这个像素周围边界的强度。</p>
+<ul>
+<li>第一步，将彩色图片弄成灰阶图，这个过程就是将每个像素的红绿蓝部分合一代表亮度的值。如是果YUV而不是RGB格式的可以省略这步，因为YUV是将亮度信息和色度信息分开的。如果简化到只剩亮度的话一个像素周围的边界强度就可以由周围3*3个临近像素计算得到。这个计算涉及Convolution Matrix（卷积矩阵），每个像素都要与这个矩阵计算出一个数值，因为没有顺序要求所以可以采取并行运算。</li>
+<li>Sobel的水平处理矩阵</li>
+</ul>
+<p>-1 0 +1<br><br>-2 0 +2<br><br>-1 0 +1<br></p>
+<ul>
+<li>Sobel的垂直矩阵</li>
+</ul>
+<p>-1 -2 -1<br><br>0 0 0 <br><br>+1 +2 +1 <br></p>
+<ul>
+<li>和Sobel类似的变体，Prewitt边界探测。这个变体会在横向竖向矩阵中用不同的矩阵，但是运作过程差不多。</li>
+<li>OpenGL ES代码</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">precision mediump float;</span><br><span class="line"></span><br><span class="line">//varying的都是在Vertex shader上定义了</span><br><span class="line"></span><br><span class="line">varying vec2 textureCoordinate;</span><br><span class="line"></span><br><span class="line">varying vec2 leftTextureCoordinate;</span><br><span class="line"></span><br><span class="line">varying vec2 rightTextureCoordinate;</span><br><span class="line"></span><br><span class="line">varying vec2 topTextureCoordinate;</span><br><span class="line"></span><br><span class="line">varying vec2 topLeftTextureCoordinate;</span><br><span class="line"></span><br><span class="line">varying vec2 topRightTextureCoordinate;</span><br><span class="line"></span><br><span class="line">varying vec2 bottomTextureCoordinate;</span><br><span class="line"></span><br><span class="line">varying vec2 bottomLeftTextureCoordinate;</span><br><span class="line"></span><br><span class="line">varying vec2 bottomRightTextureCoordinate;</span><br><span class="line"></span><br><span class="line">uniform sampler2D inputImageTexture;</span><br><span class="line"></span><br><span class="line">void main()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     float bottomLeftIntensity = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;</span><br><span class="line"></span><br><span class="line">     float topRightIntensity = texture2D(inputImageTexture, topRightTextureCoordinate).r;</span><br><span class="line"></span><br><span class="line">     float topLeftIntensity = texture2D(inputImageTexture, topLeftTextureCoordinate).r;</span><br><span class="line"></span><br><span class="line">     float bottomRightIntensity = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;</span><br><span class="line"></span><br><span class="line">     float leftIntensity = texture2D(inputImageTexture, leftTextureCoordinate).r;</span><br><span class="line"></span><br><span class="line">     float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;</span><br><span class="line"></span><br><span class="line">     float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;</span><br><span class="line"></span><br><span class="line">     float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;</span><br><span class="line"></span><br><span class="line">     float h = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;</span><br><span class="line"></span><br><span class="line">     float v = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;</span><br><span class="line"></span><br><span class="line">     float mag = length(vec2(h, v)); //length()函数计算出水平和垂直矩阵转化后值的平方和的平方根的值，这个值会被拷贝进输出像素的红绿蓝通道中，这样就可以来代表边界的明显程度了。</span><br><span class="line"></span><br><span class="line">     gl_FragColor = vec4(vec3(mag), 1.0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Canny边界探测"><a href="#Canny边界探测" class="headerlink" title="Canny边界探测"></a>Canny边界探测</h2><p>Canny探测会比Sobel复杂些，这样做会得到一条物体边界的干净线条。</p>
+<p>探测过程：</p>
+<ul>
+<li>先用Sobel矩阵得到边界梯度的强度。这个和Sobel比就是最后一个计算有些不同</li>
+</ul>
+  <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vec2 gradientDirection;</span><br><span class="line"></span><br><span class="line">gradientDirection.x = -bottomLeftIntensity - <span class="number">2.0</span> * leftIntensity - topLeftIntensity + bottomRightIntensity + <span class="number">2.0</span> * rightIntensity + topRightIntensity;</span><br><span class="line"></span><br><span class="line">gradientDirection.y = -topLeftIntensity - <span class="number">2.0</span> * topIntensity - topRightIntensity + bottomLeftIntensity + <span class="number">2.0</span> * bottomIntensity + bottomRightIntensity;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> gradientMagnitude = length(gradientDirection);</span><br><span class="line"></span><br><span class="line">vec2 normalizedDirection = normalize(gradientDirection);</span><br><span class="line"></span><br><span class="line">normalizedDirection = sign(normalizedDirection) * floor(abs(normalizedDirection) + <span class="number">0.617316</span>); <span class="comment">// Offset by 1-sin(pi/8) to set to 0 if near axis, 1 if away</span></span><br><span class="line"></span><br><span class="line">normalizedDirection = (normalizedDirection + <span class="number">1.0</span>) * <span class="number">0.5</span>; <span class="comment">// Place -1.0 - 1.0 within 0 - 1.0</span></span><br><span class="line"></span><br><span class="line">gl_FragColor = vec4(gradientMagnitude, normalizedDirection.x, normalizedDirection.y, <span class="number">1.0</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>着色器步骤</li>
+</ul>
+  <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">precision mediump <span class="type">float</span>;</span><br><span class="line"></span><br><span class="line">varying highp vec2 textureCoordinate;</span><br><span class="line"></span><br><span class="line">uniform sampler2D inputImageTexture;</span><br><span class="line"></span><br><span class="line">uniform highp <span class="type">float</span> texelWidth; <span class="comment">//要处理的图片中临近像素之间的距离。</span></span><br><span class="line"></span><br><span class="line">uniform highp <span class="type">float</span> texelHeight; <span class="comment">//同上</span></span><br><span class="line"></span><br><span class="line">uniform mediump <span class="type">float</span> upperThreshold; <span class="comment">//预期边界强度上下限</span></span><br><span class="line"></span><br><span class="line">uniform mediump <span class="type">float</span> lowerThreshold; </span><br><span class="line"></span><br><span class="line"><span class="type">void</span> main()</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     vec3 currentGradientAndDirection = texture2D(inputImageTexture, textureCoordinate).rgb;</span><br><span class="line"></span><br><span class="line">     vec2 gradientDirection = ((currentGradientAndDirection.gb * <span class="number">2.0</span>) - <span class="number">1.0</span>) * vec2(texelWidth, texelHeight);</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> firstSampledGradientMagnitude = texture2D(inputImageTexture, textureCoordinate + gradientDirection).r;</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> secondSampledGradientMagnitude = texture2D(inputImageTexture, textureCoordinate - gradientDirection).r;</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> multiplier = step(firstSampledGradientMagnitude, currentGradientAndDirection.r);</span><br><span class="line"></span><br><span class="line">     multiplier = multiplier * step(secondSampledGradientMagnitude, currentGradientAndDirection.r);</span><br><span class="line"></span><br><span class="line">     <span class="type">float</span> thresholdCompliance = smoothstep(lowerThreshold, upperThreshold, currentGradientAndDirection.r);</span><br><span class="line"></span><br><span class="line">     multiplier = multiplier * thresholdCompliance;</span><br><span class="line"></span><br><span class="line">     gl_FragColor = vec4(multiplier, multiplier, multiplier, <span class="number">1.0</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Harris边角探测"><a href="#Harris边角探测" class="headerlink" title="Harris边角探测"></a>Harris边角探测</h2><p>多步骤的方法来探测场景中的边角。</p>
+<ul>
+<li>先弄得只有亮度信息，再通过Sobel矩阵，普里维特矩阵或者其它相关的矩阵计算出一个像素X和Y方向的梯度值，计算的结果会将X梯度传入红色部分，Y梯度传入绿色部分，X与Y梯度的乘积传入蓝色部分。</li>
+<li>对计算的结果进行高斯模糊。将模糊后图中取出红绿蓝编码的值带到计算边角点可能性公式：</li>
+</ul>
+<p>R &#x3D; Ix2 × Iy2 − Ixy × Ixy − k × (Ix2 + Iy2)2</p>
+<p>#资料</p>
+<h2 id="相关数学"><a href="#相关数学" class="headerlink" title="相关数学"></a>相关数学</h2><ul>
+<li>3D Math Primer for Graphics and Game Development <a target="_blank" rel="noopener" href="http://www.amazon.com/Math-Primer-Graphics-Game-Development/dp/1568817231/ref=sr_1_1?ie=UTF8&qid=1422837187&sr=8-1&keywords=3d+math+primer+for+graphics+and+game+development">http://www.amazon.com/Math-Primer-Graphics-Game-Development/dp/1568817231/ref=sr_1_1?ie&#x3D;UTF8&amp;qid&#x3D;1422837187&amp;sr&#x3D;8-1&amp;keywords&#x3D;3d+math+primer+for+graphics+and+game+development</a></li>
+<li>The Nature of Code <a target="_blank" rel="noopener" href="http://natureofcode.com/">http://natureofcode.com/</a></li>
+<li>The Computational Beauty of Nature <a target="_blank" rel="noopener" href="http://www.amazon.com/Computational-Beauty-Nature-Explorations-Adaptation/dp/0262561271/ref=sr_1_1?s=books&ie=UTF8&qid=1422837256&sr=1-1&keywords=computational+beauty+of+nature">http://www.amazon.com/Computational-Beauty-Nature-Explorations-Adaptation/dp/0262561271/ref=sr_1_1?s&#x3D;books&amp;ie&#x3D;UTF8&amp;qid&#x3D;1422837256&amp;sr&#x3D;1-1&amp;keywords&#x3D;computational+beauty+of+nature</a></li>
+</ul>
+<h2 id="相关GLSL"><a href="#相关GLSL" class="headerlink" title="相关GLSL"></a>相关GLSL</h2><ul>
+<li>Graphic Shaders: Theory and Practice <a target="_blank" rel="noopener" href="http://www.amazon.com/Graphics-Shaders-Theory-Practice-Second/dp/1568814348/ref=sr_1_1?s=books&ie=UTF8&qid=1422837351&sr=1-1&keywords=graphics+shaders+theory+and+practice">http://www.amazon.com/Graphics-Shaders-Theory-Practice-Second/dp/1568814348/ref=sr_1_1?s&#x3D;books&amp;ie&#x3D;UTF8&amp;qid&#x3D;1422837351&amp;sr&#x3D;1-1&amp;keywords&#x3D;graphics+shaders+theory+and+practice</a></li>
+<li>The OpenGL Shading Language <a target="_blank" rel="noopener" href="http://www.amazon.com/OpenGL-Shading-Language-Randi-Rost/dp/0321637631/ref=sr_1_1?s=books&ie=UTF8&qid=1422896457&sr=1-1&keywords=opengl+shading+language">http://www.amazon.com/OpenGL-Shading-Language-Randi-Rost/dp/0321637631/ref=sr_1_1?s&#x3D;books&amp;ie&#x3D;UTF8&amp;qid&#x3D;1422896457&amp;sr&#x3D;1-1&amp;keywords&#x3D;opengl+shading+language</a></li>
+<li>OpenGL 4 Shading Language Cookbook <a target="_blank" rel="noopener" href="http://www.amazon.com/OpenGL-Shading-Language-Cookbook-Second/dp/1782167021/ref=sr_1_2?s=books&ie=UTF8&qid=1422896457&sr=1-2&keywords=opengl+shading+language">http://www.amazon.com/OpenGL-Shading-Language-Cookbook-Second/dp/1782167021/ref=sr_1_2?s&#x3D;books&amp;ie&#x3D;UTF8&amp;qid&#x3D;1422896457&amp;sr&#x3D;1-2&amp;keywords&#x3D;opengl+shading+language</a></li>
+<li>GPU Gems <a target="_blank" rel="noopener" href="http://http.developer.nvidia.com/GPUGems/gpugems_part01.html">http://http.developer.nvidia.com/GPUGems/gpugems_part01.html</a></li>
+<li>GPU Pro: Advanced Rendering Techniques <a target="_blank" rel="noopener" href="http://www.amazon.com/GPU-Pro-Advanced-Rendering-Techniques/dp/1568814720/ref=sr_1_4?s=books&ie=UTF8&qid=1422837427&sr=1-4&keywords=gpu+pro">http://www.amazon.com/GPU-Pro-Advanced-Rendering-Techniques/dp/1568814720/ref=sr_1_4?s&#x3D;books&amp;ie&#x3D;UTF8&amp;qid&#x3D;1422837427&amp;sr&#x3D;1-4&amp;keywords&#x3D;gpu+pro</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/08/15/Core-Data/" rel="prev" title="Core-Data">
+      <i class="fa fa-chevron-left"></i> Core-Data
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/10/08/Camera/" rel="next" title="Camera">
+      Camera <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Shader%E7%9D%80%E8%89%B2%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">Shader着色器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shader%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text">Shader工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shader%E4%BD%BF%E7%94%A8%E8%8C%83%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">Shader使用范例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vertex-shader"><span class="nav-number">3.1.</span> <span class="nav-text">Vertex shader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fragment-shader"><span class="nav-number">3.2.</span> <span class="nav-text">Fragment shader</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GLSL%E7%9D%80%E8%89%B2%E8%AF%AD%E8%A8%80"><span class="nav-number">4.</span> <span class="nav-text">GLSL着色语言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GLSL%E7%9A%84%E5%AE%98%E6%96%B9%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%AF%BC"><span class="nav-number">4.1.</span> <span class="nav-text">GLSL的官方快速入门指导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BC"><span class="nav-number">4.2.</span> <span class="nav-text">变量赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E9%87%8F"><span class="nav-number">4.3.</span> <span class="nav-text">向量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5"><span class="nav-number">4.4.</span> <span class="nav-text">矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E5%92%8C%E7%9F%A9%E9%98%B5%E8%BF%90%E7%AE%97"><span class="nav-number">4.5.</span> <span class="nav-text">向量和矩阵运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GLSL%E7%89%B9%E6%9C%89%E5%87%BD%E6%95%B0"><span class="nav-number">4.6.</span> <span class="nav-text">GLSL特有函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E7%9A%84Shader%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="nav-number">4.7.</span> <span class="nav-text">复杂的Shader的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%83%E5%BD%A2%E6%BB%A4%E9%95%9C%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.8.</span> <span class="nav-text">球形滤镜示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E8%AF%95Shader"><span class="nav-number">4.9.</span> <span class="nav-text">调试Shader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98"><span class="nav-number">4.10.</span> <span class="nav-text">性能调优</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E6%8E%A2%E6%B5%8B"><span class="nav-number">5.</span> <span class="nav-text">边界探测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sobel%E8%BE%B9%E7%95%8C%E6%8E%A2%E6%B5%8B"><span class="nav-number">5.1.</span> <span class="nav-text">Sobel边界探测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Canny%E8%BE%B9%E7%95%8C%E6%8E%A2%E6%B5%8B"><span class="nav-number">5.2.</span> <span class="nav-text">Canny边界探测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Harris%E8%BE%B9%E8%A7%92%E6%8E%A2%E6%B5%8B"><span class="nav-number">5.3.</span> <span class="nav-text">Harris边角探测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%95%B0%E5%AD%A6"><span class="nav-number">5.4.</span> <span class="nav-text">相关数学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3GLSL"><span class="nav-number">5.5.</span> <span class="nav-text">相关GLSL</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

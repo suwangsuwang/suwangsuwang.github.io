@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="搜索在一个字符串中搜索子字符串 最灵活的方法  (NSRange)rangeOfString:(NSString *)aString options:(NSStringCompareOptions)mask range:(NSRange)searchRange locale:(NSLocale *)locale    格式化字符串 3个方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字符串">
+<meta property="og:url" content="https://suwangsuwang.github.io/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="搜索在一个字符串中搜索子字符串 最灵活的方法  (NSRange)rangeOfString:(NSString *)aString options:(NSStringCompareOptions)mask range:(NSRange)searchRange locale:(NSLocale *)locale    格式化字符串 3个方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-11-06T09:45:34.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:32.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>字符串 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          字符串
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-11-06 17:45:34" itemprop="dateCreated datePublished" datetime="2015-11-06T17:45:34+08:00">2015-11-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:32" itemprop="dateModified" datetime="2023-06-07T23:20:32+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h1><h2 id="在一个字符串中搜索子字符串"><a href="#在一个字符串中搜索子字符串" class="headerlink" title="在一个字符串中搜索子字符串"></a>在一个字符串中搜索子字符串</h2><ul>
+<li><p>最灵活的方法</p>
+<ul>
+<li>(NSRange)rangeOfString:(NSString *)aString options:(NSStringCompareOptions)mask range:(NSRange)searchRange locale:(NSLocale *)locale</li>
+</ul>
+</li>
+</ul>
+<h1 id="格式化字符串"><a href="#格式化字符串" class="headerlink" title="格式化字符串"></a>格式化字符串</h1><ul>
+<li>3个方法</li>
+</ul>
+   <span id="more"></span>
+
+<pre><code>-initWithFormat:
+
+-initWithFormat:arguments:
+
++stringWithFormat:
+</code></pre>
+<h1 id="整数"><a href="#整数" class="headerlink" title="整数"></a>整数</h1><ul>
+<li><p>可以同时工作在32位和64位的</p>
+<p>uint64_t p &#x3D; 2305843009213693951;</p>
+<p>NSString *s &#x3D; [NSString stringWithFormat:@”The ninth Mersenne prime is %llu”, (unsigned long long) p];</p>
+<p>&#x2F;&#x2F; “The ninth Mersenne prime is 2305843009213693951”</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Modifier</th>
+<th>d, i</th>
+<th>o, u, x, X</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hh</td>
+<td>signed char</td>
+<td>unsigned char</td>
+</tr>
+<tr>
+<td>h</td>
+<td>short</td>
+<td>unsigned short</td>
+</tr>
+<tr>
+<td>(none)</td>
+<td>int</td>
+<td>unsigned int</td>
+</tr>
+<tr>
+<td>l(ell)</td>
+<td>long</td>
+<td>unsigned long</td>
+</tr>
+<tr>
+<td>j</td>
+<td>intmax_t</td>
+<td>uintmax_t</td>
+</tr>
+<tr>
+<td>t</td>
+<td>ptrdiff_t</td>
+<td></td>
+</tr>
+<tr>
+<td>z</td>
+<td></td>
+<td>size_t</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>转换规则</p>
+<p>int m &#x3D; -150004021;</p>
+<p>uint n &#x3D; 150004021U;</p>
+<p>NSString *s &#x3D; [NSString stringWithFormat:@”d:%d i:%i o:%o u:%u x:%x X:%X”, m, m, n, n, n, n];</p>
+<p>&#x2F;&#x2F; “d:-150004021 i:-150004021 o:1074160465 u:150004021 x:8f0e135 X:8F0E135”</p>
+<p>&#x2F;&#x2F;o是八进制</p>
+</li>
+<li><p>设置最小字段宽度和最小数字位数</p>
+<p>int m &#x3D; 42;</p>
+<p>NSString *s &#x3D; [NSString stringWithFormat:@”‘%4d’ ‘%-4d’ ‘%+4d’ ‘%4.3d’ ‘%04d’”, m, m, m, m, m];</p>
+<p>&#x2F;&#x2F; “[ 42] [42 ] [ +42] [ 042] [0042]”</p>
+<p>m &#x3D; -42;</p>
+<p>NSString *s &#x3D; [NSString stringWithFormat:@”‘%4d’ ‘%-4d’ ‘%+4d’ ‘%4.3d’ ‘%04d’”, m, m, m, m, m];</p>
+<p>&#x2F;&#x2F; “[ -42] [-42 ] [ -42] [-042] [-042]”</p>
+</li>
+<li><p>%p可打印指针，和%#x不同的是它可以同时在32位和64位执行</p>
+</li>
+</ul>
+<h1 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h1><ul>
+<li><p>使用%f和%g</p>
+<p>double v[5] &#x3D; {12345, 12, 0.12, 0.12345678901234, 0.0000012345678901234};</p>
+<p>NSString *s &#x3D; [NSString stringWithFormat:@”%g %g %g %g %g”, v[0], v[1], v[2], v[3], v[4]];</p>
+<p>&#x2F;&#x2F; “12345 12 0.12 0.123457 1.23457e-06”</p>
+<p>NSString *s &#x3D; [NSString stringWithFormat:@”%f %f %f %f %f”, v[0], v[1], v[2], v[3], v[4]];</p>
+<p>&#x2F;&#x2F; “12345.000000 12.000000 0.120000 0.123457 0.000001”</p>
+</li>
+</ul>
+<h1 id="多行文字"><a href="#多行文字" class="headerlink" title="多行文字"></a>多行文字</h1><ul>
+<li><p>使用\n来</p>
+<p>NSString *limerick &#x3D; @”A lively young damsel named Menzies\n”</p>
+<p>@”Inquired: «Do you know what this thenzies?»\n”</p>
+<p>@”Her aunt, with a gasp,\n”</p>
+<p>@”Replied: “It’s a wasp,\n”</p>
+<p>@”And you’re holding the end where the stenzies.\n”;</p>
+</li>
+<li><p>等价写法</p>
+<p>NSString *limerick &#x3D; @”A lively young damsel named Menzies\nInquired: «Do you know what this thenzies?»\nHer aunt, with a gasp,\nReplied: “It’s a wasp,\nAnd you’re holding the end where the stenzies.\n”;</p>
+</li>
+<li><p>更简洁的方法</p>
+<p>NSString * string &#x3D; @”The man “ @”who knows everything “ @”learns nothing” @”.”;</p>
+</li>
+</ul>
+<h1 id="替换字符串"><a href="#替换字符串" class="headerlink" title="替换字符串"></a>替换字符串</h1><ul>
+<li><p>NSMutableString的四个方法</p>
+<p>-deleteCharactersInRange:</p>
+<p>-insertString:atIndex:</p>
+<p>-replaceCharactersInRange:withString:</p>
+<p>-replaceOccurrencesOfString:withString:options:range:</p>
+</li>
+<li><p>NSString的方法</p>
+<p>-stringByReplacingOccurrencesOfString:withString:</p>
+<p>-stringByReplacingOccurrencesOfString:withString:options:range:</p>
+<p>-stringByReplacingCharactersInRange:withString:</p>
+</li>
+<li><p>NSMutableString不会创建新字符串，性能会好点</p>
+<p>NSMutableString *string; &#x2F;&#x2F; 假设我们已经有了一个名为 string 的字符串</p>
+<p>&#x2F;&#x2F; 现在要去掉它的一个前缀，做法如下:</p>
+<p>NSString *prefix &#x3D; @”WeDon’tWantThisPrefix”</p>
+<p>NSRange r &#x3D; [string rangeOfString:prefix options:NSAnchoredSearch range:NSMakeRange(0, string.length) locale:nil];</p>
+<p>if (r.location !&#x3D; NSNotFound) {</p>
+<pre><code> [string deleteCharactersInRange:r];
+</code></pre>
+<p>}</p>
+</li>
+</ul>
+<h1 id="连接字符串"><a href="#连接字符串" class="headerlink" title="连接字符串"></a>连接字符串</h1><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSArray</span> *names = @[<span class="string">&quot;Hildr&quot;</span>, <span class="string">@&quot;Heidrun&quot;</span>, <span class="string">@&quot;Gerd&quot;</span>, <span class="string">@&quot;Guðrún&quot;</span>, <span class="string">@&quot;Freya&quot;</span>, <span class="string">@&quot;Nanna&quot;</span>, <span class="string">@&quot;Siv&quot;</span>, <span class="string">@&quot;Skaði&quot;</span>, <span class="string">@&quot;Gróa&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *result = [names componentsJoinedByString:<span class="string">@&quot;, &quot;</span>];</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="字符串解析"><a href="#字符串解析" class="headerlink" title="字符串解析"></a>字符串解析</h1><h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSError</span> *error = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *pattern = <span class="string">@&quot;(\\w+) = #(\\p&#123;Hex_Digit&#125;&#123;6&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSRegularExpression</span> *expression = [<span class="built_in">NSRegularExpression</span> regularExpressionWithPattern:pattern</span><br><span class="line"></span><br><span class="line">options:<span class="number">0</span></span><br><span class="line"></span><br><span class="line">error:&amp;error];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSTextCheckingResult</span> *result = [expression firstMatchInString:string</span><br><span class="line"></span><br><span class="line">options:<span class="number">0</span></span><br><span class="line"></span><br><span class="line">range:<span class="built_in">NSMakeRange</span>(<span class="number">0</span>, string.length)];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *key = [string substringWithRange:[result rangeAtIndex:<span class="number">1</span>]];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *value = [string substringWithRange:[result rangeAtIndex:<span class="number">2</span>]];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>将字符串分解成数组，使用componentsSeparatedByString:这个方法，或者enumerateSubstringsInRange:options:usingBlock:。如果是按照行来进行分解可以使用option这个参数传NSStringEnumerationByLines</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *input = @“</span><br><span class="line"></span><br><span class="line">backgroundColor = #ff0000</span><br><span class="line"></span><br><span class="line">textColor = #<span class="number">0000</span>ff</span><br><span class="line"></span><br><span class="line"><span class="string">&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">NSString *pattern = @&quot;</span>(\\w+) = #([\\da-f]&#123;<span class="number">6</span>&#125;)<span class="string">&quot;;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:pattern</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">options:0</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">error:NULL];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">NSMutableDictionary *result = [NSMutableDictionary dictionary];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">for (NSString *line in lines) &#123;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     NSTextCheckingResult *textCheckingResult = [expression firstMatchInString:line</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">          options:0</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">          range:NSMakeRange(0, line.length)];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     NSString* key = [line substringWithRange:[textCheckingResult rangeAtIndex:1]];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     NSString* value = [line substringWithRange:[textCheckingResult rangeAtIndex:2]];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">     result[key] = value;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">return result;</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="扫描"><a href="#扫描" class="headerlink" title="扫描"></a>扫描</h2><ul>
+<li><p>NSScanner</p>
+<p>NSScanner *scanner &#x3D; [NSScanner scannerWithString:string];</p>
+<p>&#x2F;&#x2F;默认情况下，扫描器会跳过所有空格符和换行符。但这里我们只希望跳过空格符</p>
+<p>scanner.charactersToBeSkipped &#x3D; [NSCharacterSet whitespaceCharacterSet];</p>
+<p>&#x2F;&#x2F;定义一个十六进制字符集</p>
+<p>NSCharacterSet *hexadecimalCharacterSet &#x3D;</p>
+<p>[NSCharacterSet characterSetWithCharactersInString:@”0123456789abcdefABCDEF”];</p>
+<p>NSMutableDictionary *result &#x3D; [NSMutableDictionary dictionary];</p>
+<p>while (!scanner.isAtEnd) {</p>
+<pre><code> NSString *key = nil;
+
+ NSString *value = nil;
+
+ NSCharacterSet *letters = [NSCharacterSet letterCharacterSet];
+
+ BOOL didScan = [scanner scanCharactersFromSet:letters intoString:&amp;key] &amp;&amp;
+
+      [scanner scanString:@&quot;=&quot; intoString:NULL] &amp;&amp;
+
+      [scanner scanString:@&quot;#&quot; intoString:NULL] &amp;&amp;
+
+      [scanner scanCharactersFromSet:hexadecimalCharacterSet intoString:&amp;value] &amp;&amp;
+
+ value.length == 6;
+
+ result[key] = value;
+
+ [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet]
+
+      intoString:NULL]; // 继续扫描下一行
+</code></pre>
+<p>}</p>
+<p>return result;</p>
+</li>
+</ul>
+<h2 id="解析器"><a href="#解析器" class="headerlink" title="解析器"></a>解析器</h2><ul>
+<li><p>设计一个能够用(100,0,255)或者#ff0000这样的字符来定义颜色的方法。</p>
+<ul>
+<li>(NSDictionary *)parse:(NSString *)string error:(NSError **)error</li>
+</ul>
+<p>{</p>
+<pre><code> self.scanner = [NSScanner scannerWithString:string];
+
+ self.scanner.charactersToBeSkipped = [NSCharacterSet whitespaceCharacterSet];
+
+ NSMutableDictionary *result = [NSMutableDictionary dictionary];
+
+ NSCharacterSet *letters = [NSCharacterSet letterCharacterSet]
+
+ while (!self.scanner.isAtEnd) &#123;
+
+      NSString *key = nil;
+
+      UIColor *value = nil;
+
+      BOOL didScan = [self.scanner scanCharactersFromSet:letters intoString:&amp;key] &amp;&amp;
+
+           [self.scanner scanString:@&quot;=&quot; intoString:NULL] &amp;&amp;
+
+           [self scanColor:&amp;value];
+
+      result[key] = value;
+
+      [self.scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet]
+
+           intoString:NULL]; // 继续扫描下一行
+
+ &#125;
+</code></pre>
+<p>}</p>
+<ul>
+<li>(BOOL)scanColor:(UIColor **)out</li>
+</ul>
+<p>{</p>
+<pre><code> return [self scanHexColorIntoColor:out] || [self scanTupleColorIntoColor:out];
+</code></pre>
+<p>}</p>
+<p>&#x2F;&#x2F;扫描设置#ff0000这样的</p>
+<ul>
+<li>(BOOL)scanHexColorIntoColor:(UIColor **)out</li>
+</ul>
+<p>{</p>
+<pre><code> NSCharacterSet *hexadecimalCharacterSet =
+
+      [NSCharacterSet characterSetWithCharactersInString:@&quot;0123456789abcdefABCDEF&quot;];
+
+ NSString *colorString = NULL;
+
+ if ([self.scanner scanString:@&quot;#&quot; intoString:NULL] &amp;&amp;
+
+      [self.scanner scanCharactersFromSet:hexadecimalCharacterSet
+
+      intoString:&amp;colorString] &amp;&amp;
+
+      colorString.length == 6) &#123;
+
+      *out = [UIColor colorWithHexString:colorString];
+
+      return YES;
+
+ &#125;
+
+ return NO;
+</code></pre>
+<p>}</p>
+<ul>
+<li>(BOOL)scanTupleColorIntoColor:(UIColor **)out</li>
+</ul>
+<p>{</p>
+<pre><code> NSInteger red, green, blue = 0;
+
+ BOOL didScan = [self.scanner scanString:@&quot;(&quot; intoString:NULL] &amp;&amp;
+
+      [self.scanner scanInteger:&amp;red] &amp;&amp;
+
+      [self.scanner scanString:@&quot;,&quot; intoString:NULL] &amp;&amp;
+
+      [self.scanner scanInteger:&amp;green] &amp;&amp;
+
+      [self.scanner scanString:@&quot;,&quot; intoString:NULL] &amp;&amp;
+
+      [self.scanner scanInteger:&amp;blue] &amp;&amp;
+
+      [self.scanner scanString:@&quot;)&quot; intoString:NULL];
+
+ if (didScan) &#123;
+
+      *out = [UIColor colorWithRed:(CGFloat)red/255.
+
+           green:(CGFloat)green/255.
+
+           blue:(CGFloat)blue/255.
+
+           alpha:1];
+
+      return YES;
+
+ &#125; else &#123;
+
+      return NO;
+
+ &#125;
+</code></pre>
+<p>}</p>
+</li>
+</ul>
+<h1 id="符号化处理"><a href="#符号化处理" class="headerlink" title="符号化处理"></a>符号化处理</h1><p>先进星扫描，使用NSScanner来解析这个表达式</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">myView.<span class="keyword">left</span> = otherView.<span class="keyword">right</span> * <span class="number">2</span> + <span class="number">10</span></span><br><span class="line"></span><br><span class="line">viewController.<span class="keyword">view</span>.centerX + myConstant &lt;= self.<span class="keyword">view</span>.centerX</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">NSScanner</span> <span class="operator">*</span>scanner <span class="operator">=</span> [<span class="type">NSScanner</span> scannerWithString:contents];</span><br><span class="line"></span><br><span class="line"><span class="type">NSMutableArray</span> <span class="operator">*</span>tokens <span class="operator">=</span> [<span class="type">NSMutableArray</span> array];</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="operator">!</span>[scanner isAtEnd]) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (<span class="type">NSString</span> <span class="operator">*</span><span class="keyword">operator</span> <span class="keyword">in</span> @[@<span class="string">&quot;=&quot;</span>, @<span class="string">&quot;+&quot;</span>, @<span class="string">&quot;*&quot;</span>, @<span class="string">&quot;&gt;=&quot;</span>, @<span class="string">&quot;&lt;=&quot;</span>, @<span class="string">&quot;.&quot;</span>]) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> ([scanner scanString:<span class="keyword">operator</span> intoString:<span class="type">NULL</span>]) &#123;</span><br><span class="line"></span><br><span class="line">               [tokens addObject:<span class="keyword">operator</span>];</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//接下来识别非符号的只包含字母的string</span></span><br><span class="line"></span><br><span class="line"><span class="type">NSString</span> <span class="operator">*</span>result <span class="operator">=</span> <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ([scanner scanCharactersFromSet:[<span class="type">NSCharacterSet</span> letterCharacterSet]</span><br><span class="line"></span><br><span class="line">          intoString:<span class="operator">&amp;</span>result]) &#123;</span><br><span class="line"></span><br><span class="line">     [tokens addObject:result];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//NSScanner有scanDouble:来扫描double</span></span><br><span class="line"></span><br><span class="line">double doubleResult <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ([scanner scanDouble:<span class="operator">&amp;</span>doubleResult]) &#123;</span><br><span class="line"></span><br><span class="line">     [tokens addObject:@(doubleResult)];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//完成后用将需要解析的表达式放入试试</span></span><br><span class="line"></span><br><span class="line"><span class="type">NSString</span><span class="operator">*</span> example <span class="operator">=</span> @<span class="string">&quot;myConstant = 100<span class="subst">\n</span>&quot;</span></span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;<span class="subst">\n</span>myView.left = otherView.right * 2 + 10<span class="subst">\n</span>&quot;</span></span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;viewController.view.centerX + myConstant &lt;= self.view.centerX&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">NSArray</span> <span class="operator">*</span>result <span class="operator">=</span> [<span class="keyword">self</span>.scanner tokenize:example];</span><br><span class="line"></span><br><span class="line"><span class="type">NSArray</span> <span class="operator">*</span>expected <span class="operator">=</span> @[@<span class="string">&quot;myConstant&quot;</span>, @<span class="string">&quot;=&quot;</span>, @<span class="number">100</span>, @<span class="string">&quot;myView&quot;</span>, @<span class="string">&quot;.&quot;</span>, @<span class="string">&quot;left&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;=&quot;</span>, @<span class="string">&quot;otherView&quot;</span>, @<span class="string">&quot;.&quot;</span>, @<span class="string">&quot;right&quot;</span>, @<span class="string">&quot;*&quot;</span>, @<span class="number">2</span>, @<span class="string">&quot;+&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="number">10</span>, @<span class="string">&quot;viewController&quot;</span>, @<span class="string">&quot;.&quot;</span>, @<span class="string">&quot;view&quot;</span>, @<span class="string">&quot;.&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;centerX&quot;</span>, @<span class="string">&quot;+&quot;</span>, @<span class="string">&quot;myConstant&quot;</span>, @<span class="string">&quot;&lt;=&quot;</span>, @<span class="string">&quot;self&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;.&quot;</span>, @<span class="string">&quot;view&quot;</span>, @<span class="string">&quot;.&quot;</span>, @<span class="string">&quot;centerX&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="type">XCTAssertEqualObjects</span>(result, expected);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>进行语法解析，需要语法分析库描述我们的语言。下面代码就是为那个布局约束语言写的解析语法，用的扩展的巴科斯范式<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">EBNF</a>写法：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attr">constraint</span> = expression comparator expression</span><br><span class="line"></span><br><span class="line"><span class="attr">comparator</span> = <span class="string">&quot;=&quot;</span> | <span class="string">&quot;&gt;=&quot;</span> | <span class="string">&quot;&lt;=&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">expression</span> = keyPath <span class="string">&quot;.&quot;</span> attribute addMultiplier addConstant</span><br><span class="line"></span><br><span class="line"><span class="attr">keyPath</span> = identifier | identifier <span class="string">&quot;.&quot;</span> keyPath</span><br><span class="line"></span><br><span class="line"><span class="attr">attribute</span> = <span class="string">&quot;left&quot;</span> | <span class="string">&quot;right&quot;</span> | <span class="string">&quot;top&quot;</span> | <span class="string">&quot;bottom&quot;</span> | <span class="string">&quot;leading&quot;</span> | <span class="string">&quot;trailing&quot;</span> | <span class="string">&quot;width&quot;</span> | <span class="string">&quot;height&quot;</span> | <span class="string">&quot;centerX&quot;</span> | <span class="string">&quot;centerY&quot;</span> | <span class="string">&quot;baseline&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">addMultiplier</span> = <span class="string">&quot;*&quot;</span> atom</span><br><span class="line"></span><br><span class="line"><span class="attr">addConstant</span> = <span class="string">&quot;+&quot;</span> atom</span><br><span class="line"></span><br><span class="line"><span class="attr">atom</span> = number | identifier</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>还有很多Objective-C的语法解析，更多的可以在CocoaPods上找到：<a target="_blank" rel="noopener" href="http://cocoapods.org/?q=parse">http://cocoapods.org/?q=parse</a>。比较好的就是CoreParse，地址：<a target="_blank" rel="noopener" href="https://github.com/beelsebob/CoreParse">https://github.com/beelsebob/CoreParse</a>，但是需要使用它支持的语法。下面就是CoreParse支持的格式：</p>
+<figure class="highlight scilab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">NSString* grammarString = [@[</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;Atom ::= num@&#x27;</span>Number<span class="string">&#x27; | ident@&#x27;</span>Identifier<span class="string">&#x27;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;Constant ::= name@&#x27;</span>Identifier<span class="string">&#x27; &#x27;</span>=<span class="string">&#x27; value@&lt;Atom&gt;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;Relation ::= &#x27;</span>=<span class="string">&#x27; | &#x27;</span>&gt;=<span class="string">&#x27; | &#x27;</span>&lt;=<span class="string">&#x27;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;Attribute ::= &#x27;</span>left<span class="string">&#x27; | &#x27;</span>right<span class="string">&#x27; | &#x27;</span>top<span class="string">&#x27; | &#x27;</span>bottom<span class="string">&#x27; | &#x27;</span>leading<span class="string">&#x27; | &#x27;</span>trailing<span class="string">&#x27; | &#x27;</span>width<span class="string">&#x27; | &#x27;</span>height<span class="string">&#x27; | &#x27;</span>centerX<span class="string">&#x27; | &#x27;</span>centerY<span class="string">&#x27; | &#x27;</span>baseline<span class="string">&#x27;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;Multiplier ::= &#x27;</span>*<span class="string">&#x27; num@&#x27;</span>Number<span class="string">&#x27;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;AddConstant ::= &#x27;</span>+<span class="string">&#x27; num@&#x27;</span>Number<span class="string">&#x27;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;KeypathAndAttribute ::= &#x27;</span>Identifier<span class="string">&#x27; &#x27;</span>.<span class="string">&#x27; &lt;AttributeOrRest&gt;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;AttributeOrRest ::= att@&lt;Attribute&gt; | &#x27;</span>Identifier<span class="string">&#x27; &#x27;</span>.<span class="string">&#x27; &lt;AttributeOrRest&gt;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;Expression ::= &lt;KeypathAndAttribute&gt; &lt;Multiplier&gt;? &lt;AddConstant&gt;?;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;LayoutConstraint ::= lhs@&lt;Expression&gt; rel@&lt;Relation&gt; rhs@&lt;Expression&gt;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">     @<span class="string">&quot;Rule ::= &lt;Atom&gt; | &lt;LayoutConstraint&gt;;&quot;</span>,</span><br><span class="line"></span><br><span class="line">] componentsJoinedByString:@<span class="string">&quot;\n&quot;</span>];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>一个规则匹配后解析器就找到同样名称的类</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (id)parser:(CPParser *)parser didProduceSyntaxTree:(CPSyntaxTree *)syntaxTree</span><br><span class="line"></span><br><span class="line">     NSString *ruleName = syntaxTree.rule.name;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> ([ruleName isEqualToString:@<span class="string">&quot;Attribute&quot;</span>]) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">return</span> <span class="built_in">self</span>.layoutAttributes<span class="string">[[[syntaxTree childAtIndex:0] keyword]]</span>;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>完整的解析器代码在：<a target="_blank" rel="noopener" href="https://github.com/objcio/issue-9-string-parsing">https://github.com/objcio/issue-9-string-parsing</a>。里面有个解析类可以用来解析复杂的布局约束，如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attribute">viewController</span>.view.centerX + <span class="number">20</span> &lt;= self.view.centerX * <span class="number">0</span>.<span class="number">5</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以得到如下结果，方便转换成NSLayoutConstraint对象</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">(&lt;Expression: self.keyPath=(viewController, view),</span><br><span class="line"></span><br><span class="line">     self.<span class="attribute">attribute</span>=9,</span><br><span class="line"></span><br><span class="line">     self.<span class="attribute">multiplier</span>=1,</span><br><span class="line"></span><br><span class="line">     self.<span class="attribute">constant</span>=20&gt;</span><br><span class="line"></span><br><span class="line">-1</span><br><span class="line"></span><br><span class="line">&lt;Expression: self.keyPath=(self, view),</span><br><span class="line"></span><br><span class="line">     self.<span class="attribute">attribute</span>=9,</span><br><span class="line"></span><br><span class="line">     self.<span class="attribute">multiplier</span>=0.5,</span><br><span class="line"></span><br><span class="line">     self.<span class="attribute">constant</span>=0&gt;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="字符串的渲染"><a href="#字符串的渲染" class="headerlink" title="字符串的渲染"></a>字符串的渲染</h1><h2 id="UILabel"><a href="#UILabel" class="headerlink" title="UILabel"></a>UILabel</h2><ul>
+<li>label默认显示一行，如果设置numberOfLines为大于1的话可以显示指定行数，如果设置为0，则多少行都显示</li>
+<li>attributedText属性可以显示富文本</li>
+<li>label的font,textColor,textAlignment,shadowColor和shadowOffset属性可以改变外观。</li>
+<li>改变程序内所有Label的风格，可以使用[UILabel appearance]方法</li>
+</ul>
+<h2 id="UITextField"><a href="#UITextField" class="headerlink" title="UITextField"></a>UITextField</h2><ul>
+<li>text field只限于单行</li>
+<li>UITextfield实现了UITextInputTraits协议，这个协议需要指定键盘外观和操作等细节。比如显示什么键盘和返回按键响应等</li>
+<li>可以通过设置左右辅助视图，或者设置背景来自定义输入框风格了。</li>
+</ul>
+<h2 id="UITextView"><a href="#UITextView" class="headerlink" title="UITextView"></a>UITextView</h2><ul>
+<li>相比较UITextField，它能够处理多行文本</li>
+<li>可以使用定制Text Kit，官方文档：<a target="_blank" rel="noopener" href="https://developer.apple.com/Library/ios/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/CustomTextProcessing/CustomTextProcessing.html">https://developer.apple.com/Library/ios/documentation/StringsTextFonts/Conceptual/TextAndWebiPhoneOS/CustomTextProcessing/CustomTextProcessing.html</a></li>
+<li>可以为layout manager，text container或text storage自定义行为或替换自定义子类。</li>
+<li>在iOS7之前是基于WebKit的功能少，之后会有很多不同具体可以参考这两篇文章：Peter的<a target="_blank" rel="noopener" href="http://petersteinberger.com/blog/2014/fixing-uitextview-on-ios-7/">http://petersteinberger.com/blog/2014/fixing-uitextview-on-ios-7/</a>，Brent的<a target="_blank" rel="noopener" href="http://inessential.com/2014/01/07/uitextview_the_solution">http://inessential.com/2014/01/07/uitextview_the_solution</a></li>
+</ul>
+<h2 id="TableView中显示动态文本"><a href="#TableView中显示动态文本" class="headerlink" title="TableView中显示动态文本"></a>TableView中显示动态文本</h2><p>Table view的Delegate有个方法用来计算高度：tableView:heightForRowAtIndexPath:。自定义一个UITableViewCell的子类</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">-</span> (void)layoutSubviews</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="code">     [super layoutSubviews];</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     self.textLabel.frame = CGRectInset(self.bounds,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          MyTableViewCellInset,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          MyTableViewCellInset);</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>计算真实高度需要使用boundingRectWithSize:options:context: 这个方法</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="built_in">CGFloat</span>)tableView:(<span class="built_in">UITableView</span> *)tableView heightForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CGFloat</span> labelWidth = <span class="keyword">self</span>.tableView.bounds.size.width - MyTableViewCellInset*<span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSAttributedString</span> *text = [<span class="keyword">self</span> attributedBodyTextAtIndexPath:indexPath];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSStringDrawingOptions</span> options = <span class="built_in">NSStringDrawingUsesLineFragmentOrigin</span> |</span><br><span class="line"></span><br><span class="line">          <span class="built_in">NSStringDrawingUsesFontLeading</span>;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CGRect</span> boundingRect = [text boundingRectWithSize:<span class="built_in">CGSizeMake</span>(labelWidth, <span class="built_in">CGFLOAT_MAX</span>)</span><br><span class="line"></span><br><span class="line">          options:options</span><br><span class="line"></span><br><span class="line">          context:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> (<span class="built_in">CGFloat</span>) (ceil(boundingRect.size.height) + MyTableViewCellInset*<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用Text-Kit和NSAttributedString进行布局"><a href="#使用Text-Kit和NSAttributedString进行布局" class="headerlink" title="使用Text Kit和NSAttributedString进行布局"></a>使用Text Kit和NSAttributedString进行布局</h2><p>先设置attributes</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CGFloat const fontSize = <span class="number">15</span>;</span><br><span class="line"></span><br><span class="line">NSMutableDictionary *<span class="keyword">body1stAttributes </span>= [NSMutableDictionary <span class="keyword">dictionary];</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">body1stAttributes[NSFontAttributeName] </span>= [UIFont fontWithName:@<span class="string">&quot;BodoniSvtyTwoITCTT-Book&quot;</span></span><br><span class="line"><span class="symbol"></span></span><br><span class="line"><span class="symbol">size:</span>fontSize];</span><br><span class="line"></span><br><span class="line">NSMutableParagraphStyle *<span class="keyword">body1stParagraph </span>= [[NSParagraphStyle defaultParagraphStyle] mutableCopy];</span><br><span class="line"></span><br><span class="line"><span class="keyword">body1stParagraph.alignment </span>= NSTextAlignmentJustified;</span><br><span class="line"></span><br><span class="line"><span class="keyword">body1stParagraph.minimumLineHeight </span>= fontSize + <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">body1stParagraph.maximumLineHeight </span>= <span class="keyword">body1stParagraph.minimumLineHeight;</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">body1stParagraph.hyphenationFactor </span>= <span class="number">0</span>.<span class="number">97</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">body1stAttributes[NSParagraphStyleAttributeName] </span>= <span class="keyword">body1stParag</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line">raph;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里字体为BodoniSvtyTwoITCTT，如果需要查看更多字体可以使用 +[UIFont familyNames]这个方法。为了得到字体的名字，可以使用 +[UIFont fontNamesForFamilyName:]。接下来创建段落的属性</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">NSMutableDictionary *bodyAttributes <span class="operator">=</span> [body1stAttributes mutableCopy]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">NSMutableParagraphStyle *bodyParagraph <span class="operator">=</span></span><br><span class="line"></span><br><span class="line">     [bodyAttributes[NSParagraphStyleAttributeName] mutableCopy]<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">bodyParagraph.firstLineHeadIndent <span class="operator">=</span> fontSize<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">bodyAttributes[NSParagraphStyleAttributeName] <span class="operator">=</span> bodyParagraph<span class="comment">;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>装饰段落风格，使用装饰字体将文本居中对齐，装饰字符的前后加上空白段落</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">NSMutableDictionary *<span class="keyword">ornamentAttributes </span>= [NSMutableDictionary <span class="keyword">dictionary];</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">ornamentAttributes[NSFontAttributeName] </span>= [UIFont fontWithName:@<span class="string">&quot;BodoniOrnamentsITCTT&quot;</span></span><br><span class="line"><span class="symbol"></span></span><br><span class="line"><span class="symbol">     size:</span><span class="number">36</span>];</span><br><span class="line"></span><br><span class="line">NSMutableParagraphStyle *<span class="keyword">ornamentParagraph </span>= [[NSParagraphStyle defaultParagraphStyle] mutableCopy];</span><br><span class="line"></span><br><span class="line"><span class="keyword">ornamentParagraph.alignment </span>= NSTextAlignmentCenter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">ornamentParagraph.paragraphSpacingBefore </span>= fontSize;</span><br><span class="line"></span><br><span class="line"><span class="keyword">ornamentParagraph.paragraphSpacing </span>= fontSize;</span><br><span class="line"></span><br><span class="line"><span class="keyword">ornamentAttributes[NSParagraphStyleAttributeName] </span>= <span class="keyword">ornamentParagraph;</span></span><br><span class="line"><span class="keyword"></span></span><br></pre></td></tr></table></figure>
+
+<p>显示数字表格table，表格布局示例</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSCharacterSet</span> *decimalTerminator = [<span class="built_in">NSCharacterSet</span></span><br><span class="line"></span><br><span class="line">     characterSetWithCharactersInString:decimalFormatter.decimalSeparator];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSTextTab</span> *decimalTab = [[<span class="built_in">NSTextTab</span> alloc]</span><br><span class="line"></span><br><span class="line">     initWithTextAlignment:<span class="built_in">NSTextAlignmentCenter</span></span><br><span class="line"></span><br><span class="line">     location:<span class="number">100</span></span><br><span class="line"></span><br><span class="line">     options:@&#123;<span class="built_in">NSTabColumnTerminatorsAttributeName</span>:decimalTerminator&#125;];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSTextTab</span> *percentTab = [[<span class="built_in">NSTextTab</span> alloc] initWithTextAlignment:<span class="built_in">NSTextAlignmentRight</span></span><br><span class="line"></span><br><span class="line">     location:<span class="number">200</span></span><br><span class="line"></span><br><span class="line">     options:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSMutableParagraphStyle</span> *tableParagraphStyle =</span><br><span class="line"></span><br><span class="line">     [[<span class="built_in">NSParagraphStyle</span> defaultParagraphStyle] mutableCopy];</span><br><span class="line"></span><br><span class="line">tableParagraphStyle.tabStops = @[decimalTab, percentTab];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>显示列表的属性设置如下</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSMutableDictionary</span> *listAttributes = [bodyAttributes mutableCopy];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSMutableParagraphStyle</span> *listParagraph =</span><br><span class="line"></span><br><span class="line">     [listAttributes[<span class="built_in">NSParagraphStyleAttributeName</span>] mutableCopy];</span><br><span class="line"></span><br><span class="line">listParagraph.headIndent = fontSize * <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">listParagraph.firstLineHeadIndent = fontSize;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSTextTab</span> *listTab = [[<span class="built_in">NSTextTab</span> alloc] initWithTextAlignment:<span class="built_in">NSTextAlignmentNatural</span></span><br><span class="line"></span><br><span class="line">     location:fontSize * <span class="number">3</span></span><br><span class="line"></span><br><span class="line">     options:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line">listParagraph.tabStops = @[listTab];</span><br><span class="line"></span><br><span class="line">listAttributes[<span class="built_in">NSParagraphStyleAttributeName</span>] = listParagraph;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="字符串本地化"><a href="#字符串本地化" class="headerlink" title="字符串本地化"></a>字符串本地化</h1><ul>
+<li>使用NSLocalizedString，可查看文章《字符串本地化》：（中文）<a target="_blank" rel="noopener" href="http://objccn.io/issue-9-3/">http://objccn.io/issue-9-3/</a> （英文）<a target="_blank" rel="noopener" href="http://www.objc.io/issue-9/string-localization.html">http://www.objc.io/issue-9/string-localization.html</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/09/09/%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B/" rel="prev" title="基础类型">
+      <i class="fa fa-chevron-left"></i> 基础类型
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/12/12/Swift/" rel="next" title="Swift">
+      Swift <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2"><span class="nav-number">1.</span> <span class="nav-text">搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%90%9C%E7%B4%A2%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.1.</span> <span class="nav-text">在一个字符串中搜索子字符串</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.</span> <span class="nav-text">格式化字符串</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B4%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">整数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">浮点数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E8%A1%8C%E6%96%87%E5%AD%97"><span class="nav-number">5.</span> <span class="nav-text">多行文字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">6.</span> <span class="nav-text">替换字符串</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">7.</span> <span class="nav-text">连接字符串</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E6%9E%90"><span class="nav-number">8.</span> <span class="nav-text">字符串解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">8.1.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%AB%E6%8F%8F"><span class="nav-number">8.2.</span> <span class="nav-text">扫描</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E5%99%A8"><span class="nav-number">8.3.</span> <span class="nav-text">解析器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">9.</span> <span class="nav-text">符号化处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%B8%B2%E6%9F%93"><span class="nav-number">10.</span> <span class="nav-text">字符串的渲染</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UILabel"><span class="nav-number">10.1.</span> <span class="nav-text">UILabel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UITextField"><span class="nav-number">10.2.</span> <span class="nav-text">UITextField</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UITextView"><span class="nav-number">10.3.</span> <span class="nav-text">UITextView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TableView%E4%B8%AD%E6%98%BE%E7%A4%BA%E5%8A%A8%E6%80%81%E6%96%87%E6%9C%AC"><span class="nav-number">10.4.</span> <span class="nav-text">TableView中显示动态文本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Text-Kit%E5%92%8CNSAttributedString%E8%BF%9B%E8%A1%8C%E5%B8%83%E5%B1%80"><span class="nav-number">10.5.</span> <span class="nav-text">使用Text Kit和NSAttributedString进行布局</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9C%AC%E5%9C%B0%E5%8C%96"><span class="nav-number">11.</span> <span class="nav-text">字符串本地化</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

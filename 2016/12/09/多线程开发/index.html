@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="线程使用Instruments的CPU strategy view查看代码如何在多核CPU中执行。创建线程可以使用POSIX 线程API，或者NSThread（封装POSIX 线程API）。下面是并发4个线程在一百万个数字中找最小值和最大值的pthread例子：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程开发">
+<meta property="og:url" content="https://suwangsuwang.github.io/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="线程使用Instruments的CPU strategy view查看代码如何在多核CPU中执行。创建线程可以使用POSIX 线程API，或者NSThread（封装POSIX 线程API）。下面是并发4个线程在一百万个数字中找最小值和最大值的pthread例子：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-12-09T01:32:42.000Z">
+<meta property="article:modified_time" content="2025-04-17T10:22:25.615Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>多线程开发 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          多线程开发
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-09 09:32:42" itemprop="dateCreated datePublished" datetime="2016-12-09T09:32:42+08:00">2016-12-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-17 18:22:25" itemprop="dateModified" datetime="2025-04-17T18:22:25+08:00">2025-04-17</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h1><p>使用Instruments的CPU strategy view查看代码如何在多核CPU中执行。创建线程可以使用POSIX 线程API，或者NSThread（封装POSIX 线程API）。下面是并发4个线程在一百万个数字中找最小值和最大值的pthread例子：</p>
+<span id="more"></span>
+
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#import <span class="string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> threadInfo &#123;</span><br><span class="line"></span><br><span class="line">     uint32_t * inputValues;</span><br><span class="line"></span><br><span class="line">     size_t count;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> threadResult &#123;</span><br><span class="line"></span><br><span class="line">     uint32_t min;</span><br><span class="line"></span><br><span class="line">     uint32_t max;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> * findMinAndMax(<span class="type">void</span> *arg)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">struct</span> threadInfo <span class="keyword">const</span> * <span class="keyword">const</span> info = (<span class="keyword">struct</span> threadInfo *) arg;</span><br><span class="line"></span><br><span class="line">     uint32_t min = <span class="built_in">UINT32_MAX</span>;</span><br><span class="line"></span><br><span class="line">     uint32_t max = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (size_t i = <span class="number">0</span>; i &lt; info-&gt;count; ++i) &#123;</span><br><span class="line"></span><br><span class="line">          uint32_t v = info-&gt;inputValues[I];</span><br><span class="line"></span><br><span class="line">          min = MIN(min, v);</span><br><span class="line"></span><br><span class="line">          max = MAX(max, v);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     free(arg);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">struct</span> threadResult * <span class="keyword">const</span> result = (<span class="keyword">struct</span> threadResult *) malloc(<span class="keyword">sizeof</span>(*result));</span><br><span class="line"></span><br><span class="line">     result-&gt;min = min;</span><br><span class="line"></span><br><span class="line">     result-&gt;max = max;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> result;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> main(<span class="type">int</span> argc, <span class="keyword">const</span> <span class="type">char</span> * argv[])</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     size_t <span class="keyword">const</span> count = <span class="number">1000000</span>;</span><br><span class="line"></span><br><span class="line">     uint32_t inputValues[count];</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 使用随机数字填充 inputValues</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (size_t i = <span class="number">0</span>; i &lt; count; ++i) &#123;</span><br><span class="line"></span><br><span class="line">          inputValues[i] = arc4random();</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 开始4个寻找最小值和最大值的线程</span></span><br><span class="line"></span><br><span class="line">     size_t <span class="keyword">const</span> threadCount = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">     pthread_t tid[threadCount];</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (size_t i = <span class="number">0</span>; i &lt; threadCount; ++i) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">struct</span> threadInfo * <span class="keyword">const</span> info = (<span class="keyword">struct</span> threadInfo *) malloc(<span class="keyword">sizeof</span>(*info));</span><br><span class="line"></span><br><span class="line">          size_t offset = (count / threadCount) * I;</span><br><span class="line"></span><br><span class="line">          info-&gt;inputValues = inputValues + offset;</span><br><span class="line"></span><br><span class="line">          info-&gt;count = MIN(count - offset, count / threadCount);</span><br><span class="line"></span><br><span class="line">          <span class="type">int</span> err = pthread_create(tid + i, <span class="literal">NULL</span>, &amp;findMinAndMax, info);</span><br><span class="line"></span><br><span class="line">          <span class="built_in">NSCAssert</span>(err == <span class="number">0</span>, <span class="string">@&quot;pthread_create() failed: %d&quot;</span>, err);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 等待线程退出</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">struct</span> threadResult * results[threadCount];</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (size_t i = <span class="number">0</span>; i &lt; threadCount; ++i) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="type">int</span> err = pthread_join(tid[i], (<span class="type">void</span> **) &amp;(results[i]));</span><br><span class="line"></span><br><span class="line">          <span class="built_in">NSCAssert</span>(err == <span class="number">0</span>, <span class="string">@&quot;pthread_join() failed: %d&quot;</span>, err);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 寻找 min 和 max</span></span><br><span class="line"></span><br><span class="line">     uint32_t min = <span class="built_in">UINT32_MAX</span>;</span><br><span class="line"></span><br><span class="line">     uint32_t max = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (size_t i = <span class="number">0</span>; i &lt; threadCount; ++i) &#123;</span><br><span class="line"></span><br><span class="line">          min = MIN(min, results[i]-&gt;min);</span><br><span class="line"></span><br><span class="line">          max = MAX(max, results[i]-&gt;max);</span><br><span class="line"></span><br><span class="line">          free(results[I]);</span><br><span class="line"></span><br><span class="line">          results[i] = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSLog</span>(<span class="string">@&quot;min = %u&quot;</span>, min);</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSLog</span>(<span class="string">@&quot;max = %u&quot;</span>, max);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用NSThread来写</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">FindMinMaxThread</span> : <span class="title">NSThread</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> min;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">NSUInteger</span> max;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithNumbers:(<span class="built_in">NSArray</span> *)numbers;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">FindMinMaxThread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSArray</span> *_numbers;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithNumbers:(<span class="built_in">NSArray</span> *)numbers</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span> = [<span class="variable language_">super</span> init];</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line"></span><br><span class="line">          _numbers = numbers;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)main</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSUInteger</span> min;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSUInteger</span> max;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 进行相关数据的处理</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>.min = min;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>.max = max;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//启动一个新的线程，创建一个线程对象</span></span><br><span class="line"></span><br><span class="line">SMutableSet *threads = [<span class="built_in">NSMutableSet</span> set];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSUInteger</span> numberCount = <span class="keyword">self</span>.numbers.count;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSUInteger</span> threadCount = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSUInteger</span> i = <span class="number">0</span>; i &lt; threadCount; i++) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSUInteger</span> offset = (count / threadCount) * I;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSUInteger</span> count = MIN(numberCount - offset, numberCount / threadCount);</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSRange</span> range = <span class="built_in">NSMakeRange</span>(offset, count);</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSArray</span> *subset = [<span class="keyword">self</span>.numbers subarrayWithRange:range];</span><br><span class="line"></span><br><span class="line">     FindMinMaxThread *thread = [[FindMinMaxThread alloc] initWithNumbers:subset];</span><br><span class="line"></span><br><span class="line">     [threads addObject:thread];</span><br><span class="line"></span><br><span class="line">     [thread start];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="Grand-Central-Dispatch"><a href="#Grand-Central-Dispatch" class="headerlink" title="Grand Central Dispatch"></a>Grand Central Dispatch</h1><p>GCD中的FIFO队列称为dispatch queue，用来保证先进来的任务先得到执行。</p>
+<p>dispatch queue分三种</p>
+<ul>
+<li>Serial：又叫private dispatch queues，同时只执行一个任务。Serial queue常用于同步访问特定的资源或数据。当你创建多个Serial queue时，虽然各自是同步，但serial queue之间是并发执行。</li>
+<li>Concurrent：又叫global dispatch queue，可以并发的执行多个任务，但执行完成顺序是随机的。</li>
+<li>Main dispatch queue：全局可用的serial queue，在应用程序主线程上执行任务。</li>
+</ul>
+<h2 id="GCD概要"><a href="#GCD概要" class="headerlink" title="GCD概要"></a>GCD概要</h2><ul>
+<li>和operation queue一样都是基于队列的并发编程API，他们通过集中管理大家协同使用的线程池。</li>
+<li>公开的5个不同队列：运行在主线程中的main queue，3个不同优先级的后台队列（High Priority Queue，Default Priority Queue，Low Priority Queue），以及一个优先级更低的后台队列Background Priority Queue（用于I&#x2F;O）</li>
+<li>可创建自定义队列：串行或并列队列。自定义一般放在Default Priority Queue和Main Queue里。</li>
+</ul>
+<h2 id="dispatch-once用法"><a href="#dispatch-once用法" class="headerlink" title="dispatch_once用法"></a>dispatch_once用法</h2><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">+ (UIColor *)boringColor;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">static</span> UIColor *<span class="type">color</span>;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//只运行一次</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">static</span> dispatch_once_t onceToken;</span><br><span class="line"></span><br><span class="line">     <span class="title function_">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line"></span><br><span class="line">          <span class="type">color</span> = [UIColor colorWithRed:<span class="number">0.380</span>f <span class="built_in">green</span>:<span class="number">0.376</span>f <span class="built_in">blue</span>:<span class="number">0.376</span>f <span class="built_in">alpha</span>:<span class="number">1.000</span>f];</span><br><span class="line"></span><br><span class="line">     &#125;);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="type">color</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="dispatch-async（较常用）"><a href="#dispatch-async（较常用）" class="headerlink" title="dispatch_async（较常用）"></a>dispatch_async（较常用）</h2><p>可以避免界面会被一些耗时的操作卡死，比如读取网络数据，大数据IO，还有大量数据的数据库读写，这时需要在另一个线程中处理，然后通知主线程更新界面，GCD使用起来比NSThread和NSOperation方法要简单方便。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//代码框架</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 耗时的操作</span></span><br><span class="line"></span><br><span class="line">     <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// 更新界面</span></span><br><span class="line"></span><br><span class="line">     &#125;);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//下载图片的示例</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSURL</span> * url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@&quot;http://avatar.csdn.net/2/C/D/1_totogo2010.jpg&quot;</span>];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSData</span> * data = [[<span class="built_in">NSData</span> alloc]initWithContentsOfURL:url];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIImage</span> *image = [[<span class="built_in">UIImage</span> alloc]initWithData:data];</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (data != <span class="literal">nil</span>) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line"></span><br><span class="line">               <span class="keyword">self</span>.imageView.image = image;</span><br><span class="line"></span><br><span class="line">          &#125;);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="dispatch-after延后执行"><a href="#dispatch-after延后执行" class="headerlink" title="dispatch_after延后执行"></a>dispatch_after延后执行</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">-</span> (void)foo</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="code">     double delayInSeconds = 2.0;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delayInSeconds * NSEC_PER_SEC));</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     dispatch_after(popTime, dispatch_get_main_queue(), ^(void)&#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          [self bar];</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;);</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>范例，实现一个推迟出现弹出框提示，比如说提示用户评价等功能。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">showOrHideNavPrompt</span>() &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">let</span> delayInSeconds <span class="operator">=</span> <span class="number">1.0</span></span><br><span class="line"></span><br><span class="line">     <span class="keyword">let</span> popTime <span class="operator">=</span> dispatch_time(<span class="type">DISPATCH_TIME_NOW</span>,</span><br><span class="line"></span><br><span class="line">          <span class="type">Int64</span>(delayInSeconds <span class="operator">*</span> <span class="type">Double</span>(<span class="type">NSEC_PER_SEC</span>))) <span class="comment">// 在这里声明推迟的时间</span></span><br><span class="line"></span><br><span class="line">     dispatch_after(popTime, <span class="type">GlobalMainQueue</span>) &#123; <span class="comment">// 等待delayInSeconds将闭包异步到主队列</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">let</span> count <span class="operator">=</span> <span class="type">PhotoManager</span>.sharedManager.photos.count</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> count <span class="operator">&gt;</span> <span class="number">0</span> &#123;</span><br><span class="line"></span><br><span class="line">               <span class="keyword">self</span>.navigationItem.prompt <span class="operator">=</span> <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">               <span class="keyword">self</span>.navigationItem.prompt <span class="operator">=</span> <span class="string">&quot;Add photos with faces to Googlyify them!&quot;</span></span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="GCD队列"><a href="#GCD队列" class="headerlink" title="GCD队列"></a>GCD队列</h2><p>队列默认是串行的，只能执行一个单独的block，队列也可以是并行的，同一时间执行多个block</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="operator">-</span> (id)<span class="keyword">init</span>;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span> <span class="operator">=</span> [<span class="keyword">super</span> <span class="keyword">init</span>];</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">self</span> <span class="operator">!=</span> <span class="literal">nil</span>) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="type">NSString</span> <span class="operator">*</span>label <span class="operator">=</span> [<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;%@.isolation.%p&quot;</span>, [<span class="keyword">self</span> <span class="keyword">class</span>], <span class="keyword">self</span>];</span><br><span class="line"></span><br><span class="line">          <span class="keyword">self</span>.isolationQueue <span class="operator">=</span> dispatch_queue_create([label <span class="type">UTF8String</span>], <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">          label <span class="operator">=</span> [<span class="type">NSString</span> stringWithFormat:@<span class="string">&quot;%@.work.%p&quot;</span>, [<span class="keyword">self</span> <span class="keyword">class</span>], <span class="keyword">self</span>];</span><br><span class="line"></span><br><span class="line">          <span class="keyword">self</span>.workQueue <span class="operator">=</span> dispatch_queue_create([label <span class="type">UTF8String</span>], <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>5种队列，主队列（main queue）,四种通用调度队列，自己定制的队列。四种通用调度队列为</p>
+<ul>
+<li>QOS_CLASS_USER_INTERACTIVE：user interactive等级表示任务需要被立即执行提供好的体验，用来更新UI，响应事件等。这个等级最好保持小规模。</li>
+<li>QOS_CLASS_USER_INITIATED：user initiated等级表示任务由UI发起异步执行。适用场景是需要及时结果同时又可以继续交互的时候。</li>
+<li>QOS_CLASS_UTILITY：utility等级表示需要长时间运行的任务，伴有用户可见进度指示器。经常会用来做计算，I&#x2F;O，网络，持续的数据填充等任务。这个任务节能。</li>
+<li>QOS_CLASS_BACKGROUND：background等级表示用户不会察觉的任务，使用它来处理预加载，或者不需要用户交互和对时间不敏感的任务。</li>
+</ul>
+<p>示例：后台加载显示图片</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">override</span> func <span class="title function_">viewDidLoad</span>(<span class="params"></span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="variable language_">super</span>.<span class="title function_">viewDidLoad</span>()</span><br><span class="line"></span><br><span class="line">     <span class="title function_">dispatch_async</span>(<span class="params">dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.value), <span class="number">0</span>)</span>) &#123; <span class="comment">// 将工作从主线程转移到全局队列中，这是dispatch_async调用，异步提交保证调用线程会继续执行下去，这样viewDidLoad在主线程上能够更早完成，</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">let</span> overlayImage = self.<span class="title function_">faceOverlayImageFromImage</span>(self.<span class="property">image</span>)</span><br><span class="line"></span><br><span class="line">          <span class="title function_">dispatch_async</span>(<span class="params">dispatch_get_main_queue()</span>) &#123; <span class="comment">// 新图完成，把一个闭包加入主线程用来更新UIImageView，只有在主线程能操作UIKit。</span></span><br><span class="line"></span><br><span class="line">               self.<span class="title function_">fadeInNewImage</span>(overlayImage) <span class="comment">// 更新UI</span></span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>何时使用何种队列类型</p>
+<ul>
+<li>主队列（顺序）：队列中有任务完成需要更新UI时，dispatch_after在这种类型中使用。</li>
+<li>并发队列：用来执行与UI无关的后台任务，dispatch_sync放在这里，方便等待任务完成进行后续处理或和dispatch barrier同步。dispatch groups放在这里也不错。</li>
+<li>自定义顺序队列：顺序执行后台任务并追踪它时。这样做同时只有一个任务在执行可以防止资源竞争。dipatch barriers解决读写锁问题的放在这里处理。dispatch groups也是放在这里。</li>
+</ul>
+<p>可以使用下面的方法简化QoS等级参数的写法</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="selector-tag">var</span> GlobalMainQueue: dispatch_queue_t &#123;</span><br><span class="line"></span><br><span class="line">     return <span class="built_in">dispatch_get_main_queue</span>()</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">var</span> GlobalUserInteractiveQueue: dispatch_queue_t &#123;</span><br><span class="line"></span><br><span class="line">     return <span class="built_in">dispatch_get_global_queue</span>(<span class="built_in">Int</span>(QOS_CLASS_USER_INTERACTIVE.value), <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">var</span> GlobalUserInitiatedQueue: dispatch_queue_t &#123;</span><br><span class="line"></span><br><span class="line">     return <span class="built_in">dispatch_get_global_queue</span>(<span class="built_in">Int</span>(QOS_CLASS_USER_INITIATED.value), <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">var</span> GlobalUtilityQueue: dispatch_queue_t &#123;</span><br><span class="line"></span><br><span class="line">     return <span class="built_in">dispatch_get_global_queue</span>(<span class="built_in">Int</span>(QOS_CLASS_UTILITY.value), <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">var</span> GlobalBackgroundQueue: dispatch_queue_t &#123;</span><br><span class="line"></span><br><span class="line">     return <span class="built_in">dispatch_get_global_queue</span>(<span class="built_in">Int</span>(QOS_CLASS_BACKGROUND.value), <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用起来就是这样，易读而且容易看出在使用哪个队列</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dispatch_async</span><span class="params">(GlobalUserInitiatedQueue)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">     let overlayImage = self<span class="selector-class">.faceOverlayImageFromImage</span>(self.image)</span><br><span class="line"></span><br><span class="line">     <span class="built_in">dispatch_async</span>(GlobalMainQueue) &#123;</span><br><span class="line"></span><br><span class="line">          self<span class="selector-class">.fadeInNewImage</span>(overlayImage)</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用Barrier-Task方法Dispatch-Barrier解决多线程并发读写同一个资源发生死锁"><a href="#使用Barrier-Task方法Dispatch-Barrier解决多线程并发读写同一个资源发生死锁" class="headerlink" title="使用Barrier Task方法Dispatch Barrier解决多线程并发读写同一个资源发生死锁"></a>使用Barrier Task方法Dispatch Barrier解决多线程并发读写同一个资源发生死锁</h2><p>Dispatch Barrier确保提交的闭包是指定队列中在特定时段唯一在执行的一个。在所有先于Dispatch Barrier的任务都完成的情况下这个闭包才开始执行。轮到这个闭包时barrier会执行这个闭包并且确保队列在此过程不会执行其它任务。闭包完成后队列恢复。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//创建队列</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>.isolationQueue = dispatch_queue_create([label UTF8String], DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line"></span><br><span class="line"><span class="comment">//改变setter</span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)setCount:(<span class="built_in">NSUInteger</span>)count forKey:(<span class="built_in">NSString</span> *)key</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     key = [key <span class="keyword">copy</span>];</span><br><span class="line"></span><br><span class="line">     <span class="comment">//确保所有barrier都是async异步的</span></span><br><span class="line"></span><br><span class="line">     dispatch_barrier_async(<span class="keyword">self</span>.isolationQueue, ^()&#123;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (count == <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">               [<span class="keyword">self</span>.counts removeObjectForKey:key];</span><br><span class="line"></span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">               <span class="keyword">self</span>.counts[key] = @(count);</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>swift示例</p>
+<figure class="highlight wren"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//使用dispatch_queue_create初始化一个并发队列。第一个参数遵循反向DNS命名习惯，方便描述，第二个参数是指出是并发还是顺序。</span></span><br><span class="line"></span><br><span class="line"><span class="variable">private</span> <span class="variable">let</span> <span class="variable">concurrentPhotoQueue</span> <span class="operator">=</span> <span class="title function_">dispatch_queue_create</span>(</span><br><span class="line"></span><br><span class="line"><span class="string">&quot;com.raywenderlich.GooglyPuff.photoQueue&quot;</span>, <span class="variable">DISPATCH_QUEUE_CONCURRENT</span>)</span><br><span class="line"></span><br><span class="line"><span class="variable">func</span> <span class="title function_">addPhoto</span>(<span class="params">photo</span>: <span class="params">Photo</span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="title function_">dispatch_barrier_async</span>(<span class="params">concurrentPhotoQueue</span>) &#123; <span class="comment">// 将写操作加入到自定义的队列。开始执行时这个就是队列中唯一的一个在执行的任务。</span></span><br><span class="line"></span><br><span class="line">          <span class="variable">self</span>.<span class="variable">_photos</span>.<span class="property">append</span>(<span class="variable">photo</span>) <span class="comment">// barrier能够保障不会和其他任务同时进行。</span></span><br><span class="line"></span><br><span class="line">          <span class="title function_">dispatch_async</span>(<span class="params">GlobalMainQueue</span>) &#123; <span class="comment">// 涉及到UI所以这个通知应该在主线程中，所以分派另一个异步任务到主队列中。</span></span><br><span class="line"></span><br><span class="line">               <span class="variable">self</span>.<span class="property">postContentAddedNotification</span>()</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//上面是解决了写可能发生死锁，下面是使用dispatch_sync解决读时可能会发生的死锁。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> <span class="variable">photos</span>: [<span class="title class_">Photo</span>] &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">var</span> <span class="variable">photosCopy</span>: [<span class="title class_">Photo</span>]<span class="operator">!</span></span><br><span class="line"></span><br><span class="line">     <span class="title function_">dispatch_sync</span>(<span class="params">concurrentPhotoQueue</span>) &#123; <span class="comment">// 同步调度到concurrentPhotoQueue队列执行读操作</span></span><br><span class="line"></span><br><span class="line">          <span class="variable">photosCopy</span> <span class="operator">=</span> <span class="variable">self</span>.<span class="variable">_photos</span> <span class="comment">// 保存</span></span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="variable">photosCopy</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这样读写问题都解决了。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>都用异步处理避免死锁，异步的缺点在于调试不方便，但是比起同步容易产生死锁这个副作用还算小的。</p>
+<h2 id="异步API写法"><a href="#异步API写法" class="headerlink" title="异步API写法"></a>异步API写法</h2><p>设计一个异步的API调用dispatch_async()，这个调用放在API的方法或函数中做。让API的使用者设置一个回调处理队列</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="type">void</span>)processImage:(<span class="built_in">UIImage</span> *)image completionHandler:(<span class="type">void</span>(^)(<span class="type">BOOL</span> success))handler;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">dispatch_async</span>(<span class="keyword">self</span>.isolationQueue, ^(<span class="type">void</span>)&#123;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// do actual processing here</span></span><br><span class="line"></span><br><span class="line">          <span class="built_in">dispatch_async</span>(<span class="keyword">self</span>.resultQueue, ^(<span class="type">void</span>)&#123;</span><br><span class="line"></span><br><span class="line">               handler(<span class="literal">YES</span>);</span><br><span class="line"></span><br><span class="line">          &#125;);</span><br><span class="line"></span><br><span class="line">     &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="dispatch-apply进行快速迭代"><a href="#dispatch-apply进行快速迭代" class="headerlink" title="dispatch_apply进行快速迭代"></a>dispatch_apply进行快速迭代</h2><figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">for</span> (size_t <span class="variable language_">y</span> = <span class="number">0</span>; <span class="variable language_">y</span> &lt; height; ++<span class="variable language_">y</span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (size_t <span class="variable language_">x</span> = <span class="number">0</span>; <span class="variable language_">x</span> &lt; width; ++<span class="variable language_">x</span>) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// Do something with x and y here</span></span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用dispatch_apply可以运行的更快</span></span><br><span class="line"></span><br><span class="line">dispatch_apply(height, dispatch_get_global_queue(<span class="number">0</span>, <span class="number">0</span>), ^(size_t <span class="variable language_">y</span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (size_t <span class="variable language_">x</span> = <span class="number">0</span>; <span class="variable language_">x</span> &lt; width; <span class="variable language_">x</span> += <span class="number">2</span>) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// Do something with x and y here</span></span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">func downloadPhotosWithCompletion(completion: BatchPhotoDownloadingCompletionClosure?) &#123;</span><br><span class="line"></span><br><span class="line"><span class="code">     var storedError: NSError!</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     var downloadGroup = dispatch_group_create()</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     let addresses = [OverlyAttachedGirlfriendURLString,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          SuccessKidURLString,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          LotsOfFacesURLString]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     dispatch_apply(UInt(addresses.count), GlobalUserInitiatedQueue) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          I in</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          let index = Int(i)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          let address = addresses[index]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          let url = NSURL(string: address)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          dispatch_group_enter(downloadGroup)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          let photo = DownloadPhoto(url: url!) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               image, error in</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               if let error = error &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    storedError = error</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               dispatch_group_leave(downloadGroup)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          PhotoManager.sharedManager.addPhoto(photo)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     dispatch_group_notify(downloadGroup, GlobalMainQueue) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          if let completion = completion &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               completion(error: storedError)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Block组合Dispatch-groups"><a href="#Block组合Dispatch-groups" class="headerlink" title="Block组合Dispatch_groups"></a>Block组合Dispatch_groups</h2><p>dispatch groups是专门用来监视多个异步任务。dispatch_group_t实例用来追踪不同队列中的不同任务。</p>
+<p>当group里所有事件都完成GCD API有两种方式发送通知，第一种是dispatch_group_wait，会阻塞当前进程，等所有任务都完成或等待超时。第二种方法是使用dispatch_group_notify，异步执行闭包，不会阻塞。</p>
+<p>第一种使用dispatch_group_wait的swift的例子：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">func downloadPhotosWithCompletion(completion: BatchPhotoDownloadingCompletionClosure?) &#123;</span><br><span class="line"></span><br><span class="line"><span class="code">     dispatch_async(GlobalUserInitiatedQueue) &#123; // 因为dispatch_group_wait会租塞当前进程，所以要使用dispatch_async将整个方法要放到后台队列才能够保证主线程不被阻塞</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          var storedError: NSError!</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          var downloadGroup = dispatch_group_create() // 创建一个dispatch group</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          for address in [OverlyAttachedGirlfriendURLString,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               SuccessKidURLString,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               LotsOfFacesURLString]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               let url = NSURL(string: address)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               dispatch_group_enter(downloadGroup) // dispatch_group_enter是通知dispatch group任务开始了，dispatch_group_enter和dispatch_group_leave是成对调用，不然程序就崩溃了。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               let photo = DownloadPhoto(url: url!) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    image, error in</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    if let error = error &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                         storedError = error</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    dispatch_group_leave(downloadGroup) // 保持和dispatch_group_enter配对。通知任务已经完成</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               PhotoManager.sharedManager.addPhoto(photo)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          dispatch_group_wait(downloadGroup, DISPATCH_TIME_FOREVER) // dispatch_group_wait等待所有任务都完成直到超时。如果任务完成前就超时了，函数会返回一个非零值，可以通过返回值判断是否超时。也可以用DISPATCH_TIME_FOREVER表示一直等。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          dispatch_async(GlobalMainQueue) &#123; // 这里可以保证所有图片任务都完成，然后在main queue里加入完成后要处理的闭包，会在main queue里执行。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               if let completion = completion &#123; // 执行闭包内容</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    completion(error: storedError)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>第二种使用dispatch_group_notify的swift的例子：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">func downloadPhotosWithCompletion(completion: BatchPhotoDownloadingCompletionClosure?) &#123;</span><br><span class="line"></span><br><span class="line"><span class="code">     // 不用加dispatch_async，因为没有阻塞主进程</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     var storedError: NSError!</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     var downloadGroup = dispatch_group_create()</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     for address in [OverlyAttachedGirlfriendURLString,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          SuccessKidURLString,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          LotsOfFacesURLString]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          let url = NSURL(string: address)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          dispatch_group_enter(downloadGroup)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          let photo = DownloadPhoto(url: url!) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               image, error in</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               if let error = error &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    storedError = error</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               dispatch_group_leave(downloadGroup)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          PhotoManager.sharedManager.addPhoto(photo)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     dispatch_group_notify(downloadGroup, GlobalMainQueue) &#123; // dispatch_group_notify和dispatch_group_wait的区别就是是异步执行闭包的，当dispatch groups中没有剩余的任务时闭包才执行。这里是指明在主队列中执行。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          if let completion = completion &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               completion(error: storedError)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">dispatch_group_t <span class="keyword">group</span> = dispatch_group_create();</span><br><span class="line"></span><br><span class="line">dispatch_queue_t <span class="keyword">queue</span> = dispatch_get_global_queue(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">dispatch_group_async(<span class="keyword">group</span>, <span class="keyword">queue</span>, ^()&#123;</span><br><span class="line"></span><br><span class="line">     // 会处理一会</span><br><span class="line"></span><br><span class="line">     [<span class="literal">self</span> doSomeFoo];</span><br><span class="line"></span><br><span class="line">     dispatch_group_async(<span class="keyword">group</span>, dispatch_get_main_queue(), ^()&#123;</span><br><span class="line"></span><br><span class="line">          <span class="literal">self</span>.foo = <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line">     &#125;);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">dispatch_group_async(<span class="keyword">group</span>, <span class="keyword">queue</span>, ^()&#123;</span><br><span class="line"></span><br><span class="line">     // 处理一会儿</span><br><span class="line"></span><br><span class="line">     [<span class="literal">self</span> doSomeBar];</span><br><span class="line"></span><br><span class="line">     dispatch_group_async(<span class="keyword">group</span>, dispatch_get_main_queue(), ^()&#123;</span><br><span class="line"></span><br><span class="line">          <span class="literal">self</span>.bar = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">     &#125;);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// 上面的都搞定后这里会执行一次</span><br><span class="line"></span><br><span class="line">dispatch_group_notify(<span class="keyword">group</span>, dispatch_get_main_queue(), ^()&#123;</span><br><span class="line"></span><br><span class="line">     NSLog(@<span class="string">&quot;foo: %d&quot;</span>, <span class="literal">self</span>.foo);</span><br><span class="line"></span><br><span class="line">     NSLog(@<span class="string">&quot;bar: %d&quot;</span>, <span class="literal">self</span>.bar);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如何对现有API使用dispatch_group_t</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//给Core Data的-performBlock:添加groups。组合完成任务后使用dispatch<span class="emphasis">_group_</span>notify来运行一个block即可。</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> (void)withGroup:(dispatch<span class="emphasis">_group_</span>t)group performBlock:(dispatch<span class="emphasis">_block_</span>t)block</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="code">     if (group == NULL) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          [self performBlock:block];</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125; else &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          dispatch_group_enter(group);</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          [self performBlock:^()&#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               block();</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               dispatch_group_leave(group);</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;];</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//NSURLConnection也可以这样做</span><br><span class="line"></span><br><span class="line"><span class="bullet">+</span> (void)withGroup:(dispatch<span class="emphasis">_group_</span>t)group</span><br><span class="line"></span><br><span class="line"><span class="code">     sendAsynchronousRequest:(NSURLRequest *)request</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     queue:(NSOperationQueue *)queue</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     completionHandler:(void (^)(NSURLResponse*, NSData*, NSError*))handler</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="code">     if (group == NULL) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          [self sendAsynchronousRequest:request</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               queue:queue</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               completionHandler:handler];</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125; else &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          dispatch_group_enter(group);</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          [self sendAsynchronousRequest:request</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    queue:queue</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)&#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               handler(response, data, error);</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               dispatch_group_leave(group);</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;];</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>注意事项</p>
+<ul>
+<li>dispatch_group_enter() 必须运行在 dispatch_group_leave() 之前。</li>
+<li>dispatch_group_enter() 和 dispatch_group_leave() 需要成对出现的</li>
+</ul>
+<h2 id="在任务执行前进行取消"><a href="#在任务执行前进行取消" class="headerlink" title="在任务执行前进行取消"></a>在任务执行前进行取消</h2><p>dispatch block object可以为队列中的对象设置<br>示例，下载图片中途进行取消</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">func downloadPhotosWithCompletion(completion: BatchPhotoDownloadingCompletionClosure?) &#123;</span><br><span class="line"></span><br><span class="line"><span class="code">     var storedError: NSError!</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     let downloadGroup = dispatch_group_create()</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     var addresses = [OverlyAttachedGirlfriendURLString,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          SuccessKidURLString,</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          LotsOfFacesURLString]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     addresses += addresses + addresses // 扩展address数组，复制3份</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     var blocks: [dispatch_block_t] = [] // 一个保存block的数组</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     for i in 0 ..&lt; addresses.count &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          dispatch_group_enter(downloadGroup)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          let block = dispatch_block_create(DISPATCH_BLOCK_INHERIT_QOS_CLASS) &#123; // 创建一个block，block的标志是DISPATCH_BLOCK_INHERIT_QOS_CLASS</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               let index = Int(i)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               let address = addresses[index]</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               let url = NSURL(string: address)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               let photo = DownloadPhoto(url: url!) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    image, error in</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    if let error = error &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                         storedError = error</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">                    dispatch_group_leave(downloadGroup)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               PhotoManager.sharedManager.addPhoto(photo)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          blocks.append(block)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          dispatch_async(GlobalMainQueue, block) // 把这个block放到GlobalMainQueue上异步调用。因为全局队列是一个顺序队列所以方便取消对象block，同时可以保证下载任务在downloadPhotosWithCompletion返回后才开始执行。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     for block in blocks[3 ..&lt; blocks.count] &#123; </span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          let cancel = arc4random_uniform(2) // 随机返回一个整数，会返回0或1</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          if cancel == 1 &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               dispatch_block_cancel(block) // 如果是1就取消block，这个只能发生在block还在队列中并没有开始的情况下。因为把block已经放到了GlobalMainQueue中，所以这个地方会先执行，执行完了才会执行block。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               dispatch_group_leave(downloadGroup) // 因为已经dispatch_group_enter了，所以取消时也要将其都leave掉。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     dispatch_group_notify(downloadGroup, GlobalMainQueue) &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          if let completion = completion &#123;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">               completion(error: storedError)</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">          &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="code">     &#125;</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="用GCD监视进程"><a href="#用GCD监视进程" class="headerlink" title="用GCD监视进程"></a>用GCD监视进程</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSRunningApplication</span> *mail = [<span class="built_in">NSRunningApplication</span> runningApplicationsWithBundleIdentifier:<span class="string">@&quot;com.apple.mail&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (mail == <span class="literal">nil</span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">pid_t <span class="keyword">const</span> pid = mail.processIdentifier;</span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>.source = dispatch_source_create(DISPATCH_SOURCE_TYPE_PROC, pid, DISPATCH_PROC_EXIT, DISPATCH_TARGET_QUEUE_DEFAULT);</span><br><span class="line"></span><br><span class="line">dispatch_source_set_event_handler(<span class="keyword">self</span>.source, ^()&#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSLog</span>(<span class="string">@&quot;Mail quit.&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//在事件源传到你的事件处理前需要调用dispatch_resume()这个方法</span></span><br><span class="line"></span><br><span class="line">dispatch_resume(<span class="keyword">self</span>.source);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="监视文件夹内文件变化"><a href="#监视文件夹内文件变化" class="headerlink" title="监视文件夹内文件变化"></a>监视文件夹内文件变化</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSURL</span> *directoryURL; <span class="comment">// assume this is set to a directory</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="keyword">const</span> fd = open([[directoryURL path] fileSystemRepresentation], O_EVTONLY);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line"></span><br><span class="line">     <span class="type">char</span> buffer[<span class="number">80</span>];</span><br><span class="line"></span><br><span class="line">     strerror_r(errno, buffer, <span class="keyword">sizeof</span>(buffer));</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSLog</span>(<span class="string">@&quot;Unable to open \&quot;%@\&quot;: %s (%d)&quot;</span>, [directoryURL path], buffer, errno);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fd,</span><br><span class="line"></span><br><span class="line">DISPATCH_VNODE_WRITE | DISPATCH_VNODE_DELETE, DISPATCH_TARGET_QUEUE_DEFAULT);</span><br><span class="line"></span><br><span class="line">dispatch_source_set_event_handler(source, ^()&#123;</span><br><span class="line"></span><br><span class="line">     <span class="type">unsigned</span> <span class="type">long</span> <span class="keyword">const</span> data = dispatch_source_get_data(source);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (data &amp; DISPATCH_VNODE_WRITE) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="built_in">NSLog</span>(<span class="string">@&quot;The directory changed.&quot;</span>);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (data &amp; DISPATCH_VNODE_DELETE) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="built_in">NSLog</span>(<span class="string">@&quot;The directory has been deleted.&quot;</span>);</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">dispatch_source_set_cancel_handler(source, ^()&#123;</span><br><span class="line"></span><br><span class="line">     close(fd);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>.source = source;</span><br><span class="line"></span><br><span class="line">dispatch_resume(<span class="keyword">self</span>.source);</span><br><span class="line"></span><br><span class="line"><span class="comment">//还要注意需要用DISPATCH_VNODE_DELETE 去检查监视的文件或文件夹是否被删除，如果删除了就停止监听</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="GCD版定时器"><a href="#GCD版定时器" class="headerlink" title="GCD版定时器"></a>GCD版定时器</h2><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">dispatch_source_t </span>source = <span class="keyword">dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,0, </span><span class="number">0</span>, <span class="keyword">DISPATCH_TARGET_QUEUE_DEFAULT);</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">dispatch_source_set_event_handler(source, </span>^()&#123;</span><br><span class="line"></span><br><span class="line">     NSLog(@<span class="string">&quot;Time flies.&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">dispatch_time_t </span>start</span><br><span class="line"></span><br><span class="line"><span class="keyword">dispatch_source_set_timer(source, </span><span class="keyword">DISPATCH_TIME_NOW, </span><span class="number">5</span>ull * NSEC_PER_SEC,<span class="number">100</span>ull * NSEC_PER_MSEC);</span><br><span class="line"></span><br><span class="line">self.source = source;</span><br><span class="line"></span><br><span class="line"><span class="keyword">dispatch_resume(self.source);</span></span><br><span class="line"><span class="keyword"></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="GCD深入操作"><a href="#GCD深入操作" class="headerlink" title="GCD深入操作"></a>GCD深入操作</h2><ul>
+<li>缓冲区：dispatch_data_t基于零碎的内存区域，使用dispatch_data_apply来遍历，还可以用dispatch_data_create_subrange来创建一个不做任何拷贝的子区域</li>
+<li>I&#x2F;O调度：使用GCD提供的dispatch_io_read，dispatch_io_write和dispatch_io_close</li>
+<li>测试：使用dispatch_benchmark小工具</li>
+<li>原子操作： libkern&#x2F;OSAtomic.h里可以查看那些函数，用于底层多线程编程。</li>
+</ul>
+<h1 id="Cocoa-NSOperation"><a href="#Cocoa-NSOperation" class="headerlink" title="Cocoa NSOperation"></a>Cocoa NSOperation</h1><p>使用NSOperation的两种方式。一种用定义好的两个子类NSInvocationOperation和NSBlockOperation，另一个是继承NSOperation。</p>
+<p>NSOperation是设计用来扩展的，只需继承重写NSOperation的一个方法main，然后把NSOperation子类的对象放入NSOperationQueue队列中，该队列就会启动并开始处理它。</p>
+<p>NSInvocationOperation例子</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#import <span class="string">&quot;ViewController.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> kURL @<span class="string">&quot;http://avatar.csdn.net/2/C/D/1_totogo2010.jpg&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)viewDidLoad</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSInvocationOperation</span> *operation = [[<span class="built_in">NSInvocationOperation</span> alloc]initWithTarget:<span class="keyword">self</span></span><br><span class="line"></span><br><span class="line">          selector:<span class="keyword">@selector</span>(downloadImage:)</span><br><span class="line"></span><br><span class="line">          object:kURL];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSOperationQueue</span> *queue = [[<span class="built_in">NSOperationQueue</span> alloc]init];</span><br><span class="line"></span><br><span class="line">     [queue addOperation:operation]; <span class="comment">//放进去就开始了</span></span><br><span class="line"></span><br><span class="line">     <span class="comment">// Do any additional setup after loading the view, typically from a nib.</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="type">void</span>)downloadImage:(<span class="built_in">NSString</span> *)url&#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSLog</span>(<span class="string">@&quot;url:%@&quot;</span>, url);</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSURL</span> *nsUrl = [<span class="built_in">NSURL</span> URLWithString:url];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">NSData</span> *data = [[<span class="built_in">NSData</span> alloc]initWithContentsOfURL:nsUrl];</span><br><span class="line"></span><br><span class="line">     <span class="built_in">UIImage</span> * image = [[<span class="built_in">UIImage</span> alloc]initWithData:data];</span><br><span class="line"></span><br><span class="line">     [<span class="keyword">self</span> performSelectorOnMainThread:<span class="keyword">@selector</span>(updateUI:) withObject:image waitUntilDone:<span class="literal">YES</span>];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="type">void</span>)updateUI:(<span class="built_in">UIImage</span>*) image&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">self</span>.imageView.image = image;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Operation Queue是在GCD上实现了一些方便的功能。优点是不需要关心线程管理，数据同步。Cocoa operation相关的类是NSOperation，NSOperationQueue。</p>
+</li>
+<li><p>NSOperationQueue有主队列和自定义队列两种类型队列。主队列在主线程上运行，自定义队列在后台。</p>
+</li>
+<li><p>重写main方法自定义自己的operations。较简单，不需要管理isExecuting和isFinished，main返回时operation就结束了。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="variable">@implementation</span> YourOperation</span><br><span class="line"></span><br><span class="line">     - (void)main</span><br><span class="line"></span><br><span class="line">     &#123;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// 进行处理 ...</span></span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">@end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>重写start方法能够获得更多的控制权，还可以在一个操作中执行异步任务</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">YourOperation</span></span></span><br><span class="line"></span><br><span class="line">     - (<span class="type">void</span>)start</span><br><span class="line"></span><br><span class="line">     &#123;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">self</span>.isExecuting = <span class="literal">YES</span>;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">self</span>.isFinished = <span class="literal">NO</span>;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// 开始处理，在结束时应该调用 finished ...</span></span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     - (<span class="type">void</span>)finished</span><br><span class="line"></span><br><span class="line">     &#123;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">self</span>.isExecuting = <span class="literal">NO</span>;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">self</span>.isFinished = <span class="literal">YES</span>;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//使操作队列有取消功能，需要不断检查isCancelled属性</span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)main</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">while</span> (notDone &amp;&amp; !<span class="keyword">self</span>.isCancelled) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// 进行处理</span></span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">*   </span>定义好operation类以后，将一个operation加到队列里：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<pre><code>NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+
+YourOperation *operation = [[YourOperation alloc] init];
+
+[queue addOperation:operation];
+</code></pre>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">* </span>如果是在主队列中进行一个一次性任务，可以将block加到操作队列</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<pre><code>[[NSOperationQueue mainQueue] addOperationWithBlock:^&#123;
+
+     // 代码...
+
+&#125;];
+</code></pre>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="bullet">* </span>通过maxConcurrentOperationCount属性控制一个特定队列中并发执行操作的数量。设置为1就是串行队列。</span><br><span class="line"><span class="bullet">* </span>对operation优先级排序，指定operation之间的依赖关系。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<pre><code>//确保operation1和operation2是在intermediateOperation和finishOperation之前执行
+
+[intermediateOperation addDependency:operation1];
+
+[intermediateOperation addDependency:operation2];
+
+[finishedOperation addDependency:intermediateOperation];
+</code></pre>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="section"># NSThread</span></span><br><span class="line"></span><br><span class="line">NSThread抽象度最高，也是Apple所推荐的。缺点是需要自己管理线程的生命周期，线程同步。线程同步对数据加锁会有一定系统开销。NSThread实现的技术有三种</span><br><span class="line"></span><br><span class="line"><span class="bullet">*</span> Cocoa threads</span><br><span class="line"><span class="bullet">*</span> POSIX threads</span><br><span class="line"><span class="bullet">*</span> Multiprocessing Services</span><br><span class="line"></span><br><span class="line"><span class="section">## 创建方式</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>(id)initWithTarget:(id)target selector:(SEL)selector object:(id)argument &#x2F;&#x2F;实例方法</li>
+</ul>
+<ul>
+<li>(void)detachNewThreadSelector:(SEL)aSelector toTarget:(id)aTarget withObject:(id)anArgument &#x2F;&#x2F;类方法</li>
+</ul>
+<p>&#x2F;&#x2F;直接创建线程并且运行</p>
+<p>1、[NSThread detachNewThreadSelector:@selector(doSomething:) toTarget:self withObject:nil];</p>
+<p>&#x2F;&#x2F;先创建线程对象，再运行线程操作，运行前可以设置线程优先级等线程信息。</p>
+<p>2、NSThread* myThread &#x3D; [[NSThread alloc] initWithTarget:self</p>
+<p>selector:@selector(doSomething:)</p>
+<p>object:nil];</p>
+<p>[myThread start];</p>
+<p>&#x2F;&#x2F;不显式创建线程的方法，使用NSObject的类方法创建一个线程</p>
+<p>3、[Obj performSelectorInBackground:@selector(doSomething) withObject:nil];</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">示例</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>#import “ViewController.h”</p>
+<p>#define kURL @”<a target="_blank" rel="noopener" href="http://avatar.csdn.net/2/C/D/1_totogo2010.jpg">http://avatar.csdn.net/2/C/D/1_totogo2010.jpg</a>“</p>
+<p>@interface ViewController ()</p>
+<p>@end</p>
+<p>@implementation ViewController</p>
+<p>-(void)downloadImage:(NSString *) url{</p>
+<pre><code> NSData *data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:url]];
+
+ UIImage *image = [[UIImage alloc]initWithData:data];
+
+ if(image == nil)&#123;
+
+ &#125;else&#123;
+
+      //更新主线程外的数据使用performSelector:onThread:withObject:waitUntilDone:
+
+      [self performSelectorOnMainThread:@selector(updateUI:) withObject:image waitUntilDone:YES];
+
+ &#125;
+</code></pre>
+<p>}</p>
+<p>-(void)updateUI:(UIImage*) image{</p>
+<pre><code> self.imageView.image = image;
+</code></pre>
+<p>}</p>
+<ul>
+<li>(void)viewDidLoad</li>
+</ul>
+<p>{</p>
+<pre><code> [super viewDidLoad];
+</code></pre>
+<p>&#x2F;&#x2F; [NSThread detachNewThreadSelector:@selector(downloadImage:) toTarget:self withObject:kURL];</p>
+<pre><code> NSThread *thread = [[NSThread alloc]initWithTarget:self selector:@selector(downloadImage:) object:kURL];
+
+ [thread start];
+</code></pre>
+<p>}</p>
+<p>@end</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## NSThread的线程同步，使用NSLock</span><br><span class="line"></span><br><span class="line">卖票的例子</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>#import &lt;UIKit&#x2F;UIKit.h&gt;</p>
+<p>@class ViewController;</p>
+<p>@interface AppDelegate : UIResponder <UIApplicationDelegate></p>
+<p>{</p>
+<pre><code> int tickets;
+
+ int count;
+
+ NSThread* ticketsThreadone;
+
+ NSThread* ticketsThreadtwo;
+
+ NSCondition* ticketsCondition;
+
+ NSLock *theLock;
+</code></pre>
+<p>}</p>
+<p>@property (strong, nonatomic) UIWindow *window;</p>
+<p>@property (strong, nonatomic) ViewController *viewController;</p>
+<p>@end</p>
+<ul>
+<li>(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions</li>
+</ul>
+<p>{</p>
+<pre><code> tickets = 100;
+
+ count = 0;
+
+ theLock = [[NSLock alloc] init];
+
+ // 锁对象
+
+ ticketsCondition = [[NSCondition alloc] init];
+
+ ticketsThreadone = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+
+ [ticketsThreadone setName:@&quot;Thread-1&quot;];
+
+ [ticketsThreadone start];
+
+ ticketsThreadtwo = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+
+ [ticketsThreadtwo setName:@&quot;Thread-2&quot;];
+
+ [ticketsThreadtwo start];
+
+ self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
+ // Override point for customization after application launch.
+
+ self.viewController = [[ViewController alloc] initWithNibName:@&quot;ViewController&quot; bundle:nil];
+
+ self.window.rootViewController = self.viewController;
+
+ [self.window makeKeyAndVisible];
+
+ return YES;
+</code></pre>
+<p>}</p>
+<ul>
+<li><p>(void)run{</p>
+<p>   while (TRUE) {</p>
+<pre><code>    // 上锁
+
+    // [ticketsCondition lock];
+
+    [theLock lock];
+
+    if(tickets &gt;= 0)&#123;
+
+         [NSThread sleepForTimeInterval:0.09];
+
+         count = 100 - tickets;
+
+         NSLog(@&quot;当前票数是:%d,售出:%d,线程名:%@&quot;,tickets,count,[[NSThread currentThread] name]);
+
+         tickets--;
+
+    &#125;else&#123;
+
+         break;
+
+    &#125;
+
+    [theLock unlock];
+
+    // [ticketsCondition unlock];
+</code></pre>
+<p>   }</p>
+</li>
+</ul>
+<p>}</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">没有线程同步lock,卖票数可能会是<span class="number">-1.</span>加上能够保证数据的正确。</span><br><span class="line"></span><br><span class="line">## NSThread线程的顺序执行同步</span><br><span class="line"></span><br><span class="line">可以通过[NSCondition signal]的方式发送信号，在一个线程唤醒另一个线程等待</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>#import “AppDelegate.h”</p>
+<p>#import “ViewController.h”</p>
+<p>@implementation AppDelegate</p>
+<ul>
+<li>(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions</li>
+</ul>
+<p>{</p>
+<pre><code> tickets = 100;
+
+ count = 0;
+
+ theLock = [[NSLock alloc] init];
+
+ // 锁对象
+
+ ticketsCondition = [[NSCondition alloc] init];
+
+ ticketsThreadone = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+
+ [ticketsThreadone setName:@&quot;Thread-1&quot;];
+
+ [ticketsThreadone start];
+
+ ticketsThreadtwo = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+
+ [ticketsThreadtwo setName:@&quot;Thread-2&quot;];
+
+ [ticketsThreadtwo start];
+
+ NSThread *ticketsThreadthree = [[NSThread alloc] initWithTarget:self selector:@selector(run3) object:nil];
+
+ [ticketsThreadthree setName:@&quot;Thread-3&quot;];
+
+ [ticketsThreadthree start];
+
+ self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
+ // Override point for customization after application launch.
+
+ self.viewController = [[ViewController alloc] initWithNibName:@&quot;ViewController&quot; bundle:nil];
+
+ self.window.rootViewController = self.viewController;
+
+ [self.window makeKeyAndVisible];
+
+ return YES;
+</code></pre>
+<p>}</p>
+<p>-(void)run3{</p>
+<pre><code> while (YES) &#123;
+
+      [ticketsCondition lock];
+
+      [NSThread sleepForTimeInterval:3];
+
+      [ticketsCondition signal];
+
+      [ticketsCondition unlock];
+
+ &#125;
+</code></pre>
+<p>}</p>
+<ul>
+<li><p>(void)run{</p>
+<p>   while (TRUE) {</p>
+<pre><code>    // 上锁
+
+    [ticketsCondition lock];
+
+    [ticketsCondition wait];
+
+    [theLock lock];
+
+    if(tickets &gt;= 0)&#123;
+
+         [NSThread sleepForTimeInterval:0.09];
+
+         count = 100 - tickets;
+
+         NSLog(@&quot;当前票数是:%d,售出:%d,线程名:%@&quot;,tickets,count,[[NSThread currentThread] name]);
+
+         tickets--;
+
+    &#125;else&#123;
+
+         break;
+
+    &#125;
+
+    [theLock unlock];
+
+    [ticketsCondition unlock];
+</code></pre>
+<p>   }</p>
+</li>
+</ul>
+<p>}</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">wait</span>是等待，假啊一个线程<span class="number">3</span>去唤醒其它两个线程锁中的<span class="keyword">wait</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 其它同步</span></span><br><span class="line"></span><br><span class="line">可以使用<span class="variable">@synchronized</span>来简化NSLock使用，这样就不必显示编写创建NSLock加锁并解锁相关代码。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>(void)doSomeThing:(id)anObj</li>
+</ul>
+<p>{</p>
+<pre><code> @synchronized(anObj)
+
+ &#123;
+
+      // Everything between the braces is protected by the @synchronized directive.
+
+ &#125;
+</code></pre>
+<p>}</p>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">还有些其它的锁对象，比如循环锁NSRecursiveLock，条件锁NSConditionLock，分布式锁NSDistributedLock等，可查阅官方文档。</span><br><span class="line"></span><br><span class="line"><span class="meta"># Run Loops</span></span><br><span class="line"></span><br><span class="line">* <span class="keyword">Run</span> <span class="keyword">loop</span>比GCD和操作队列要容易，不必处理并发中复杂情况就能异步执行。</span><br><span class="line">* 主线程配置main <span class="keyword">run</span> <span class="keyword">loop</span>，其它线程默认都没有配置<span class="keyword">run</span> <span class="keyword">loop</span>。一般都在主线程中调用后分配给其它队列。如果要在其它线程添加<span class="keyword">run</span> <span class="keyword">loop</span>至少添加一个<span class="keyword">input</span> source，不然一运行就会退出。</span><br><span class="line"></span><br><span class="line"><span class="meta"># 在后台操作UI</span></span><br><span class="line"></span><br><span class="line"><span class="meta">## 使用操作队列处理</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F;weak引用参照self避免循环引用，及block持有self，operationQueue retain了block，而self有retain了operationQueue。</p>
+<p>__weak id weakSelf &#x3D; self;</p>
+<p>[self.operationQueue addOperationWithBlock:^{</p>
+<pre><code> NSNumber* result = findLargestMersennePrime();
+
+ [[NSOperationQueue mainQueue] addOperationWithBlock:^&#123;
+
+      MyClass* strongSelf = weakSelf;
+
+      strongSelf.textLabel.text = [result stringValue];
+
+ &#125;];
+</code></pre>
+<p>}];</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">## drawRect在后台绘制</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">drawRect:</span>方法会影响性能，所以可以放到后台执行。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F;使用UIGraphicsBeginImageContextWithOptions取代UIGraphicsGetCurrentContext:方法</p>
+<p>UIGraphicsBeginImageContextWithOptions(size, NO, 0);</p>
+<p>&#x2F;&#x2F; drawing code here</p>
+<p>UIImage *i &#x3D; UIGraphicsGetImageFromCurrentImageContext();</p>
+<p>UIGraphicsEndImageContext();</p>
+<p>return I;</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">可以把这个方法运用到<span class="keyword">table</span> <span class="keyword">view</span>中，使<span class="keyword">table</span> <span class="keyword">view</span>的cell在滚出边界时能在didEndDisplayingCell委托方法中取消。WWDC中有讲解：<span class="keyword">Session</span> <span class="number">211</span> – Building Concurrent <span class="keyword">User</span> Interfaces <span class="keyword">on</span> iOS [https://developer.apple.com/videos/wwdc/<span class="number">2012</span>/](https://developer.apple.com/videos/wwdc/<span class="number">2012</span>/)</span><br><span class="line"></span><br><span class="line">还有个使用CALayer里drawsAsynchronously属性的方法。不过有时<span class="keyword">work</span>，有时不一定。</span><br><span class="line"></span><br><span class="line"># 网络异步请求</span><br><span class="line"></span><br><span class="line">网络都要使用异步方式，但是不要直接使用dispatch_async，这样没法取消这个网络请求。dataWithContentsOfURL:的超时是<span class="number">30</span>秒，那么这个线程需要干等到超时完。解决办法就是使用NSURLConnection的异步方法，把所有操作转化成operation来执行。NSURLConnection是通过run <span class="keyword">loop</span>来发送事件的。AFNetworking是建立一个独立的线程设置一个非main run <span class="keyword">loop</span>。下面是处理URL连接重写自定义operation子类里的<span class="keyword">start</span>方法</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>(void)start</li>
+</ul>
+<p>{</p>
+<pre><code> NSURLRequest* request = [NSURLRequest requestWithURL:self.url];
+
+ self.isExecuting = YES;
+
+ self.isFinished = NO;
+
+ [[NSOperationQueue mainQueue] addOperationWithBlock:^
+
+ &#123;
+
+      self.connection = [NSURLConnectionconnectionWithRequest:request
+
+           delegate:self];
+
+ &#125;];
+</code></pre>
+<p>}</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">重写<span class="literal">start</span>方法需要管理isExecuting和isFinished状态。下面是取消操作的方法</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>(void)cancel</li>
+</ul>
+<p>{</p>
+<pre><code> [super cancel];
+
+ [self.connection cancel];
+
+ self.isFinished = YES;
+
+ self.isExecuting = NO;
+</code></pre>
+<p>}</p>
+<p>&#x2F;&#x2F;连接完成发送回调</p>
+<ul>
+<li>(void)connectionDidFinishLoading:(NSURLConnection *)connection</li>
+</ul>
+<p>{</p>
+<pre><code> self.data = self.buffer;
+
+ self.buffer = nil;
+
+ self.isExecuting = NO;
+
+ self.isFinished = YES;
+</code></pre>
+<p>}</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 后台处理I/O</span></span><br><span class="line"></span><br><span class="line">异步处理文件可以使用NSInputStream。官方文档：[http:<span class="regexp">//</span>developer.apple.com<span class="regexp">/library/i</span>os<span class="regexp">/#documentation/</span>FileManagement<span class="regexp">/Conceptual/</span>FileSystemProgrammingGUide<span class="regexp">/TechniquesforReadingandWritingCustomFiles/</span>TechniquesforReadingandWritingCustomFiles.html](http:<span class="regexp">//</span>developer.apple.com<span class="regexp">/library/i</span>os<span class="regexp">/#documentation/</span>FileManagement<span class="regexp">/Conceptual/</span>FileSystemProgrammingGUide<span class="regexp">/TechniquesforReadingandWritingCustomFiles/</span>TechniquesforReadingandWritingCustomFiles.html)实例：[https:<span class="regexp">//gi</span>thub.com<span class="regexp">/objcio/i</span>ssue-<span class="number">2</span>-background-file-io](https:<span class="regexp">//gi</span>thub.com<span class="regexp">/objcio/i</span>ssue-<span class="number">2</span>-background-file-io)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>@interface Reader : NSObject</p>
+<ul>
+<li><p>(void)enumerateLines:(void (^)(NSString*))block</p>
+<p>   completion:(void (^)())completion;</p>
+</li>
+<li><p>(id)initWithFileAtPath:(NSString*)path;</p>
+</li>
+</ul>
+<p>&#x2F;&#x2F;采用main run loop的事件将数据发到后台操作线程去处理</p>
+<ul>
+<li>(void)enumerateLines:(void (^)(NSString*))block</li>
+</ul>
+<p>completion:(void (^)())completion</p>
+<p>{</p>
+<pre><code> if (self.queue == nil) &#123;
+
+      self.queue = [[NSOperationQueue alloc] init];
+
+      self.queue.maxConcurrentOperationCount = 1;
+
+ &#125;
+
+ self.callback = block;
+
+ self.completion = completion;
+
+ self.inputStream = [NSInputStream inputStreamWithURL:self.fileURL];
+
+ self.inputStream.delegate = self;
+
+ [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop]
+
+ forMode:NSDefaultRunLoopMode];
+
+      [self.inputStream open];
+
+ &#125;
+</code></pre>
+<p>@end</p>
+<p>&#x2F;&#x2F;input stream在主线程中发送代理消息，接着就可以在操作队列加入block操作</p>
+<ul>
+<li>(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)eventCode</li>
+</ul>
+<p>{</p>
+<pre><code> switch (eventCode) &#123;
+
+      ...
+
+      case NSStreamEventHasBytesAvailable: &#123;
+
+           NSMutableData *buffer = [NSMutableData dataWithLength:4 * 1024];
+
+           NSUInteger length = [self.inputStream read:[buffer mutableBytes]
+
+                maxLength:[buffer length]];
+
+           if (0 &lt; length) &#123;
+
+                [buffer setLength:length];
+
+                __weak id weakSelf = self;
+
+                [self.queue addOperationWithBlock:^&#123;
+
+                     [weakSelf processDataChunk:buffer];
+
+                &#125;];
+
+           &#125;
+
+           break;
+
+      &#125;
+
+      ...
+
+ &#125;
+</code></pre>
+<p>}</p>
+<p>&#x2F;&#x2F;处理数据chunk，原理就是把数据切成很多小块，然后不断更新和处理buffer缓冲区，逐块读取和存入方式来处理大文件响应快而且内存开销也小。</p>
+<ul>
+<li>(void)processDataChunk:(NSMutableData *)buffer;</li>
+</ul>
+<p>{</p>
+<pre><code> if (self.remainder != nil) &#123;
+
+      [self.remainder appendData:buffer];
+
+ &#125; else &#123;
+
+      self.remainder = buffer;
+
+ &#125;
+
+ [self.remainder obj_enumerateComponentsSeparatedBy:self.delimiter
+
+           usingBlock:^(NSData* component, BOOL last) &#123;
+
+      if (!last) &#123;
+
+           [self emitLineWithData:component];
+
+      &#125; else if (0 &lt; [component length]) &#123;
+
+           self.remainder = [component mutableCopy];
+
+      &#125; else &#123;
+
+           self.remainder = nil;
+
+      &#125;
+
+ &#125;];
+</code></pre>
+<p>}</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># 并发开发会遇到的困难问题</span><br><span class="line"></span><br><span class="line">## 多个线程访问共享资源</span><br><span class="line"></span><br><span class="line">比如两个线程都会把计算结果写到一个整型数中。为了防止，需要一种互斥机制来访问共享资源</span><br><span class="line"></span><br><span class="line">## 互斥锁</span><br><span class="line"></span><br><span class="line">同一时刻只能有一个线程访问某个资源。某线程要访问某个共享资源先获得共享资源的互斥锁，完成操作再释放这个互斥锁，然后其它线程就能访问这个共享资源。</span><br><span class="line"></span><br><span class="line">还有需要解决无序执行问题，这时就需要引入内存屏障。</span><br><span class="line"></span><br><span class="line">在Objective-C中如果属性声明为atomic就能够支持互斥锁，但是因为加解锁会有性能代价，所以一般是声明noatomic的。</span><br><span class="line"></span><br><span class="line">## 死锁</span><br><span class="line"></span><br><span class="line">当多个线程在相互等待对方锁结束时就会发生死锁，程序可能会卡住。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>void swap(A, B)</p>
+<p>{</p>
+<pre><code> lock(lockA);
+
+ lock(lockB);
+
+ int a = A;
+
+ int b = B;
+
+ A = b;
+
+ B = a;
+
+ unlock(lockB);
+
+ unlock(lockA);
+</code></pre>
+<p>}</p>
+<p>&#x2F;&#x2F;一般没问题，但是如果两个线程使用相反的值同时调用上面这个方法就可能会死锁。线程1获得X的一个锁，线程2获得Y的一个锁，它们会同时等待另一个锁的释放，但是却是没法等到的。</p>
+<p>swap(X, Y); &#x2F;&#x2F; 线程 1</p>
+<p>swap(Y, X); &#x2F;&#x2F; 线程 2</p>
+<pre><code>
+为了防止死锁，需要使用比简单读写锁更好的办法，比如write preference[http://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock](http://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock)，或read-copy-update算法[http://en.wikipedia.org/wiki/Read-copy-update](http://en.wikipedia.org/wiki/Read-copy-update)
+
+## 优先级反转
+
+运行时低优先级任务由于先取得了释放了锁的共享资源而阻塞了高优先级任务，这种情况叫做优先级反转
+
+## 最佳安全实践避免问题的方法
+
+从主线程中取到数据，利用一个操作队列在后台处理数据，完后返回后台队列中得到的数据到主队列中。这样的操作不会有任何锁操作。
+
+## 并发测试
+
+* 使用SenTestingKit框架测试：[https://github.com/nxtbgthng/SenTestingKitAsync](https://github.com/nxtbgthng/SenTestingKitAsync)
+* kiwi：[https://github.com/allending/Kiwi](https://github.com/allending/Kiwi)
+* GHunit：[https://github.com/gabriel/gh-unit/](https://github.com/gabriel/gh-unit/)
+</code></pre>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/01/AsyncDisplayKit-2-0-%E6%95%99%E7%A8%8B/" rel="prev" title="AsyncDisplayKit 2.0 教程">
+      <i class="fa fa-chevron-left"></i> AsyncDisplayKit 2.0 教程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/01/02/Swift-%E6%9E%90%E6%9E%84%E8%BF%87%E7%A8%8B/" rel="next" title="Swift   析构过程">
+      Swift   析构过程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">线程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Grand-Central-Dispatch"><span class="nav-number">2.</span> <span class="nav-text">Grand Central Dispatch</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GCD%E6%A6%82%E8%A6%81"><span class="nav-number">2.1.</span> <span class="nav-text">GCD概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch-once%E7%94%A8%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">dispatch_once用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch-async%EF%BC%88%E8%BE%83%E5%B8%B8%E7%94%A8%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">dispatch_async（较常用）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch-after%E5%BB%B6%E5%90%8E%E6%89%A7%E8%A1%8C"><span class="nav-number">2.4.</span> <span class="nav-text">dispatch_after延后执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GCD%E9%98%9F%E5%88%97"><span class="nav-number">2.5.</span> <span class="nav-text">GCD队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Barrier-Task%E6%96%B9%E6%B3%95Dispatch-Barrier%E8%A7%A3%E5%86%B3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E8%AF%BB%E5%86%99%E5%90%8C%E4%B8%80%E4%B8%AA%E8%B5%84%E6%BA%90%E5%8F%91%E7%94%9F%E6%AD%BB%E9%94%81"><span class="nav-number">2.6.</span> <span class="nav-text">使用Barrier Task方法Dispatch Barrier解决多线程并发读写同一个资源发生死锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5API%E5%86%99%E6%B3%95"><span class="nav-number">2.7.</span> <span class="nav-text">异步API写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch-apply%E8%BF%9B%E8%A1%8C%E5%BF%AB%E9%80%9F%E8%BF%AD%E4%BB%A3"><span class="nav-number">2.8.</span> <span class="nav-text">dispatch_apply进行快速迭代</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Block%E7%BB%84%E5%90%88Dispatch-groups"><span class="nav-number">2.9.</span> <span class="nav-text">Block组合Dispatch_groups</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C%E5%89%8D%E8%BF%9B%E8%A1%8C%E5%8F%96%E6%B6%88"><span class="nav-number">2.10.</span> <span class="nav-text">在任务执行前进行取消</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8GCD%E7%9B%91%E8%A7%86%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.11.</span> <span class="nav-text">用GCD监视进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%91%E8%A7%86%E6%96%87%E4%BB%B6%E5%A4%B9%E5%86%85%E6%96%87%E4%BB%B6%E5%8F%98%E5%8C%96"><span class="nav-number">2.12.</span> <span class="nav-text">监视文件夹内文件变化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GCD%E7%89%88%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="nav-number">2.13.</span> <span class="nav-text">GCD版定时器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GCD%E6%B7%B1%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="nav-number">2.14.</span> <span class="nav-text">GCD深入操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cocoa-NSOperation"><span class="nav-number">3.</span> <span class="nav-text">Cocoa NSOperation</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

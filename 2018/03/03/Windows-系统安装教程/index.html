@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一、概述###1.安装系统前的准备工作###2.安装系统的步骤###3.安装完成后安装驱动和软件 二、具体过程1.安装系统前的准备工作需要准备的有： 迅雷软件   使用迅雷软件下载系统镜像文件。 U盘启动盘制作工具   制作U盘启动盘 U盘   制作成启动盘后进入PE系统装机 Windows10系统镜像文件   需要安装的系统文件 一台可以正常运行的Windows电脑  制作U盘启动盘  准备阶">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows 系统安装教程">
+<meta property="og:url" content="https://suwangsuwang.github.io/2018/03/03/Windows-%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="一、概述###1.安装系统前的准备工作###2.安装系统的步骤###3.安装完成后安装驱动和软件 二、具体过程1.安装系统前的准备工作需要准备的有： 迅雷软件   使用迅雷软件下载系统镜像文件。 U盘启动盘制作工具   制作U盘启动盘 U盘   制作成启动盘后进入PE系统装机 Windows10系统镜像文件   需要安装的系统文件 一台可以正常运行的Windows电脑  制作U盘启动盘  准备阶">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-13a3c1c27ed847f2.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-7b53683424054f8d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-e59ac64883c007c1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-d9b6bc061da81293.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-778c453306b2ac6a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-46cc07982238d55a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-7aa1ec924831424e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-8cb979f5579b11e0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-23446d90d03df587.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-b1ee9bb96a990d77.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-1b927352b9a8d11d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-3d4752301b3aeb75.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/1064761-a79f29d5bb90fc68.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2018-03-03T07:45:26.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:28.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/1064761-13a3c1c27ed847f2.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2018/03/03/Windows-%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Windows 系统安装教程 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/03/03/Windows-%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows 系统安装教程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-03 15:45:26" itemprop="dateCreated datePublished" datetime="2018-03-03T15:45:26+08:00">2018-03-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:28" itemprop="dateModified" datetime="2023-06-07T23:20:28+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://upload-images.jianshu.io/upload_images/1064761-13a3c1c27ed847f2.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Windows10.jpeg"></p>
+<h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>###1.安装系统前的准备工作<br>###2.安装系统的步骤<br>###3.安装完成后安装驱动和软件</p>
+<h1 id="二、具体过程"><a href="#二、具体过程" class="headerlink" title="二、具体过程"></a>二、具体过程</h1><h3 id="1-安装系统前的准备工作"><a href="#1-安装系统前的准备工作" class="headerlink" title="1.安装系统前的准备工作"></a>1.安装系统前的准备工作</h3><h5 id="需要准备的有："><a href="#需要准备的有：" class="headerlink" title="需要准备的有："></a>需要准备的有：</h5><ul>
+<li>迅雷软件<br>   使用迅雷软件下载系统镜像文件。</li>
+<li>U盘启动盘制作工具<br>   制作U盘启动盘</li>
+<li>U盘<br>   制作成启动盘后进入PE系统装机</li>
+<li>Windows10系统镜像文件<br>   需要安装的系统文件</li>
+<li>一台可以正常运行的Windows电脑<br>  制作U盘启动盘</li>
+</ul>
+<h5 id="准备阶段需要完成的操作："><a href="#准备阶段需要完成的操作：" class="headerlink" title="准备阶段需要完成的操作："></a>准备阶段需要完成的操作：</h5><p>1.打开<a target="_blank" rel="noopener" href="https://msdn.itellyou.cn/">系统镜像下载地址</a>，选择合适的系统镜像进行下载。</p>
+<span id="more"></span>
+
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-7b53683424054f8d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="系统镜像下载.png"></p>
+<p><em>Tips</em>：根据需要选择系统类型（Windows 7 或者 Windows 10）<br><em>Tips</em>：不同机器选择 x86 或者 x64 系统进行下载，如果你不清楚两种的区别，一般情况下 x64 系统是适合大多数机器的。</p>
+<p>选中并复制其中的 ed2k 开头的磁力链接，到迅雷软件中进行下载。（如果速度缓慢可以在网上寻找迅雷临时共享会员，提升速度）。</p>
+<p>2.系统镜像下载的同时，可以着手准备制作U盘启动盘了<br><br> 准备好U盘，启动盘制作工具和一台可用的电脑：<br> U盘容量不是特别小都可以使用（一般的U盘都可以胜任）；启动盘制作工具可以百度任何一款工具，供选择的很多，如果是小白用户，可以使用</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.laomaotao.net/">老毛桃</a> </li>
+<li><a target="_blank" rel="noopener" href="http://www.winbaicai.com/">大白菜</a><br>启动盘制作工具。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-e59ac64883c007c1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="启动盘制作确认.png"></p>
+<p>选中当前要用的U盘，然后使用点击一键制作USB启动盘；制作完成后还可以进行模拟启动，如果可以正常模拟启动就制作好了启动U盘。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-d9b6bc061da81293.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="启动盘制作完成.png"></p>
+<p>*Tips：*制作过程中会格式化U盘内所有数据，如果有重要数据需要提前进行转移或备份。</p>
+<p>3.将下载完成的系统镜像文件保存到U盘上<br>如果需要将电脑磁盘全部数据进行格式化，就要将系统镜像文件放到外部存储设备中，在后续系统安装过程中使用。</p>
+<h3 id="2-安装系统的步骤"><a href="#2-安装系统的步骤" class="headerlink" title="2.安装系统的步骤"></a>2.安装系统的步骤</h3><h5 id="1-重启电脑，进入BIOS进行设置："><a href="#1-重启电脑，进入BIOS进行设置：" class="headerlink" title="1.重启电脑，进入BIOS进行设置："></a>1.重启电脑，进入BIOS进行设置：</h5><p>  在电脑上插入刚刚制作好的U盘启动盘，然后重启电脑，在启动过程中按下键盘上的 F2、F12、或者 Delete 键，进入电脑 BIOS 系统。<br>   之后在 BIOS 中 Boot  栏，调整 Boot 启动顺序 ，将制作好的启动盘作为第一启动顺序。选择好之后，安F10 保存对 BIOS 的设置，重启进入 PE系统。</p>
+<p>*Tips：*进入 BIOS 的按键，不同电脑设置不同，可以自行百度具体机型对应按键。<br>*Tips：*因不同电脑 BIOS 界面不同，如果确实无法自行完成，请自行搜索对应型号设置方法。</p>
+<h5 id="2-进入-Windows-PE-系统进行系统安装："><a href="#2-进入-Windows-PE-系统进行系统安装：" class="headerlink" title="2.进入 Windows PE 系统进行系统安装："></a>2.进入 Windows PE 系统进行系统安装：</h5><p>在设置好 BIOS  启动之后可以进入 PE 选项，如下图：<br><img src="https://upload-images.jianshu.io/upload_images/1064761-778c453306b2ac6a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="装机工具.png"></p>
+<p>稍等一会儿就可以进入 PE 系统了：<br><img src="https://upload-images.jianshu.io/upload_images/1064761-46cc07982238d55a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="进入系统.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-7aa1ec924831424e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="PE系统.png"></p>
+<p>进入系统以后 ,选择磁盘分区工具：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-8cb979f5579b11e0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="分区工具.png"></p>
+<p>在磁盘工具中可以对磁盘进行分区、格式化、建立磁盘引导等操作。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-23446d90d03df587.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="分区工具2.png"></p>
+<p>首先在磁盘工具中选中需要做系统盘的磁盘，点击建立分区–&gt;主分区<br>–&gt;设置主分区激活状态。然后可以对系统内其他磁盘空间新建逻辑分区，将所有分区全部设置完成后，点击保存。软件会提示是否需要进行格式化操作，此时选择格式化磁盘。完成后退出分区工具。</p>
+<p>选中系统安装工具： </p>
+<p>此时可以将系统镜像文件拷贝到电脑磁盘上，并且进行解压。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-b1ee9bb96a990d77.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="系统安装工具.png"></p>
+<p>在选中系统源文件的输入框中，点击右侧选择然后选中之前下载的解压以后的系统镜像文件，找到其中的 sources 文件夹下的 install.wim 文件，选中打开。<br>在系统安装工具中配置其他选项，其中的 系统版本可以选择Windows 10 专业版，其余的设置可以使用默认。点击开始安装，安装工具就会开始部署文件到磁盘上。</p>
+<p>部署完成后，弹出U盘，重启电脑，系统会自动进入安装程序：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-1b927352b9a8d11d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="进入安装程序-准备设备.png"></p>
+<p>等待一会儿：<br>完成一些基础的设置，就可以看到安装完成后的操作系统桌面了。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-3d4752301b3aeb75.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="系统桌面.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1064761-a79f29d5bb90fc68.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="重装成功.png"></p>
+<p>至此Windows 10 系统重装完成。</p>
+<h3 id="3-安装完成后安装驱动和软件"><a href="#3-安装完成后安装驱动和软件" class="headerlink" title="3.安装完成后安装驱动和软件"></a>3.安装完成后安装驱动和软件</h3><p>一般 Windows 10 系统都会自带WiFi 联网驱动，建议联网后使用360驱动大师一键安装设备驱动程序。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/02/05/%E6%A3%80%E6%9F%A5-APP-%E6%80%A7%E8%83%BD/" rel="prev" title="检查 APP 性能">
+      <i class="fa fa-chevron-left"></i> 检查 APP 性能
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/03/04/Runtime/" rel="next" title="Runtime">
+      Runtime <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">一、概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%85%B7%E4%BD%93%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">二、具体过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85%E7%B3%BB%E7%BB%9F%E5%89%8D%E7%9A%84%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.安装系统前的准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E5%87%86%E5%A4%87%E7%9A%84%E6%9C%89%EF%BC%9A"><span class="nav-number">2.0.1.0.1.</span> <span class="nav-text">需要准备的有：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E9%98%B6%E6%AE%B5%E9%9C%80%E8%A6%81%E5%AE%8C%E6%88%90%E7%9A%84%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="nav-number">2.0.1.0.2.</span> <span class="nav-text">准备阶段需要完成的操作：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.安装系统的步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E9%87%8D%E5%90%AF%E7%94%B5%E8%84%91%EF%BC%8C%E8%BF%9B%E5%85%A5BIOS%E8%BF%9B%E8%A1%8C%E8%AE%BE%E7%BD%AE%EF%BC%9A"><span class="nav-number">2.0.2.0.1.</span> <span class="nav-text">1.重启电脑，进入BIOS进行设置：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%BF%9B%E5%85%A5-Windows-PE-%E7%B3%BB%E7%BB%9F%E8%BF%9B%E8%A1%8C%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%EF%BC%9A"><span class="nav-number">2.0.2.0.2.</span> <span class="nav-text">2.进入 Windows PE 系统进行系统安装：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85%E5%AE%8C%E6%88%90%E5%90%8E%E5%AE%89%E8%A3%85%E9%A9%B1%E5%8A%A8%E5%92%8C%E8%BD%AF%E4%BB%B6"><span class="nav-number">2.0.3.</span> <span class="nav-text">3.安装完成后安装驱动和软件</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

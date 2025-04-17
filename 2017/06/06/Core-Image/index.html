@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Core Image API架构Core Image的插件架构允许编写自定义滤镜与系统滤镜集成来扩展功能。Core Image需要context对象来实现。 找可用滤镜向Core Image的kCICategoryBuiltIn类请求得到滤镜名。或者使用Quartz Composer里的Filter查看并且进行组合查看效果。这个范例也可以查看https:&#x2F;&#x2F;github.com&#x2F;objcio&#x2F;is">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Core-Image">
+<meta property="og:url" content="https://suwangsuwang.github.io/2017/06/06/Core-Image/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="Core Image API架构Core Image的插件架构允许编写自定义滤镜与系统滤镜集成来扩展功能。Core Image需要context对象来实现。 找可用滤镜向Core Image的kCICategoryBuiltIn类请求得到滤镜名。或者使用Quartz Composer里的Filter查看并且进行组合查看效果。这个范例也可以查看https:&#x2F;&#x2F;github.com&#x2F;objcio&#x2F;is">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-06-06T08:25:30.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:36.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2017/06/06/Core-Image/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Core-Image | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/06/06/Core-Image/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Core-Image
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-06-06 16:25:30" itemprop="dateCreated datePublished" datetime="2017-06-06T16:25:30+08:00">2017-06-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:36" itemprop="dateModified" datetime="2023-06-07T23:20:36+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Core-Image-API架构"><a href="#Core-Image-API架构" class="headerlink" title="Core Image API架构"></a>Core Image API架构</h1><p>Core Image的插件架构允许编写自定义滤镜与系统滤镜集成来扩展功能。Core Image需要context对象来实现。</p>
+<h2 id="找可用滤镜"><a href="#找可用滤镜" class="headerlink" title="找可用滤镜"></a>找可用滤镜</h2><p>向Core Image的kCICategoryBuiltIn类请求得到滤镜名。或者使用Quartz Composer里的Filter查看并且进行组合查看效果。这个范例也可以查看<a target="_blank" rel="noopener" href="https://github.com/objcio/issue-21-core-image-explorer">https://github.com/objcio/issue-21-core-image-explorer</a>。<br>官方提供的Core Image滤镜的完整列表<a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/uid/TP40004346">https://developer.apple.com/library/ios/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref&#x2F;doc&#x2F;uid&#x2F;TP40004346</a></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">let filterNames = <span class="built_in">CIFilter</span>.filterNamesInCategory(kCICategoryBuiltIn) as [String] <span class="comment">//目前OS X有169个内置滤镜，iOS上有127个</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="创建滤镜"><a href="#创建滤镜" class="headerlink" title="创建滤镜"></a>创建滤镜</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let blurFilter = <span class="built_in">CIFilter</span>(named:<span class="string">&quot;CIGaussianBlur”) //根据滤镜列表里的滤镜名，      可以创建一个滤镜对象，比如高斯模糊滤镜</span></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="对滤镜对象设置参数"><a href="#对滤镜对象设置参数" class="headerlink" title="对滤镜对象设置参数"></a>对滤镜对象设置参数</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">blurFilter.setValue(<span class="number">10.0</span> forKey:<span class="string">&quot;inputRadius”) //设置模糊滤镜的模糊半径</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="查询滤镜属性"><a href="#查询滤镜属性" class="headerlink" title="查询滤镜属性"></a>查询滤镜属性</h2><p>查看滤镜的输入和输出参数可以获取inputKeys和outputKeys数组，通过滤镜提供的attributes字典。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//CIColorControls滤镜对应的inputBrightness参数字典</span></span><br><span class="line"></span><br><span class="line">inputBrightness = &#123;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CIAttributeClass</span> = <span class="built_in">NSNumber</span>;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CIAttributeDefault</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CIAttributeIdentity</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CIAttributeMin</span> = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CIAttributeSliderMax</span> = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CIAttributeSliderMin</span> = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">     <span class="built_in">CIAttributeType</span> = <span class="built_in">CIAttributeTypeScalar</span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="示例创建一个19-世纪锡版照风格图像的滤镜"><a href="#示例创建一个19-世纪锡版照风格图像的滤镜" class="headerlink" title="示例创建一个19 世纪锡版照风格图像的滤镜"></a>示例创建一个19 世纪锡版照风格图像的滤镜</h2><p>使用CIColorMonochrome和CIVignette滤镜链起来可以达到这种效果。苹果提供了一个叫做Quartz Composer的工具用来做Core Image滤镜图表的原型。<br><br>官方下载地址<a target="_blank" rel="noopener" href="https://developer.apple.com/downloads/index.action?name=Graphics">https://developer.apple.com/downloads/index.action?name=Graphics</a>，试着组合成满意的效果后就可以将其code出来。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">let sepiaColor = <span class="built_in">CIColor</span>(red: <span class="number">0.76</span>, green: <span class="number">0.65</span>, blue: <span class="number">0.54</span>)</span><br><span class="line"></span><br><span class="line">let monochromeFilter = <span class="built_in">CIFilter</span>(name: <span class="string">&quot;CIColorMonochrome&quot;</span>,</span><br><span class="line"></span><br><span class="line">     withInputParameters: [<span class="string">&quot;inputColor&quot;</span> : sepiaColor, <span class="string">&quot;inputIntensity&quot;</span> : <span class="number">1.0</span>])</span><br><span class="line"></span><br><span class="line">monochromeFilter.setValue(inputImage, forKey: <span class="string">&quot;inputImage&quot;</span>)</span><br><span class="line"></span><br><span class="line">let vignetteFilter = <span class="built_in">CIFilter</span>(name: <span class="string">&quot;CIVignette&quot;</span>,</span><br><span class="line"></span><br><span class="line">     withInputParameters: [<span class="string">&quot;inputRadius&quot;</span> : <span class="number">1.75</span>, <span class="string">&quot;inputIntensity&quot;</span> : <span class="number">1.0</span>])</span><br><span class="line"></span><br><span class="line">vignetteFilter.setValue(monochromeFilter.outputImage, forKey: <span class="string">&quot;inputImage&quot;</span>)</span><br><span class="line"></span><br><span class="line">let outputImage = vignetteFilter.outputImage</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="创建Input-Image"><a href="#创建Input-Image" class="headerlink" title="创建Input Image"></a>创建Input Image</h2><p>滤镜要求类型是CIImage</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">let inputImage = <span class="built_in">CIImage</span>(image: uiImage)</span><br><span class="line"></span><br><span class="line"><span class="comment">//有了CIImage就可以把它用作滤镜的inputImage了</span></span><br><span class="line"></span><br><span class="line">filter.setValue(inputImage, forKey:<span class="string">&quot;inputImage&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="滤镜处理生成Output-Image"><a href="#滤镜处理生成Output-Image" class="headerlink" title="滤镜处理生成Output Image"></a>滤镜处理生成Output Image</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">let ciContext = <span class="built_in">CIContext</span>(options: <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">let cgImage = ciContext.createCGImage(filter.outputImage, fromRect: inputImage.extent())</span><br><span class="line"></span><br><span class="line">let uiImage = <span class="built_in">UIImage</span>(<span class="built_in">CGImage</span>: cgImage)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用OpenGL解决性能问题"><a href="#使用OpenGL解决性能问题" class="headerlink" title="使用OpenGL解决性能问题"></a>使用OpenGL解决性能问题</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">let eaglContext = EAGLContext(API: .OpenGLES2)</span><br><span class="line"></span><br><span class="line">let ciContext = <span class="built_in">CIContext</span>(EAGLContext: context)</span><br><span class="line"></span><br><span class="line">ciContext.drawImage(filter.outputImage, inRect: outputBounds, fromRect: inputBounds)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/04/05/Core-Animation/" rel="prev" title="Core-Animation">
+      <i class="fa fa-chevron-left"></i> Core-Animation
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/07/05/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-GCD/" rel="next" title="深入理解 GCD">
+      深入理解 GCD <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Core-Image-API%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">Core Image API架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%BE%E5%8F%AF%E7%94%A8%E6%BB%A4%E9%95%9C"><span class="nav-number">1.1.</span> <span class="nav-text">找可用滤镜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%BB%A4%E9%95%9C"><span class="nav-number">1.2.</span> <span class="nav-text">创建滤镜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%BB%A4%E9%95%9C%E5%AF%B9%E8%B1%A1%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">对滤镜对象设置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%BB%A4%E9%95%9C%E5%B1%9E%E6%80%A7"><span class="nav-number">1.4.</span> <span class="nav-text">查询滤镜属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA19-%E4%B8%96%E7%BA%AA%E9%94%A1%E7%89%88%E7%85%A7%E9%A3%8E%E6%A0%BC%E5%9B%BE%E5%83%8F%E7%9A%84%E6%BB%A4%E9%95%9C"><span class="nav-number">1.5.</span> <span class="nav-text">示例创建一个19 世纪锡版照风格图像的滤镜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAInput-Image"><span class="nav-number">1.6.</span> <span class="nav-text">创建Input Image</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%A4%E9%95%9C%E5%A4%84%E7%90%86%E7%94%9F%E6%88%90Output-Image"><span class="nav-number">1.7.</span> <span class="nav-text">滤镜处理生成Output Image</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8OpenGL%E8%A7%A3%E5%86%B3%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="nav-number">1.8.</span> <span class="nav-text">使用OpenGL解决性能问题</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

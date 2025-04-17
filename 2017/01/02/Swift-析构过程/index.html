@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1.简介析构器 只适用于类类型，当一个类的实例被释放之前，析构器会被立即调用。析构器用关键字 deinit 来标示，类似于构造器要用 init 来标示。本文章将主要介绍 析构过程原理 以及 析构器的相关实践。 2.析构过程原理Swift 会自动释放不在需要的实例以释放资源。并且通过自动引用计数(ARC)处理实例的内存管理。但是,当使用自己的资源时,可能需要进行一些额外的清理。例如，在创建了一个自定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift   析构过程">
+<meta property="og:url" content="https://suwangsuwang.github.io/2017/01/02/Swift-%E6%9E%90%E6%9E%84%E8%BF%87%E7%A8%8B/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="1.简介析构器 只适用于类类型，当一个类的实例被释放之前，析构器会被立即调用。析构器用关键字 deinit 来标示，类似于构造器要用 init 来标示。本文章将主要介绍 析构过程原理 以及 析构器的相关实践。 2.析构过程原理Swift 会自动释放不在需要的实例以释放资源。并且通过自动引用计数(ARC)处理实例的内存管理。但是,当使用自己的资源时,可能需要进行一些额外的清理。例如，在创建了一个自定">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-01-02T06:25:05.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:26.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2017/01/02/Swift-%E6%9E%90%E6%9E%84%E8%BF%87%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Swift   析构过程 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/01/02/Swift-%E6%9E%90%E6%9E%84%E8%BF%87%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Swift   析构过程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-01-02 14:25:05" itemprop="dateCreated datePublished" datetime="2017-01-02T14:25:05+08:00">2017-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:26" itemprop="dateModified" datetime="2023-06-07T23:20:26+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h2><p>析构器 只适用于类类型，当一个类的实例被释放之前，析构器会被立即调用。析构器用关键字 deinit 来标示，类似于构造器要用 init 来标示。<br>本文章将主要介绍 析构过程原理 以及 析构器的相关实践。</p>
+<h2 id="2-析构过程原理"><a href="#2-析构过程原理" class="headerlink" title="2.析构过程原理"></a>2.析构过程原理</h2><p>Swift 会自动释放不在需要的实例以释放资源。并且通过自动引用计数(ARC)处理实例的内存管理。但是,当使用自己的资源时,可能需要进行一些额外的清理。例如，在创建了一个自定义的类打开一个文件，并写入一些数据,你可能需要在类实例被释放之前动手关闭文件。</p>
+<p>在类的定义中,每个类最多只有一个析构器，而且析构器不带有任何参数,例如:</p>
+<figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">deinit</span>&#123;</span><br><span class="line"><span class="comment">//执行析构过程</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>析构器是在实例释放发生前被自动调用，而不用手动调用析构器。子类继承了父类的析构器，并且在子类析构器实现的最后，父类的析构器会自动调用。即使子类没有提供自己的析构器，父类的析构器也同样会被调用。</p>
+<p>直到实例的析构器被调用后，实例才会被释放，所以析构器可以访问实例的所有属性，并且可以根据那些属性可以修改它的行为(比如查找一个需要被关闭的文件)。</p>
+<h2 id="3-析构器实践"><a href="#3-析构器实践" class="headerlink" title="3.析构器实践"></a>3.析构器实践</h2><p>以下将会使用一个简单的析构器实例，实例中描述一个简单的游戏，这里定义了两种新类型，分别是 Bank 和 Player。Bank 类管理一种虚拟货币,确保流通的硬币数量永远不可能超过10000。在游戏中有且只能有一个 Bank 存在，以此 Bank 用类来实现，并使用类型属性和类型方法来存储和管理其当前状态。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Bank</span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">var</span> coinsInBank <span class="operator">=</span> <span class="number">10_000</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">func</span> <span class="title function_">distribute</span>(<span class="params">coins</span> <span class="params">numberOfCoinsRequested</span>:<span class="type">Int</span>) -&gt; <span class="type">Int</span>&#123;</span><br><span class="line">        <span class="keyword">let</span> numberOfCoinsToVend <span class="operator">=</span> <span class="built_in">min</span>(numberOfCoinsRequested,coinsInBank)</span><br><span class="line">        coinsInBank  <span class="operator">-=</span> numberOfCoinsToVend</span><br><span class="line">        <span class="keyword">return</span>  numberOfCoinsToVend</span><br><span class="line">      &#125;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">func</span> <span class="title function_">receive</span>(<span class="params">coins</span>: <span class="type">Int</span>)&#123;</span><br><span class="line">        coinsInBank <span class="operator">+=</span> coins</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Bank 使用 coinsInBank 属性来跟踪它当前拥有的硬币数量。Bank 还提供了两个方法， distribute(coins:)和 receive(coins:)，分别用来处理硬币的分发和收集。</p>
+<p>distribute(coins:)方法在 Bank 对象分发硬币之前检查是否有足够的硬币。如果硬币不足， Bank 对象会返回一个比请求时小的数字 (如果 Bank 对象中没有硬币了就返回0)。次方法返回一个整型值， 表示提供的硬币的实际数量。receive(coins:)方法只是将 Bank 实例接收到的硬币数目加回硬币存储中。</p>
+<p>Player 类描述了游戏中的一个玩家。每一个玩家在任意时间都有一定数量的硬币存储在他们的钱包中。通过 coinsInPurse 来表示:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Player</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> coinsInPurse : <span class="type">Int</span></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">coins</span>: <span class="type">Int</span>)&#123;</span><br><span class="line">        coinsInPurse <span class="operator">=</span> <span class="type">Bank</span>.distribute(coins: coins)</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">func</span> <span class="title function_">win</span>(<span class="params">coins</span>: <span class="type">Int</span>)&#123;</span><br><span class="line">      coinsInPurse <span class="operator">+=</span> <span class="type">Bank</span>.distribute(coins: coins)</span><br><span class="line">    &#125;</span><br><span class="line">   <span class="keyword">deinit</span> &#123;</span><br><span class="line">      <span class="type">Bank</span>.receive(coins: coinsInPurse)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每个 Player 实例在初始化的过程中，都从 Bank 对象获取指定数量的硬币。如果没有足够的硬币可用， Player 实例可能会收到比指定数量少的硬币。</p>
+<p>Player 类定义了一个 win(coins:)方法，该方法从 Bank 对象获取一定数量的硬币，并把它们添加到玩家的钱包。Player 类还实现了一个析构器，这个析构器在 Player 实例释放前被调用。在这里，析构器只是将玩家的所有硬币都返回给 Bank 对象:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> playerOne: <span class="type">Player</span>? <span class="operator">=</span> <span class="type">Player</span>(coins: <span class="number">100</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;A new player has joined the game with <span class="subst">\(playerOne<span class="operator">!</span>.coinsInPurse)</span> coins&quot;</span>)</span><br><span class="line"><span class="comment">//打印&quot;A new player has joined the game with 100 coins&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;There are now <span class="subst">\(Bank.coinsInBank)</span> coins left in the bank&quot;</span>)</span><br><span class="line"><span class="comment">//打印 &quot;There are now 9900 coins left in the bank&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>创建一个 Player 实例的时候，会向 Bank 对象请求100 个硬币，如果有足够的硬币可用的话。这个 Player 实例存储在一个名为 playerOne 的可选类型的变量中。这里使用了一个可选类型的变量，因为玩家可以随时离开游戏，设置为可选是你可以追踪当前是否在游戏中。<br>因为 playerOne 是可选的，所以访问其 coinsInPurse 属性来打印钱包中的硬币数量时,使用感叹号(!)来解包:</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">playerOne!<span class="selector-class">.win</span>(coins: <span class="number">2</span>_000)</span><br><span class="line"><span class="function"><span class="title">Print</span><span class="params">(<span class="string">&quot;PlayerOne won 2000 coins &amp; now has \(playerOne!.coinsInPurse) coins&quot;</span>)</span></span></span><br><span class="line"><span class="comment">//输出&quot;PlayerOne 我嫩2000 coins &amp; now has 2100 coins&quot;</span></span><br><span class="line">print (<span class="string">&quot;The bank now only has \(Bank.coinsInBank) coins left&quot;</span>)</span><br><span class="line"><span class="comment">//输出 &quot;The bank now only has 7900coins left&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里，玩家已经赢得了2,000枚硬币，所以玩家的钱包中现在有2,100枚硬币，而 Bank 对象只剩下7,900枚硬币。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">playerOne = nil</span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(<span class="string">&quot;PlayerOne has left the game&quot;</span>)</span></span></span><br><span class="line"><span class="comment">//打印&quot;PlayerOne has left the game&quot;</span></span><br><span class="line"><span class="function"><span class="title">print</span><span class="params">(<span class="string">&quot;The bank now has \(Bank.coinsInBank) coins&quot;</span>)</span></span></span><br><span class="line"><span class="comment">//打印&quot;The bank now has 10000 coins&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>玩家已经离开了游戏。这通过将可选类型的 playerOne 变量设置为 nil 来表示，意味着”没有 Player 实例”。当这一切发生时，playerOne 变量对 Player 实例的引用被破坏了。没有其它属性或者变量引用 Player 实例，因此该实例会被释放，以便回收内存。在这之前，该实例的析构器会被自动调用，玩家的硬币被返回给银行。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/" rel="prev" title="多线程开发">
+      <i class="fa fa-chevron-left"></i> 多线程开发
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/01/25/Swift-%E8%87%AA%E5%8A%A8%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0/" rel="next" title="Swift 自动引用计数">
+      Swift 自动引用计数 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1.简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%9E%90%E6%9E%84%E8%BF%87%E7%A8%8B%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">2.析构过程原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%9E%90%E6%9E%84%E5%99%A8%E5%AE%9E%E8%B7%B5"><span class="nav-number">3.</span> <span class="nav-text">3.析构器实践</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

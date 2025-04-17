@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="before we start, what I have to say ,the post is  not  an original article. but  the  learning experience  shows that  imitation is very important.  let’s start As we all know ,iOS 11 brings a ton of">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to use the Files App in iOS 11">
+<meta property="og:url" content="https://suwangsuwang.github.io/2017/12/10/How-to-use-the-Files-App-in-iOS-11/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="before we start, what I have to say ,the post is  not  an original article. but  the  learning experience  shows that  imitation is very important.  let’s start As we all know ,iOS 11 brings a ton of">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-b01e6bf4ffcd4b7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-17c7c7152a7f0bbc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-7237954a5f03db75.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-631a7a6f8591471c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1064761-9f7ead80fe1e4534.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-12-10T01:05:23.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:34.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1064761-b01e6bf4ffcd4b7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2017/12/10/How-to-use-the-Files-App-in-iOS-11/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>How to use the Files App in iOS 11 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/12/10/How-to-use-the-Files-App-in-iOS-11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          How to use the Files App in iOS 11
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-12-10 09:05:23" itemprop="dateCreated datePublished" datetime="2017-12-10T09:05:23+08:00">2017-12-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:34" itemprop="dateModified" datetime="2023-06-07T23:20:34+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>before we start, what I have to say ,the post is  not  an original article. but  the  learning experience  shows that  imitation is very important.</li>
+</ul>
+<h1 id="let’s-start"><a href="#let’s-start" class="headerlink" title="let’s start"></a>let’s start</h1><p> As we all know ,iOS 11 brings a ton of exciting <a target="_blank" rel="noopener" href="https://www.apple.com/ios/ios-11/">new features</a>. One of them is the new Files app,which allows users to manage files stored locally and in iCloud. In this post, we learn how your app can take advantage of this cool new feature.</p>
+<h2 id="So-When-You-Want-to-Be-a-Poet"><a href="#So-When-You-Want-to-Be-a-Poet" class="headerlink" title="So When You Want to Be a Poet"></a>So When You Want to Be a Poet</h2><p>When you have created a great new app that encourages people to write more poetry. You’ve written several new poems and you’re excited to share them.<br><img src="http://upload-images.jianshu.io/upload_images/1064761-b01e6bf4ffcd4b7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="poem-collection-3.png"></p>
+<p>And now, Each poem created within your app is stored inside your app’s Documents folder as a simple text file. You’re excited about the new Files app in iOS 11 and you would like to give your users the ability to manage their poems from within Files. Naturally, you jump into the Files app to start managing your files.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-17c7c7152a7f0bbc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="empty-files.png"></p>
+<p>So there must be something wrong. Your poems do not appear in the Files app. Fortunately, there’s an easy fix.</p>
+<span id="more"></span>
+
+<h1 id="Opting-in-with-the-Files-App"><a href="#Opting-in-with-the-Files-App" class="headerlink" title="Opting in with the Files App"></a>Opting in with the Files App</h1><p>Before your files can appear in the Files app, you must indicate that your app supports Open in Place and File Sharing Enabled. These options are configured using keys in your Info.plist file. The first key is UIFileSharingEnabled,which enables iTunes sharing of files in your Documents folder. The second key is LSSupportsOpeningDocumentsInPlace, which grants the local file provider access to files in your Documents folder. Add these keys to your Info.plist and set their values to YES.</p>
+<ul>
+<li>UIFileSharingEnabled: Application supports iTunes file sharing</li>
+<li>LSSupportsOpeningDocumentsInPlace:Supports opening documents in place</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-7237954a5f03db75.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="info-plist.png"></p>
+<p>Run your app again to make these changes take effect. Congratulations! Your files should now appear in the Files app.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-631a7a6f8591471c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="files-app.png"></p>
+<h1 id="I-See-What-You-Did-There"><a href="#I-See-What-You-Did-There" class="headerlink" title="I See What You Did There"></a>I See What You Did There</h1><p>Now let’s take a look at your poems in the Files app. We can see all of our poems listed, but we also see a mysterious file named’Saves’.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1064761-9f7ead80fe1e4534.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="files-with-saves.png"></p>
+<p>Understand that any files you place in your Documents folder will be visible within the Files apps. Apple suggests you only place user-created files in the Documents folder. Placing app-created files in the Documents folder will create clutter and confound your users.</p>
+<h1 id="Hiding-Important-Files"><a href="#Hiding-Important-Files" class="headerlink" title="Hiding Important Files"></a>Hiding Important Files</h1><p>So where should you store your app-created files? It depends on their importance. Let’s say we placed the ‘Saves’ file in the Documents folder because we need to ensure it is backed up to iCloud. This file is important to the operation of our app, so backups are  a must. This type of file should be placed in the Application Support directory instead. The Application Support directory is also backed up to iCloud, but it’s contents will not appear in the Files app.Let’s make this change.</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">//</span> <span class="keyword">let</span> documents <span class="operator">=</span>FileManager.default.urls(<span class="params">for:</span> .documentDirectory,<span class="params">in:</span> .userDomainMask).first<span class="operator">!</span></span><br><span class="line"><span class="keyword">let</span> support <span class="operator">=</span> FileManager.default.urls(<span class="params">for:</span> .applicationSupportDirectory,<span class="params">in:</span> .userDomainMask).first<span class="operator">!</span></span><br></pre></td></tr></table></figure>
+<p>if  your file is not critical, or if it can be recreated easily, you should consider placing it somewhere else. The .cachesDirectory and FileManager.default.temporaryDirectory folders are good choices for files that aren’t critical to the operation of your app.</p>
+<h1 id="For-the-More-Curious"><a href="#For-the-More-Curious" class="headerlink" title="For the More Curious"></a>For the More Curious</h1><p>Aa part of their Fall 20117 iPhone event, Apple posted a series of WWDC-esaue videos. This post was inspired by their <a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/fall2017/204/">iOS Storage Best Practices</a> video. The <a target="_blank" rel="noopener" href="https://developer.apple.com/videos/fall2017/">other videos</a> cover topics like Apple TV 4K, Apple Watch Series 3, iPhone X and more.</p>
+<h1 id="Getting-Ready-for-iOS-11"><a href="#Getting-Ready-for-iOS-11" class="headerlink" title="Getting Ready for iOS 11"></a>Getting Ready for iOS 11</h1><p>I hope this post helps you  as you prepare your apps for the exciting new features in iOS 11. Keep an eye on my blog for other helpful iOS tips an tricks. Let’s work together to get your app ready for iOS 11.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/11/19/iOS%E6%9E%B6%E6%9E%84/" rel="prev" title="iOS 架构">
+      <i class="fa fa-chevron-left"></i> iOS 架构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/01/02/UICollectionView/" rel="next" title="UICollectionview">
+      UICollectionview <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#let%E2%80%99s-start"><span class="nav-number">1.</span> <span class="nav-text">let’s start</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#So-When-You-Want-to-Be-a-Poet"><span class="nav-number">1.1.</span> <span class="nav-text">So When You Want to Be a Poet</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Opting-in-with-the-Files-App"><span class="nav-number">2.</span> <span class="nav-text">Opting in with the Files App</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#I-See-What-You-Did-There"><span class="nav-number">3.</span> <span class="nav-text">I See What You Did There</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hiding-Important-Files"><span class="nav-number">4.</span> <span class="nav-text">Hiding Important Files</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#For-the-More-Curious"><span class="nav-number">5.</span> <span class="nav-text">For the More Curious</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Getting-Ready-for-iOS-11"><span class="nav-number">6.</span> <span class="nav-text">Getting Ready for iOS 11</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

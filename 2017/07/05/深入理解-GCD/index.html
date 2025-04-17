@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1.Dispatch Group在追加到 Dispatch Queue 中的多个任务处理完毕之后想执行结束处理，这种需求会经常出现。如果只是使用一个 Serial Dispatch Queue （串行队列）时，只想要将执行的处理全部追加到改串行队列中并在最后追加结束处理即可，但是在使用 Concurrent Queue 时，可能会同时使用多个 Dispatch Queue 时，源码就会变得很复杂。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解 GCD">
+<meta property="og:url" content="https://suwangsuwang.github.io/2017/07/05/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-GCD/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="1.Dispatch Group在追加到 Dispatch Queue 中的多个任务处理完毕之后想执行结束处理，这种需求会经常出现。如果只是使用一个 Serial Dispatch Queue （串行队列）时，只想要将执行的处理全部追加到改串行队列中并在最后追加结束处理即可，但是在使用 Concurrent Queue 时，可能会同时使用多个 Dispatch Queue 时，源码就会变得很复杂。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-07-05T06:25:00.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:20.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2017/07/05/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-GCD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>深入理解 GCD | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/07/05/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-GCD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深入理解 GCD
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-07-05 14:25:00" itemprop="dateCreated datePublished" datetime="2017-07-05T14:25:00+08:00">2017-07-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:20" itemprop="dateModified" datetime="2023-06-07T23:20:20+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-Dispatch-Group"><a href="#1-Dispatch-Group" class="headerlink" title="1.Dispatch Group"></a>1.Dispatch Group</h1><p>在追加到 Dispatch Queue 中的多个任务处理完毕之后想执行结束处理，这种需求会经常出现。如果只是使用一个 Serial Dispatch Queue （串行队列）时，只想要将执行的处理全部追加到改串行队列中并在最后追加结束处理即可，但是在使用 Concurrent Queue 时，可能会同时使用多个 Dispatch Queue 时，源码就会变得很复杂。</p>
+<p>这种情况下，就可以使用 Dispatch Group。</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_t group = dispatch_group_create()<span class="comment">;</span></span><br><span class="line">  dispatch_queue_t  queue = dispatch_queue_create(<span class="string">&quot;com.wangwang.www&quot;</span>, DISPATCH_QUEUE_CONCURRENT)<span class="comment">;</span></span><br><span class="line">  </span><br><span class="line">  dispatch_group_async(<span class="name">group</span>, queue, ^&#123;</span><br><span class="line">      for (<span class="name">int</span> i = <span class="number">0</span><span class="comment">; i &lt; 1000; i++) &#123;</span></span><br><span class="line">          if (<span class="name">i</span> == <span class="number">999</span>) &#123;</span><br><span class="line">              NSLog(@<span class="string">&quot;11111&quot;</span>)<span class="comment">;</span></span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;)<span class="comment">;</span></span><br><span class="line">  </span><br><span class="line">  dispatch_group_async(<span class="name">group</span>, queue, ^&#123;</span><br><span class="line">      NSLog(@<span class="string">&quot;22222222&quot;</span>)<span class="comment">;</span></span><br><span class="line">  &#125;)<span class="comment">;</span></span><br><span class="line">  </span><br><span class="line">  dispatch_group_async(<span class="name">group</span>, queue, ^&#123;</span><br><span class="line">      NSLog(@<span class="string">&quot;3333&quot;</span>)<span class="comment">;</span></span><br><span class="line">  &#125;)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">  dispatch_group_notify(<span class="name">group</span>, queue, ^&#123;</span><br><span class="line">      NSLog(@<span class="string">&quot;done&quot;</span>)<span class="comment">;</span></span><br><span class="line">  &#125;)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+
+<p>因为想 Concurrent Dispatch Queue 追加处理，多个线程并行执行，所以追加处理的执行顺序不定。执行顺序会发生变化，但是执行结果的 done 一定是最后输出的。</p>
+<p>无论向什么样的 Dispatch Queue 中追加处理，使用 Dispatch Group 都可以监视这些处理执行的结果。一旦监测到所有的处理执行结束，就可以将结束的处理追加到 Dispatch Queue 中，这就是使用 Dispatch Group 的原因。</p>
+<p>下面是一个使用 Dispatch Group 异步下载两张图片，然后合并成一张图片的 demo。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="string">&quot;ViewController.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIImage</span> *imageOne;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIImage</span> *imageTwo;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="built_in">UILabel</span> *textLabel;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></span><br><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;  </span><br><span class="line">[<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line">[<span class="keyword">self</span> operation1];</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="type">void</span>)operation1</span><br><span class="line">&#123;</span><br><span class="line"><span class="built_in">UILabel</span> *textLabel = [[<span class="built_in">UILabel</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">200</span>, <span class="number">450</span>, <span class="number">0</span>, <span class="number">0</span>)];</span><br><span class="line">textLabel.text = <span class="string">@&quot;正在下载图片&quot;</span>;</span><br><span class="line">[textLabel sizeToFit];</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:textLabel];</span><br><span class="line"><span class="keyword">self</span>.textLabel = textLabel;</span><br><span class="line">[<span class="keyword">self</span> group];</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;在下载图片的时候，主线程貌似还可以干点什么&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="type">void</span>)group</span><br><span class="line">&#123;</span><br><span class="line"><span class="built_in">UIImageView</span> *imageView = [[<span class="built_in">UIImageView</span> alloc] init];</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:imageView];</span><br><span class="line">dispatch_group_t group = dispatch_group_create();</span><br><span class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(</span><br><span class="line"><span class="string">&quot;cn.gcd-group.www&quot;</span>, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line">dispatch_group_async(group, queue, ^&#123;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;正在下载第一张图片&quot;</span>);</span><br><span class="line"><span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithContentsOfURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@&quot;[http://images2015.cnblogs.com/blog/471463/201509/471463-20150912213125372-589808688.png](http://images2015.cnblogs.com/blog/471463/201509/471463-20150912213125372-589808688.png)&quot;</span></span><br><span class="line">]];</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;第一张图片下载完毕&quot;</span>);</span><br><span class="line"><span class="keyword">self</span>.imageOne = [<span class="built_in">UIImage</span> imageWithData:data];</span><br><span class="line">&#125;);</span><br><span class="line">dispatch_group_async(group, queue, ^&#123;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;正在下载第二张图片&quot;</span>);</span><br><span class="line"><span class="built_in">NSData</span> *data = [<span class="built_in">NSData</span> dataWithContentsOfURL:[<span class="built_in">NSURL</span> URLWithString:@[http:<span class="comment">//images2015.cnblogs.com/blog/471463/201509/471463-20150912212457684-585830854.png(http://images2015.cnblogs.com/blog/471463/201509/471463-20150912212457684-585830854.png)&quot;]];</span></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;第二张图片下载完毕&quot;</span>);</span><br><span class="line"><span class="keyword">self</span>.imageTwo = [<span class="built_in">UIImage</span> imageWithData:data];</span><br><span class="line">&#125;);</span><br><span class="line">dispatch_group_notify(group, queue, ^&#123;</span><br><span class="line"><span class="built_in">UIGraphicsBeginImageContext</span>(<span class="built_in">CGSizeMake</span>(<span class="number">300</span>, <span class="number">400</span>));</span><br><span class="line">[<span class="keyword">self</span>.imageOne drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">150</span>, <span class="number">400</span>)];</span><br><span class="line">[<span class="keyword">self</span>.imageTwo drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">150</span>, <span class="number">0</span>, <span class="number">150</span>, <span class="number">400</span>)];</span><br><span class="line"><span class="built_in">UIImage</span> *newImage =<span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line"><span class="built_in">UIGraphicsEndImageContext</span>();</span><br><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line"><span class="built_in">UIImageView</span> *imageView = [[<span class="built_in">UIImageView</span> alloc] initWithImage:newImage];</span><br><span class="line">[<span class="keyword">self</span>.view addSubview:imageView];</span><br><span class="line"><span class="keyword">self</span>.textLabel.text = <span class="string">@&quot;图片合并完毕&quot;</span>;</span><br><span class="line">&#125;);</span><br><span class="line">&#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<h1 id="2-Dispatch-barrier-async"><a href="#2-Dispatch-barrier-async" class="headerlink" title="2. Dispatch_barrier_async"></a>2. Dispatch_barrier_async</h1><p>在访问数据库或者文件的时候，我们可以使用Serial Dispatch Queue可避免数据竞争问题，代码如下所示：<br>其实使用GCD可以简单高效的代替同步块或者锁对象，可以使用，串行同步队列，将读操作以及写操作都安排在同一个队列里，即可保证数据同步，代码如下：</p>
+<p>多个getter方法（也就是读取）是可以并发执行的，而getter(读)与setter（写）方法是不能并发执行的，利用这个特点，还能写出更快的代码来，这次注意，不用串行队列，而改用并行队列：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ZYPerson</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *name;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"><span class="meta">#import <span class="string">&quot;ZYPerson.h&quot;</span></span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ZYPerson</span> ()</span></span><br><span class="line"><span class="keyword">@end</span> </span><br><span class="line"><span class="keyword">static</span> <span class="built_in">NSString</span> *_name;</span><br><span class="line"><span class="keyword">static</span> <span class="built_in">dispatch_queue_t</span> _concurrentQueue;</span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ZYPerson</span></span></span><br><span class="line">- (<span class="keyword">instancetype</span>)init</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="variable language_">super</span> init]) &#123;</span><br><span class="line">_concurrentQueue = dispatch_queue_create(<span class="string">&quot;com.person.syncQueue&quot;</span></span><br><span class="line">, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="type">void</span>)setName:(<span class="built_in">NSString</span> *)name</span><br><span class="line">&#123;</span><br><span class="line">dispatch_barrier_async(_concurrentQueue, ^&#123;</span><br><span class="line">_name = [name </span><br><span class="line"><span class="keyword">copy</span></span><br><span class="line">];</span><br><span class="line">&#125;);</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="built_in">NSString</span> *)name</span><br><span class="line">&#123;</span><br><span class="line">__block <span class="built_in">NSString</span> *tempName;</span><br><span class="line"><span class="built_in">dispatch_sync</span>(_concurrentQueue, ^&#123;</span><br><span class="line">tempName = _name;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">return</span>  tempName;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+<p> 这样优化，可以发现这种做法肯定比使用串行队列要快。<br>在这个代码中，我用了点新的东西，dispatch_barrier_async，可以翻译成栅栏（barrier），它可以往队列里面发送任务（块，也就是block），这个任务有栅栏（barrier）的作用。<br>在队列中，barrier块必须单独执行，不能与其他block并行。这只对并发队列有意义，并发队列如果发现接下来要执行的block是个barrier block，那么就一直要等到当前所有并发的block都执行完毕，才会单独执行这个barrier block代码块，等到这个barrier block执行完毕，再继续正常处理其他并发block。在上面的代码中，setter方法中使用了barrier block以后，对象的读取操作依然是可以并发执行的，但是写入操作就必须单独执行了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/06/Core-Image/" rel="prev" title="Core-Image">
+      <i class="fa fa-chevron-left"></i> Core-Image
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/09/Mac%E4%B8%8B%E4%BD%BF%E7%94%A8Hexo-GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="next" title="Mac下使用Hexo+Github搭建个人博客">
+      Mac下使用Hexo+Github搭建个人博客 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Dispatch-Group"><span class="nav-number">1.</span> <span class="nav-text">1.Dispatch Group</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Dispatch-barrier-async"><span class="nav-number">2.</span> <span class="nav-text">2. Dispatch_barrier_async</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

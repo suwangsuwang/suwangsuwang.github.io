@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="工程结构架构，减少耦合混乱以及防治需求大改造成结构重构，如何构建稳定可扩展可变换的工程结构的思考我打算采用Information flow的方式自上而下，两大层分为基础层和展现层的结构。基础层分为多层，展现层也可分为多层。主要思想是将基础层的最下一层当做零部件，将业务层最下层当做组装大部件，通过流程串起来形成一个完整的产品，做零件时按照做出一个就扔进对应基础层的篮子里思路来，目录结构也可以按照这种">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 架构">
+<meta property="og:url" content="https://suwangsuwang.github.io/2017/11/19/iOS%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="工程结构架构，减少耦合混乱以及防治需求大改造成结构重构，如何构建稳定可扩展可变换的工程结构的思考我打算采用Information flow的方式自上而下，两大层分为基础层和展现层的结构。基础层分为多层，展现层也可分为多层。主要思想是将基础层的最下一层当做零部件，将业务层最下层当做组装大部件，通过流程串起来形成一个完整的产品，做零件时按照做出一个就扔进对应基础层的篮子里思路来，目录结构也可以按照这种">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-11-19T07:30:25.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:23.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2017/11/19/iOS%E6%9E%B6%E6%9E%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS 架构 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/11/19/iOS%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS 架构
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-11-19 15:30:25" itemprop="dateCreated datePublished" datetime="2017-11-19T15:30:25+08:00">2017-11-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:23" itemprop="dateModified" datetime="2023-06-07T23:20:23+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="工程结构架构，减少耦合混乱以及防治需求大改造成结构重构，如何构建稳定可扩展可变换的工程结构的思考"><a href="#工程结构架构，减少耦合混乱以及防治需求大改造成结构重构，如何构建稳定可扩展可变换的工程结构的思考" class="headerlink" title="工程结构架构，减少耦合混乱以及防治需求大改造成结构重构，如何构建稳定可扩展可变换的工程结构的思考"></a>工程结构架构，减少耦合混乱以及防治需求大改造成结构重构，如何构建稳定可扩展可变换的工程结构的思考</h1><p>我打算采用Information flow的方式自上而下，两大层分为基础层和展现层的结构。基础层分为多层，展现层也可分为多层。主要思想是将基础层的最下一层当做零部件，将业务层最下层当做组装大部件，通过流程串起来形成一个完整的产品，做零件时按照做出一个就扔进对应基础层的篮子里思路来，目录结构也可以按照这种来进行。这两大层的最下层按照零件拆得越小越容易应对需求变化越容易保护巩固上层的思路来就好。拿微信这个大家都熟悉的产品的几个功能来简单示例说明下这个思路构建后的结构，模块比较多，一些模块就不深入到最底层分析了：</p>
+<span id="more"></span>
+
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line">基础层</span><br><span class="line"></span><br><span class="line">－ 网络</span><br><span class="line"></span><br><span class="line">－－ 收发数据</span><br><span class="line"></span><br><span class="line">－－－单例（持续使用数据）</span><br><span class="line"></span><br><span class="line">－－－本地（缓存和持续化存储数据对业务的封装输出）</span><br><span class="line"></span><br><span class="line">－－－单次使用（API接口Model封装输出和业务逻辑封装的ViewModel，将这些做为业务零件）</span><br><span class="line"></span><br><span class="line">－ 存储</span><br><span class="line"></span><br><span class="line">－－－ NSUserDefault（对轻量需要存储的添加下一层业务零件封装）</span><br><span class="line"></span><br><span class="line">－－－ keychain（对安全级别较高需要存储的添加下一层业务零件封装）</span><br><span class="line"></span><br><span class="line">－－－ 文件存储（对时效需求短的需要存储的添加下一层业务零件封装）</span><br><span class="line"></span><br><span class="line">－－－ 数据库存储（对数据量大的需要存储的添加下一层业务零件封装，业务层上一层加一层封装CoreData或SQLite方便日后切换数据库用）</span><br><span class="line"></span><br><span class="line">－ 动画（下层将动画框架输出成各个可以复用的动画功能小零件）</span><br><span class="line"></span><br><span class="line">－ 视图风格</span><br><span class="line"></span><br><span class="line">－ 列表控件</span><br><span class="line"></span><br><span class="line">－－ 上拉加载更多</span><br><span class="line"></span><br><span class="line">－－ 下拉刷新</span><br><span class="line"></span><br><span class="line">－－ GuideView</span><br><span class="line"></span><br><span class="line">－ WebView控件</span><br><span class="line"></span><br><span class="line">－ AlertView</span><br><span class="line"></span><br><span class="line">－ iOS系统空间封装</span><br><span class="line"></span><br><span class="line">－－ 拍照控件</span><br><span class="line"></span><br><span class="line">－－ 通讯录</span><br><span class="line"></span><br><span class="line">－ 二维码</span><br><span class="line"></span><br><span class="line">－ 语音</span><br><span class="line"></span><br><span class="line">－ 安全</span><br><span class="line"></span><br><span class="line">－ 支付</span><br><span class="line"></span><br><span class="line">－ 统计</span><br><span class="line"></span><br><span class="line">－ 日志</span><br><span class="line"></span><br><span class="line">展现层</span><br><span class="line"></span><br><span class="line">－ 首页</span><br><span class="line"></span><br><span class="line">－－ 订阅</span><br><span class="line"></span><br><span class="line">－－ 扫描二维码</span><br><span class="line"></span><br><span class="line">－－ 发布视频</span><br><span class="line"></span><br><span class="line">－ 列表</span><br><span class="line"></span><br><span class="line">－－ 时间轴列表</span><br><span class="line"></span><br><span class="line">－－－ Listview头部封面</span><br><span class="line"></span><br><span class="line">－－－ 外链情况<span class="built_in">Cell</span></span><br><span class="line"></span><br><span class="line">－－－ 图片<span class="built_in">Cell</span></span><br><span class="line"></span><br><span class="line">－－－ 广告插入<span class="built_in">Cell</span></span><br><span class="line"></span><br><span class="line">－－－ 留言评论</span><br><span class="line"></span><br><span class="line">－－－ 赞区域</span><br><span class="line"></span><br><span class="line">－－ 我的列表</span><br><span class="line"></span><br><span class="line">－－ 订阅列表</span><br><span class="line"></span><br><span class="line">－－ 文章列表</span><br><span class="line"></span><br><span class="line">－ 详细页</span><br><span class="line"></span><br><span class="line">－－ 分享</span><br><span class="line"></span><br><span class="line">－－ 内容区</span><br><span class="line"></span><br><span class="line">－－ 评论</span><br><span class="line"></span><br><span class="line">－ 登录</span><br><span class="line"></span><br><span class="line">－－ 注册</span><br><span class="line"></span><br><span class="line">－－ 登录</span><br><span class="line"></span><br><span class="line">－－ 忘记密码</span><br><span class="line"></span><br><span class="line">－－ 条款</span><br><span class="line"></span><br><span class="line">－－ 上传头像</span><br><span class="line"></span><br><span class="line">－－ 个人信息修改</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>基础层中各个模块上层可以使用类似CocoaPod或Cathage方式，下一层再对其引用进行业务封装。</p>
+<p>这里注意最下层需要拆的粒度越细越好。减少横向依赖。类似Common这样的东西可以拆到基础层的对应模块里，比如说配置文件里和统计相关的放到基础层的统计里，网络相关的放到网络里，颜色字体放到视图风格里，不要都堆在一个文件里。再或者是各种第三方的Category也放到对应的组里，比如说UIView+Additions和UIColor+Expanded就放到视图风格这个模块中，不要专门搞个Category放所有的Category。</p>
+<h1 id="数据流控制模式MVC和MVCS-MVVM-VIPER的选择"><a href="#数据流控制模式MVC和MVCS-MVVM-VIPER的选择" class="headerlink" title="数据流控制模式MVC和MVCS&#x2F;MVVM&#x2F;VIPER的选择"></a>数据流控制模式MVC和MVCS&#x2F;MVVM&#x2F;VIPER的选择</h1><p>其实这些都是对MVC的扩展，只是扩展的方向不同而已。VIPER把视图和数据拆得过细变相增加了复杂度很多人也都不熟也没有意愿去了解它的实现，但是模块复用却达到了最优，MVCS是这几个里对MVC优化最简单的只是把数据的存储拆开了。MVVM正好介于VIPER和MVCS之间，从ViewController里拆出来的ViewModel能够将数据经过逻辑处理用于View的显示，View有操作用过ReactiveCocoa将信号传给ViewModel来处理。</p>
+<p>如果是我个人选择我会选择VIPER，因为它更符合细粒度模块划分的思想。但是用在团队多人开发上，还是偏向MVVM这种折中方案。MVVM按照先前对应用的结构分层，会将View和ViewController放到展现层的最下面的两层里，将ViewModel和Model放到基础层对应模块的最下面一层中。最后要说的是无论选择哪种，只要是按照减少ViewController大小，将改胖的地方放到Model或View都是可以的，招式学多后最高境界就是无招胜有招嘛，有时也不需要刻板的在一个项目中将所有的模块都按照统一的思路给框死，比如说一个模块很简单就用MVC，一般复杂就用MVVM，要是项目本身业务非常庞大可以整体采用VIPER来进行ViewController的完全拆分。</p>
+<p>可以通过下列图表看其中的不同：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>逻辑和视图</th>
+<th>数据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MVC</td>
+<td>View + ViewController</td>
+<td>+ Model</td>
+</tr>
+<tr>
+<td>MVCS</td>
+<td>View + ViewController + Store</td>
+<td>+ Model</td>
+</tr>
+<tr>
+<td>MVVM</td>
+<td>View + ViewController + ViewModel</td>
+<td>+ Model</td>
+</tr>
+<tr>
+<td>VIPER</td>
+<td>View + ViewController + Wireframe + Presenter + Interactor + Data Manager</td>
+<td>+ Entity(Model)</td>
+</tr>
+</tbody></table>
+<h1 id="代码规范"><a href="#代码规范" class="headerlink" title="代码规范"></a>代码规范</h1><p>这块最有权威的应该是苹果自己提出的<a target="_blank" rel="noopener" href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html">https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html</a>，按照这套来肯定是没问题的，而且首先应该遵守。代码结构主要根据不同团队的经验来做。下面举个我常用的代码结构</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">@property</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> mark - Life cycle</span></span><br><span class="line"></span><br><span class="line">生命周期，类似addSubview和Notification的监听和销毁都放在这里</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> mark - Interface</span></span><br><span class="line"></span><br><span class="line">接口</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> mark - Event response</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> mark - Private method</span></span><br><span class="line"></span><br><span class="line">如果是ViewController，这个地方就是瘦身的关键，业务和逻辑功能相关的就放到ViewModel里。</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> mark - Delegate</span></span><br><span class="line"></span><br><span class="line">代理</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> mark - Getters and Setters</span></span><br><span class="line"></span><br><span class="line">建议所有的Property都设置，这样修改配置会比较方便，看起来不会很混乱</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/11/05/Update-your-apps-for-iPhone-X/" rel="prev" title="Update your apps for iPhone X">
+      <i class="fa fa-chevron-left"></i> Update your apps for iPhone X
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/12/10/How-to-use-the-Files-App-in-iOS-11/" rel="next" title="How to use the Files App in iOS 11">
+      How to use the Files App in iOS 11 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E7%BB%93%E6%9E%84%E6%9E%B6%E6%9E%84%EF%BC%8C%E5%87%8F%E5%B0%91%E8%80%A6%E5%90%88%E6%B7%B7%E4%B9%B1%E4%BB%A5%E5%8F%8A%E9%98%B2%E6%B2%BB%E9%9C%80%E6%B1%82%E5%A4%A7%E6%94%B9%E9%80%A0%E6%88%90%E7%BB%93%E6%9E%84%E9%87%8D%E6%9E%84%EF%BC%8C%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E7%A8%B3%E5%AE%9A%E5%8F%AF%E6%89%A9%E5%B1%95%E5%8F%AF%E5%8F%98%E6%8D%A2%E7%9A%84%E5%B7%A5%E7%A8%8B%E7%BB%93%E6%9E%84%E7%9A%84%E6%80%9D%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">工程结构架构，减少耦合混乱以及防治需求大改造成结构重构，如何构建稳定可扩展可变换的工程结构的思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%BC%8FMVC%E5%92%8CMVCS-MVVM-VIPER%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">2.</span> <span class="nav-text">数据流控制模式MVC和MVCS&#x2F;MVVM&#x2F;VIPER的选择</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83"><span class="nav-number">3.</span> <span class="nav-text">代码规范</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

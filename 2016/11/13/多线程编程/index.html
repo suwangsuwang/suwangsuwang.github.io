@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这次STMAssembleViewhttps:&#x2F;&#x2F;github.com&#x2F;ming1016&#x2F;STMAssembleView加入异步解析上线后发现一些线程安全方面的问题，现总结下。先看看这段代码 1234567891011121314151617181920212223242526- (void)viewDidLoad &#123;    [super viewDidLoad];    self.as">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程编程">
+<meta property="og:url" content="https://suwangsuwang.github.io/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="这次STMAssembleViewhttps:&#x2F;&#x2F;github.com&#x2F;ming1016&#x2F;STMAssembleView加入异步解析上线后发现一些线程安全方面的问题，现总结下。先看看这段代码 1234567891011121314151617181920212223242526- (void)viewDidLoad &#123;    [super viewDidLoad];    self.as">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-11-13T06:22:45.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:19.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>多线程编程 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          多线程编程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-11-13 14:22:45" itemprop="dateCreated datePublished" datetime="2016-11-13T14:22:45+08:00">2016-11-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:19" itemprop="dateModified" datetime="2023-06-07T23:20:19+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这次STMAssembleView<a target="_blank" rel="noopener" href="https://github.com/ming1016/STMAssembleView">https://github.com/ming1016/STMAssembleView</a>加入异步解析上线后发现一些线程安全方面的问题，现总结下。<br>先看看这段代码</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line"></span><br><span class="line">    [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string is very first&quot;</span>;</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(doSomething) withObject:<span class="literal">nil</span> afterDelay:<span class="number">0.5</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>), ^&#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;before sleep %@&quot;</span>,<span class="keyword">self</span>.asStr);</span><br><span class="line"></span><br><span class="line">        sleep(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;after sleep %@&quot;</span>,<span class="keyword">self</span>.asStr);</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)doSomething &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string has changed&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>执行结果</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="attribute">2016</span>-<span class="number">08</span>-<span class="number">31</span> <span class="number">20</span>:<span class="number">58</span>:<span class="number">43</span>.<span class="number">927</span> HomePageTest[<span class="number">68018</span>:<span class="number">535737</span>] before sleep string is very first</span><br><span class="line"></span><br><span class="line"><span class="attribute">2016</span>-<span class="number">08</span>-<span class="number">31</span> <span class="number">20</span>:<span class="number">58</span>:<span class="number">46</span>.<span class="number">927</span> HomePageTest[<span class="number">68018</span>:<span class="number">535737</span>] after sleep string has changed</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>会发现在异步执行中如果asStr改变了，那么异步线程里的asStr也会改变这样就没法保证异步对资源独占操作。</p>
+<p>如果在异步block里创建一个str赋值如下代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line"></span><br><span class="line">    [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string is very first&quot;</span>;</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(doSomething) withObject:<span class="literal">nil</span> afterDelay:<span class="number">0.5</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>), ^&#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSString</span> *str = <span class="keyword">self</span>.asStr;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;before sleep %@&quot;</span>,str);</span><br><span class="line"></span><br><span class="line">        sleep(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;after sleep %@&quot;</span>,str);</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)doSomething &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string has changed&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">2016</span>-<span class="number">08</span>-<span class="number">31</span> <span class="number">20</span>:<span class="number">59</span>:<span class="number">50</span>.<span class="number">094</span> HomePageTest[<span class="number">68075</span>:<span class="number">537624</span>] before sleep string is very first</span><br><span class="line"></span><br><span class="line"><span class="attribute">2016</span>-<span class="number">08</span>-<span class="number">31</span> <span class="number">20</span>:<span class="number">59</span>:<span class="number">53</span>.<span class="number">097</span> HomePageTest[<span class="number">68075</span>:<span class="number">537624</span>] after sleep string is very first</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这样新的string就不会受到外部改变的影响，但是如果在这个赋值时刻self.asStr已变成野指针那么后面的操作还是会出错，虽然这样情况不是那么容易出现。</p>
+<p>如何防止这种情况呢，可以看看下面的代码</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line"></span><br><span class="line">    [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string is very first&quot;</span>;</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(doSomething) withObject:<span class="literal">nil</span> afterDelay:<span class="number">0.5</span>];</span><br><span class="line"></span><br><span class="line">    __<span class="keyword">weak</span> __<span class="keyword">typeof</span>(<span class="keyword">self</span>.asStr) weakString = <span class="keyword">self</span>.asStr;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>), ^&#123;</span><br><span class="line"></span><br><span class="line">        __<span class="keyword">strong</span> __<span class="keyword">typeof</span>(weakString) strongString = weakString;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(strongString) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">NSLog</span>(<span class="string">@&quot;before sleep %@&quot;</span>,strongString);</span><br><span class="line"></span><br><span class="line">            sleep(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">            <span class="built_in">NSLog</span>(<span class="string">@&quot;after sleep %@&quot;</span>,strongString);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)doSomething &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string has changed&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">2016</span>-<span class="number">08</span>-<span class="number">31</span> <span class="number">21</span>:<span class="number">00</span>:<span class="number">24</span>.<span class="number">457</span> HomePageTest[<span class="number">68131</span>:<span class="number">538976</span>] before sleep string is very first</span><br><span class="line"></span><br><span class="line"><span class="attribute">2016</span>-<span class="number">08</span>-<span class="number">31</span> <span class="number">21</span>:<span class="number">00</span>:<span class="number">27</span>.<span class="number">461</span> HomePageTest[<span class="number">68131</span>:<span class="number">538976</span>] after sleep string is very first</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>weakString会在self.asStr释放时置为nil，如果不是nil时，能够确保对象在block调用的完整周期里面被retain，如果被抢占对strongString的执行会继续并且会产生一样的值，如果strongString执行到时是nil，那么block不能正确执行前已经返回，这样就不会出现先前那样的问题。</p>
+<p>还可以用锁来保证多个线程对一份资源在操作时不会被更改</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">HomeViewController</span> () </span>&#123;</span><br><span class="line"></span><br><span class="line">    pthread_mutex_t _mutex;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">HomeViewController</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line"></span><br><span class="line">    [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">    pthread_mutex_init(&amp;_mutex, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string is very first&quot;</span>;</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(doSomething) withObject:<span class="literal">nil</span> afterDelay:<span class="number">0.5</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>), ^&#123;</span><br><span class="line"></span><br><span class="line">        pthread_mutex_lock(&amp;_mutex);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">self</span>.asStr = <span class="string">@&quot;string has changed in global queue&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;before sleep %@&quot;</span>,<span class="keyword">self</span>.asStr);</span><br><span class="line"></span><br><span class="line">        sleep(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;after sleep %@&quot;</span>,<span class="keyword">self</span>.asStr);</span><br><span class="line"></span><br><span class="line">        pthread_mutex_unlock(&amp;_mutex);</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)doSomething &#123;</span><br><span class="line"></span><br><span class="line">    pthread_mutex_lock(&amp;_mutex);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string has changed&quot;</span>;</span><br><span class="line"></span><br><span class="line">    pthread_mutex_unlock(&amp;_mutex);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)dealloc</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    pthread_mutex_destroy(&amp;_mutex);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">2016</span>-<span class="number">08</span>-<span class="number">31</span> <span class="number">21</span>:<span class="number">01</span>:<span class="number">00</span>.<span class="number">351</span> HomePageTest[<span class="number">68174</span>:<span class="number">540038</span>] before sleep string has changed in global queue</span><br><span class="line"></span><br><span class="line"><span class="attribute">2016</span>-<span class="number">08</span>-<span class="number">31</span> <span class="number">21</span>:<span class="number">01</span>:<span class="number">03</span>.<span class="number">354</span> HomePageTest[<span class="number">68174</span>:<span class="number">540038</span>] after sleep string has changed in global queue</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在RAC中使用的是OSSpinLock来保证线程安全的，不过几位苹果工程师在swift-dev邮件列表中讨论weak属性的线程安全问题的邮件里爆出自旋锁有bug，邮件地址：<a target="_blank" rel="noopener" href="https://lists.swift.org/pipermail/swift-dev/Week-of-Mon-20151214/000372.html">https://lists.swift.org/pipermail/swift-dev/Week-of-Mon-20151214/000372.html</a>。大概就是不同优先级线程调度算法会有优先级反转问题，比如低优先级获锁访问资源，高优先级尝试访问时会等待，这时低优先级又没法争过高优先级导致任务无法完成lock释放不了。也可以看看ReactiveCo社区的讨论<a target="_blank" rel="noopener" href="https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2619">https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2619</a></p>
+<p>本来OSSpinLock是性能最高的锁，但是由于如果不在同一个优先级线程进行锁操作就不能保证安全，那么dispatch_semaphore和pthread_mutex这种仅次于自旋锁的可以作为替代方案。我注意到facebook的KVOController在2016年5月17日时的一个Commit里将所有OSSpinLock替换成了pthread_mutex，可参看这个commit<a target="_blank" rel="noopener" href="https://github.com/facebook/KVOController/commit/4f5c329b26f48b151eed82da085288763e2e1761">https://github.com/facebook/KVOController/commit/4f5c329b26f48b151eed82da085288763e2e1761</a>。pthread_mutex会在新系统中性能得到很大的提升，所以可以考虑这个方案。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/10/08/Camera/" rel="prev" title="Camera">
+      <i class="fa fa-chevron-left"></i> Camera
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/01/AsyncDisplayKit-2-0-%E6%95%99%E7%A8%8B/" rel="next" title="AsyncDisplayKit 2.0 教程">
+      AsyncDisplayKit 2.0 教程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

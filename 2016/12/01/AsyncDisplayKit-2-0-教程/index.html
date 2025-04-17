@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="AsyncDisplayKit 是一个 源自 Facebook 的 Paper 项目的UI 框架。它完美解决了 Paper 项目团队面临的众多核心问题之一：如何使主线程尽量清晰明了。 现在，许多 App的用户体验都严重依赖于连续的手势和物理动画。至少，你的 UI 界面可能依赖于一些滑动视图。 这种类型的用户接口大多完全取决于主线程并且对主线程阻塞异常敏感。一旦主线程阻塞就意味着动画掉帧并产生一个极">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AsyncDisplayKit 2.0 教程">
+<meta property="og:url" content="https://suwangsuwang.github.io/2016/12/01/AsyncDisplayKit-2-0-%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="AsyncDisplayKit 是一个 源自 Facebook 的 Paper 项目的UI 框架。它完美解决了 Paper 项目团队面临的众多核心问题之一：如何使主线程尽量清晰明了。 现在，许多 App的用户体验都严重依赖于连续的手势和物理动画。至少，你的 UI 界面可能依赖于一些滑动视图。 这种类型的用户接口大多完全取决于主线程并且对主线程阻塞异常敏感。一旦主线程阻塞就意味着动画掉帧并产生一个极">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-12-01T07:23:00.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:32.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2016/12/01/AsyncDisplayKit-2-0-%E6%95%99%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AsyncDisplayKit 2.0 教程 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/12/01/AsyncDisplayKit-2-0-%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AsyncDisplayKit 2.0 教程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-01 15:23:00" itemprop="dateCreated datePublished" datetime="2016-12-01T15:23:00+08:00">2016-12-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:32" itemprop="dateModified" datetime="2023-06-07T23:20:32+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>AsyncDisplayKit 是一个 源自 Facebook 的 Paper 项目的UI 框架。它完美解决了 Paper 项目团队面临的众多核心问题之一：如何使主线程尽量清晰明了。</p>
+<p>现在，许多 App的用户体验都严重依赖于连续的手势和物理动画。至少，你的 UI 界面可能依赖于一些滑动视图。</p>
+<p>这种类型的用户接口大多完全取决于主线程并且对主线程阻塞异常敏感。一旦主线程阻塞就意味着动画掉帧并产生一个极差的用户体验。</p>
+<p>主线程中要做的主要工作如下：<br></p>
+<ul>
+<li>尺寸和布局：一些像<code>-heightForRowAtIndexPath:</code> 或者调用 UILabel 的 <code>-sizeThatFits</code>方法，也包括<code>AutoLayout</code>的约束求解器的指数级开销。<br></li>
+<li>图像解码： 在一个图像框中使用<code>UIImage</code>就意味着要先将图像数据解码。<br></li>
+<li>绘图：复杂的文本也需要手动完成绘图渐变和阴影。<br></li>
+<li>对象生存期：创建、使用、销毁系统对象（例如创建一个 <code>UIView</code>）。<br></li>
+</ul>
+<p>在正确使用时，AsyncDisplayKit就可以默认异步执行所有尺寸，布局和渲染操作。并且无需额外优化，App 主线程需要完成的工作量也会显著减少。</p>
+<p>除了性能上的出色表现，新版的 AsyncDisplayKit 还提供了仅仅使用几行简单的代码就可以完成复杂功能并且方便调用的编程接口。</p>
+<p>这篇 AsyncDisplayKit 2.0教程由两部分组成，你可以从中学到使用 ASDK完成一个易用动态应用程序的全部技能。在第一部分，你会学到构建一个 App的想法构思。在第二部分，你会学到如何创建自己的<code>node</code>子类和如何使用ASDK 的强有力布局引擎。完成这段教程需要 Xcode7.3 并且需要熟悉 Objective-C。</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">免责声明： <span class="variable">ASDK</span> 和自动视图布局是不兼容的，所以在教程中将不会使用。</span><br><span class="line">尽管 <span class="variable">ASDK</span> 完全支持 <span class="variable">Swift</span>，许多使用者始终使用 <span class="variable">Objective</span><span class="operator">-</span><span class="built_in">C</span>。</span><br><span class="line">现在最流行的前<span class="number">100</span>个 <span class="variable">App</span> 并没有包含任何 <span class="variable">Swift</span>（其中至少<span class="number">6</span>个使用了 <span class="variable">ASDK</span>）。</span><br><span class="line">因为以上原因，这个教程使用 <span class="variable">Objctive</span><span class="operator">-</span><span class="built_in">C</span>。</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+
+<h1 id="1-开始"><a href="#1-开始" class="headerlink" title="1.开始"></a>1.开始</h1><p>在开始阶段，马上去下载<a target="_blank" rel="noopener" href="https://koenig-media.raywenderlich.com/uploads/2016/12/AsyncDisplayKit-Starter-4.zip">示例教程</a></p>
+<p>这个示例教程使用了<a target="_blank" rel="noopener" href="https://cocoapods.org/">CocoaPods</a>来使用 ASyncDisplayKit。所以，在使用 Cocoapods 时，打开 RainforestStarter.xcworkapace 而不是 RainforestStarter.xcodeproj。<br></p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">注意：使用教程过程中需要网络连接。</span><br><span class="line">```&lt;br&gt;</span><br><span class="line">构建运行程序，这个 App 是由包含一系列动物的UITableView。如果你在 AnimalTableController 里查看相关代码，你会发现是一个平时大家都会经常见到的 UITableViewController 类。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>注意：请确保实在真机运行实例程序而不是在模拟器中。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">滑动这些动物并且注意掉帧情况<span class="operator">。</span>你不需要使用`instruments`来检查就可以看出这款 <span class="type">APP</span> 需要优化来提高性能<span class="operator">。</span></span><br><span class="line"></span><br><span class="line">你可以使用 <span class="type">AsyncDisplayKit</span> 来解决这个问题<span class="operator">。</span></span><br><span class="line"></span><br><span class="line"># <span class="number">2</span>.介绍<span class="type">ASDisplayNode</span></span><br><span class="line"></span><br><span class="line"><span class="type">ASDisplayNode</span> 是 <span class="type">ASDK</span> 中的核心类，仅仅是 <span class="type">MVC中</span>“view”对象，就像`UIView`和`CALayer`<span class="operator">。</span>认知 node 最好的方式是类比你已经熟悉的 <span class="type">UIViews</span> 和 <span class="type">CALayers</span> 之间的关系<span class="operator">。</span></span><br><span class="line"></span><br><span class="line">需要记住的是一款 <span class="type">App</span> 中显示在屏幕上的一切都是通过 <span class="type">CALayer</span> 对象表示出来的<span class="operator">。</span><span class="type">UIView</span> 创建并且拥有一个底层的 <span class="type">CALayer，并且在</span> <span class="type">CALayer</span> 上添加触摸手势和其他功能<span class="operator">。</span><span class="type">UIView</span> 并不是 <span class="type">CALayer</span> 的子类，相反的它们扩展了 <span class="type">CALayer</span> 的功能<span class="operator">。</span></span><br><span class="line"></span><br><span class="line"><span class="operator">!</span>[view<span class="operator">-</span>layer.png](http:<span class="comment">//upload-images.jianshu.io/upload_images/1064761-efad404436cb8560.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span></span><br><span class="line"></span><br><span class="line">这层抽象在<span class="type">ASDisplayNode</span> 中得到扩展：你可以认为<span class="type">Node包裹一个视图，就像视图包裹一个层</span><span class="operator">。</span></span><br><span class="line"><span class="type">Node</span> 能够对普通视图做的优化是默认的创建并配置一个后台队列并且并发进行渲染<span class="operator">。</span></span><br><span class="line"><span class="operator">!</span>[node<span class="operator">-</span>view<span class="operator">-</span>layer<span class="operator">-</span>480x161.png](http:<span class="comment">//upload-images.jianshu.io/upload_images/1064761-a4b1ece8663daa88.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span></span><br><span class="line"></span><br><span class="line">幸运的是，关于`Node`的 <span class="type">API</span> 和 <span class="type">UIView</span> 或者 <span class="type">CALayer</span> 的<span class="type">API惊人的相似</span><span class="operator">。</span>视图中常用的许多属性在`node`类中同样适用<span class="operator">。</span>你甚至可以到达底层的视图或者图层<span class="operator">。</span></span><br><span class="line"></span><br><span class="line">#<span class="number">3</span>. 节点容器</span><br><span class="line"></span><br><span class="line">尽管节点自身提供了巨大性能提升的可能，而与如下容器类协同使用时才更容易发生性能提升<span class="operator">。</span></span><br><span class="line">这些类包括：</span><br><span class="line"></span><br><span class="line"><span class="operator">*</span> <span class="type">ASViewController：一个</span> <span class="type">UIViewController</span> 子类可以提供管理节点<span class="operator">。</span></span><br><span class="line"><span class="operator">*</span> <span class="type">ASCollectionNode</span> 和 <span class="type">ASTableNode：Node</span> 相当于 <span class="type">UICollectionView</span> 和 <span class="type">UITableView，其子类在底层维持</span><span class="operator">。</span></span><br><span class="line"><span class="operator">*</span> <span class="type">ASPagerNode：</span> 相比于 <span class="type">UIKit</span> 中的 <span class="type">UIPageViewController，ASCollectionNode</span> 子类提供了更加优异性能<span class="operator">。&lt;</span>br<span class="operator">&gt;</span></span><br><span class="line"><span class="operator">!</span>[ragecomic<span class="operator">-</span>480x229.png](http:<span class="comment">//upload-images.jianshu.io/upload_images/1064761-6e4a174e2256afa5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span></span><br><span class="line"></span><br><span class="line">说的不错，但是真正的提示来自 <span class="type">ASRangeController</span> 任何其中的类都影响这容器内的节点<span class="operator">。</span></span><br><span class="line"></span><br><span class="line"># <span class="number">4</span>. 转化 <span class="type">TableView</span></span><br><span class="line"></span><br><span class="line">第一件要做的事就是转换现在的 tableView 到一个 tableNode<span class="operator">。</span></span><br><span class="line"></span><br><span class="line">## 替换 tableView为 tableNode</span><br><span class="line">首先，转到 <span class="type">AnimalTableController</span>.m<span class="operator">。</span>添加代码到其他引用之下<span class="operator">。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>#import &lt;AsyncDisplayKit&#x2F;AsyncDisplayKit.h&gt;</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">这句引用了 ASDK 来使用该框架。然后继续替换其中的 <span class="built_in">table</span>View属性：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>@property(strong,nonatomic)UITableView * tableView;</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">使用接下来的 <span class="built_in">table</span>Node：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>@property(strong,nonatomic)ASTableNode *tableNode;</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">这会造成类中许多代码需要更改，但是不用担心。<span class="variable">&lt;br&gt;</span></span><br><span class="line">![butBut-<span class="number">1</span>-<span class="number">480</span>x229.png](http://upload-images.jianshu.io/upload_images/<span class="number">1064761</span>-<span class="number">9002</span>debb1fd36792.png?imageMogr2/auto-orient/strip%<span class="number">7</span>CimageView2/<span class="number">2</span>/w/<span class="number">1240</span>)</span><br><span class="line"></span><br><span class="line">不用担心，这些错误和警告会指导你从现在有的到你想要的。</span><br><span class="line">这些错误在`-viewDidLoad`中的，事实上 <span class="built_in">table</span>View 已经不存在了。如果你打算将代码中所有的 <span class="built_in">table</span>View 换为 <span class="built_in">table</span>Node 应该做如下的操作：<span class="variable">&lt;br&gt;</span></span><br><span class="line">  <span class="number">1</span>. 声明一个 ASTableNode 作为属性。<span class="variable">&lt;br&gt;</span></span><br><span class="line">  <span class="number">2</span>. 一个 <span class="built_in">table</span>Node 没有一个叫`-registerClass:<span class="keyword">for</span>CellReuseIdentifier:`。<span class="variable">&lt;br&gt;</span></span><br><span class="line">  <span class="number">3</span>. 无法添加一个Node 作为子视图。<span class="variable">&lt;br&gt;</span></span><br><span class="line">现在你应该替换`-viewDidLoad`用以下代码。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>(void)viewDidLoad{<br>[super viewDidLoad];</p>
+<p>[self.view addSubnode:self.tableNode];<br>[self applyStyle];</p>
+</li>
+</ul>
+<p>}</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">有趣的是你在对 <span class="built_in">UIView</span> 调用了`-addSubnode:`。这个方法是通过 <span class="built_in">UIView</span> 的类目实现的，和一下代码相同：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>[self.view addSubview:self.tableNode.view];</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">下一步，使用以下代码替换方法定义来修正`-viewWillLayoutSubviews`。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>(void)viewWillLayoutSubviews{<br>[super viewWillLayoutSubviews];<br>self.tableNode.frame &#x3D; self.view.bounds;<br>}</li>
+</ul>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">所有做的这些都是用`self.tableNode`替换`self.tableView`来设置表视图的尺寸。接下来，找到`-applyStyle`方法并用如下代码替换：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>-(void)applyStyle{<br>  self.view.backgroundColor &#x3D; [UIColor blackColor];<br>self.tableNode.view.separatorStyle &#x3D; UITableViewCellSeparatorStyleNone;<br>}</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">这行设置了表视图的分隔样式的代码是唯一一行改变的代码。注意 tableNode 的视图属性为了设置表视图的分隔样式怎么实现的。ASTableNode 并没有暴露全部 <span class="built_in">UITableView</span> 的属性，所以你必须使用 tableNode 的底层 <span class="built_in">UITableView</span> 实例来改变 <span class="built_in">UITableView</span> 特定属性。</span><br><span class="line">现在，添加如下代码到`-initWithAnimals`的开始处。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>_tableNode &#x3D; [[ASTableNode alloc] initWithStyle:UITableViewStylePlain];</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">并且添加如下代码到末位，在初始化方法返回之前：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>[self  wireDelegation];</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">这个初始化方法使用 tableNode 初始化 AnimalTableController 并且调用`-wireDelegation`来使tableNode 的代理生效。</span><br><span class="line"></span><br><span class="line">## 设置 tableNode 的数据源和代理</span><br><span class="line">  就像 <span class="built_in">UITableView</span>，ASTableNode 使用一个数据源和代理来获取关于自身的信息。TableNode 的 ASTableDataSource 和 ASTableDelegate 协议是和 <span class="built_in">UITableViewDataSource</span> 和 <span class="built_in">UITableViewDelegate</span> 相似的。事实上，它们定义了一些几乎相同的方法就像：</span><br><span class="line">  `-tableNode:numberOfRowsInsection:`。</span><br><span class="line">  这两个系列的协议并不是完美的匹配的因为 ASTableNode 表现的和 <span class="built_in">UITableView</span> 略有不同。</span><br><span class="line">找到<span class="string">&#x27;-willDelegation&#x27;</span>并且在方法实现中用 tableNode 替换 tableView。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>(void)wireDelegation{<br>  self.tableNode.dataSource &#x3D; self;<br>self.tableNode.delegate &#x3D; self;<br>}</li>
+</ul>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">现在，你发现 AnimalTableController 不在遵守正确的协议了。一般来说，AnimalTableController 遵守 UITableViewDataSource 和 UITableViewDelegate。在接下来的部分为了是 tableviewNode 正确运行，你需要设法遵守并实现每个协议。</span><br><span class="line"></span><br><span class="line">## 遵守 ASTableDataSource</span><br><span class="line"></span><br><span class="line">对于上面提到的 AnimalTableController.m ，找出如下的数据源类目接口声明。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>@interface AnimalTableController (Delegate)<UITableViewDelegate><br>@end</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">并且用ASTableDelegate 替换 <span class="built_in">UITableViewDelegate</span>。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>@interface AnimalTableController (Delegate)<ASTableDelegate><br>@end</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">现在 AnimalTableController 遵守 ASTableDelegate，是时候处理具体实现了，导航到 AnimalTableController.m 底部找到代理类目的实现。</span><br><span class="line"><span class="title">我很确定你已经意识到需要提供一个方法类似`-tableView:heightForRowAtIndexPath:</span>`。这是因为在 UIKit 中，每个格子的高度是通过代理计算并返回的。</span><br><span class="line"></span><br><span class="line"><span class="title">ASTableDelegate 缺少 `-tableView:heightForRowAtIndexPath:</span>`。在 ASDK 中，所有的 Node 都会自行计算自己的尺寸。并不是提供一个固定的高度，你可以随意指定最小和最大尺寸来定义格子大小。这次，你需要指定每个格子的高度至少是屏幕的三分之二。</span><br><span class="line"></span><br><span class="line">现在无需关心太多，在文章第二部分会详细说明：</span><br><span class="line">现在，用以下代码来替换</span><br><span class="line">`-tableview:heightForRowAtIndexPath:`</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>(ASSizeRange)tableView:(ASTableView *)tableNode constrainedSizeForRowAtIndexPath:(NSIndexPath *)indexPath{<br>  CGFloat width &#x3D; [UIScreen mainScreen].bounds.size.width;<br>  CGSize min &#x3D; CGSizeMake(width,([UIScreen mainScreen].bounds.size.height&#x2F;3)*2);<br>  CGSize max &#x3D; CGSizeMake(width,INFINITY);<br>   return  ASSizeRangeMake(min,max);<br>}</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在作完以上更改之后，构建并运行查看效果。</span><br><span class="line">现在是一个滑动顺滑的表格视图了。接下来准备好进行下一步优化。</span><br><span class="line"></span><br><span class="line"><span class="section"># 5. 使用批次获取实现无限滑动</span></span><br><span class="line">在大多数 App 中，服务器的数据比平均要显示在屏幕上的个数要多的多。这意味着我们需要在用户接近当前数据集合结束时，分批次的从服务器获取数据；</span><br><span class="line"></span><br><span class="line">许多时候，这个都是人工观察滑动视图的偏移量来调用代理方法<span class="code">`-scrollViewDidScroll:`</span>。在 ASDK 中，有更多的方法来做这件事，例如你可以提前说明提前加载内容的页数。</span><br><span class="line"></span><br><span class="line">要做的第一件事情是取消方法中的注释，找到 AnimalTableController.m 并且取消 Helpers 类目中的注释。你可以认为<span class="code">`-retrieveNextPageWithCompletion：`</span>是网络请求，并且<span class="code">`-insertNewRowsInTableNode:`</span>是一个非常标准的向表中添加元素的方法。</span><br><span class="line">下一步，添加如下代码到 <span class="code">`-viewDidLoad:`</span>。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>self.tableNode.view.leadingScreensForBatching &#x3D; 1.0;</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">将 leadingScreensForBatching 设置为 1.0意味着你希望不论何时只要滑动到了距离底部只有一屏幕内容的时候，就要获取新的内容了。</span><br><span class="line">接下来，添加如下方法到代理的实现中。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>(BOOL)shouldBatchFetchForTableNode:(ASTableNode *)tableNode{<br>return YES;<br>}</li>
+</ul>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">这个方法是用来决定表视图此后是否应该保持继续请求数据，如果你知道已经到达了数据末尾，就在该方法返回 <span class="keyword">NO</span> 来阻止产生新的数据请求。</span><br><span class="line"></span><br><span class="line">如果你打算表视图一直滑动，就返回 <span class="keyword">YES</span>。</span><br><span class="line">接下来，添加如下方法：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>(void)tableNode:(ASTableNode *)tableNode willBeginBatchFetchWithContext:(ASBatchContext *)context{<br>  [self retrieveNextPageWithCompletion:^(NSArray *animals){<br>  [self  insertNewRowsInTableNode:animals];<br>  [context completeBatchFetching:YES];<br>}];<br>}</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">当用户滑动接近表视图尽头这个方法会被调用，并且当表视图已经从<span class="code">`-shouldBatchFetchForTableNode:`</span>接受了 YES。</span><br><span class="line"></span><br><span class="line">回顾一下这部分都做了什么：<span class="language-xml"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span></span><br><span class="line"><span class="bullet">    1.</span> 首先，我们请求了需要显示的下一批数据。通常这是一个从服务器返回的对象数组。<span class="language-xml"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span></span><br><span class="line"><span class="code">    2.在结束时，使用新下载的数据更新视图。&lt;br&gt;</span></span><br><span class="line"><span class="code">    3.最后，确保在完成是使用 YES 调用 `-completeBatchFetching:`。新的数据获取不会被调用除非当前请求已经完成。&lt;br&gt;</span></span><br><span class="line"><span class="code">现在构建运行程序，开始滑动发现是无限滑动的视图。</span></span><br><span class="line"><span class="code"></span></span><br><span class="line"><span class="section"># 6.智能预加载</span></span><br><span class="line"></span><br><span class="line">在你编写过得 APP 中，不乏一些需要在使用滑动视图而需要提前加载内容的需求。也许你在做一个全屏幕的画廊应用，并且经常需要提前加载一些图片来让用户滑动时尽量不再看到占位图。</span><br><span class="line"></span><br><span class="line">![<span class="string">iThinkIveGotThis-480x229.png</span>](<span class="link">http://upload-images.jianshu.io/upload_images/1064761-7a6b77baf5ee15f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240</span>)</span><br><span class="line"></span><br><span class="line">当你做这样的工作时，你发现有很多问题需要思考：</span><br><span class="line"></span><br><span class="line"><span class="bullet">*</span> 要占用多少内存</span><br><span class="line"><span class="bullet">*</span> 需要提前加载多少内容</span><br><span class="line"><span class="bullet">*</span> 打算什么时候决定使用资源来反馈用户操作。</span><br><span class="line">并且在你思考多维度内容的时候这就变得愈发复杂。如果你有一个页视图控制器，而每个控制器中又有一个集合视图，现在你需要思考如何在两个方向上实现动态加载。<span class="language-xml"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span></span><br><span class="line">![<span class="string">officespaceboss.png</span>](<span class="link">http://upload-images.jianshu.io/upload_images/1064761-cdf11e68d9528949.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240</span>)</span><br><span class="line"></span><br><span class="line">还记得我告诉你把 ASRangeController 放在角落里，现在开始考虑使用它。</span><br><span class="line">在每个容器类中都有一个概念来标记每个 Node 的视图状态。在任何时间，一个 Node 都是由一下组合而成：</span><br><span class="line"></span><br><span class="line"><span class="bullet">*</span> Preload Range：通常是距离可见部分最远的距离。这是当格子中的每个子节点内容需要从外部资源加载的时候；一个编程接口或者本地缓存。这和需要格子自行获取对象模型的获取形成对比。</span><br><span class="line"><span class="bullet">*</span> Display Range：这里，进行了图片解码图形渲染等显示任务。</span><br><span class="line"><span class="bullet">*</span> Visible Range：在这里整个节点都是可见的。即使只有一个像素。<span class="language-xml"><span class="tag">&lt;<span class="name">br</span>&gt;</span></span></span><br><span class="line">![<span class="string">preloadingRanges-small.png</span>](<span class="link">http://upload-images.jianshu.io/upload_images/1064761-53b632e8f1c28daf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240</span>)</span><br><span class="line"></span><br><span class="line">以上的范围也可以使用“屏幕大小”来度量，也可以很容易的装换为 ASRangeTuningParameters 属性。</span><br><span class="line">例如，当你正在使用一个 ASNetworkImageNode 类来在每个页中显示图像。每个节点在进入预加载范围是都会从网络请求数据，并且在进入显示区域时解码图片。</span><br><span class="line">事实上，如果你不想搞得太清楚，也不必把这些想的太难。通过组件化，在默认情况下，就可以充分利用这些优势并得到显著收益。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>注意： 有一件不太明显的事情就是这些区域并不会堆叠。相反，这些区域会在可见区域部分重叠覆盖。如果你同时设置显示和预加载在屏幕上，它们会恰好同时开始。需要显示的数据需要尽可能的加载，所以预加载区域需要大一点，使节点在开始显示程序时已经准备好了进入可视区域。</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">一般来说，头部的区域比尾部的要大一些。当用户改变滑动方向时，反向的区域尺寸在用户滑动时也会依次实现。</span><br><span class="line"></span><br><span class="line"># <span class="number">7</span>. 节点界面状态回调</span><br><span class="line">  你也许想知道这些区域到底是怎么工作的，我很高兴你会问到。</span><br><span class="line">每个系统中的节点都有一个`interfaceState`属性，这个属性是一个“比特区域”类型是 ASInterfaceState。当 ASCellNode 移动通过一个类型是`ASRangeController`的滑动视图，每个子节点都会相应的更新它们的 `interfaceState`属性。这意味着即使是树中最深的节点也会响应 `interfaceState`改变。</span><br><span class="line">幸运的是，很少需要直接处理节点的`interfaceState`属性。更多的是你仅仅想要对一个节点改变到或形成一个特定的状态做出反应。这是节点界面状态回调的用处。</span><br><span class="line"></span><br><span class="line">##  命名节点</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  为了观察一个节点移动的状态，需要给节点取一个名字。这样你就可以观察到每个节点加载数据，显示内容，渲染到屏幕并且之后在相反方向做这些事情。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="title">回到 `-tableNode:nodeBlockForRowAtIndexPath:</span>`,找到这样的注释：</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>&#x2F;&#x2F;You’ll add something extra here later…</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在它下面，添加下面这一行给每一个格子一个调试名字。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>cardNode.debugName &#x3D; [NSString stringWithFormat:@”cell %zd”,indexPath.row];</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">现在你可以追踪格子的通过区域的过程。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> ## 观察格子</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">进入 CardNode_InterfaceCallbacks.m。这里你可以使用发现六个方法来追踪一个节点通过某个区域的过程。取消注释，构建并运行。确保 Xcode 中控制台可见，接下来慢慢滑动。观察滑动时不同格子的状态改变。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>注意：大多数情况下，唯一你需要关心的 ASInterface 改变状态的方法是 <code>-didEnterVisibleState</code>或者 <code>-didExitVisibleState</code>。这么说来，许多工作都说是在底层替你完成的。为了充分了解整合了预加载和显示状态我们可以做些什么，现在去看一看<code>ASNetworkImageNode</code>中的代码。你甚至都不用抬一下手指，所有的网络图片都会自动获取并解码它们的内容，并释放内存。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">## 智能预加载 2</span></span><br><span class="line">在第二个发布版本中，智能预加载的概念被扩充为多个方向 。如果你有一个垂直滑动的表视图，并且在某一位置屏幕上包含一个横向滑动的集合视图。</span><br><span class="line"></span><br><span class="line">![proaldGif^<span class="number">2</span>.gif](http:<span class="regexp">//u</span>pload-images.jianshu.io<span class="regexp">/upload_images/</span><span class="number">1064761</span>-<span class="number">41</span>a3a595e61c7d0f.gif?imageMogr2<span class="regexp">/auto-orient/</span>strip)</span><br><span class="line"></span><br><span class="line">尽管这个集合现在技术上是在可见区域，你不会想要提前加载整个集合视图。相反，每个滑动视图都有自己的 ASRangeController 来管理配置区域改变的参数。</span><br><span class="line"></span><br><span class="line"><span class="comment">## 进入第二个维度</span></span><br><span class="line"></span><br><span class="line">现在你已经完成了 AnimalTableController，你可以在一个 ASPagerNode 中作为一个页面使用它。</span><br><span class="line"></span><br><span class="line">你会用来包含这个页面的控制器已经存在在项目中了，所以你需要做的第一件事是进入到 AppDelegate.m</span><br><span class="line"></span><br><span class="line">找到 `-installRootViewController`并将：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>AnimalTableController *VC&#x3D; [[AnimalTableController alloc] initWithAnimals:[RainforestCardInfo allAnimals]];</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">替换为：</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>AnimalTableController *vc &#x3D; [[AnimalTableController alloc]init]；</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">之后，进入 AnimalTableController<span class="selector-class">.m</span> 并添加如下代码到初始化方法返回语句之前。所有你需要做的就是创造一个新的页面并且设置他的数据源到这个控制器。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>_pagerNode &#x3D; [[ASPager alloc]init];<br>_pagerNode.dataSource &#x3D; self;</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">页面节点事实上是 ASCollectionNode 的子节点 预先配置的使用方法和 <span class="built_in">UIpageViewController</span> 一致。好消息是这个的 API 比 <span class="built_in">UIPageViewController</span> 要简单一些。</span><br><span class="line"></span><br><span class="line">接下来你要做的是实现数据源方法。进入 ASPagerDataSource 类目中底部的实现内容。</span><br><span class="line"></span><br><span class="line">首先，实现页面数量</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>(NSInteger)numberOfPagerNode:(ASPagerNode *)pagerNode{<br> return  self.animals.count;<br>}</li>
+</ul>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">之后，你需要实现 `-pagerNode：nodeAtIndex：`，类似于你之前在 ASTableNode 中实现的节点代码块数据源方法。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>(ASCellNode *)pagerNode:(ASPagerNode *)pagerNode nodeIndex:(NSInteger)index{<br>CGSize pagerNodeSize &#x3D; pagerNode.bounds.size;<br>NSArray *animals &#x3D; self.animals[index];</p>
+<p>ASCellNode *node &#x3D; [[ASCellNode alloc] initWithViewControllerBlock:^{<br>return [[AnimalTableController alloc] initWithAnimals:animals];</p>
+</li>
+</ul>
+<p>} didLoadBlock:nil];<br>return node;<br>}</p>
+<pre><code>
+让我们看看这一部分都做了些什么：
+1. 尽管这个版本并不是基于 BLOCK，首先获取数据模型是很好的练习。
+2. 这次，你使用了强有力的初始化方法：`-initWithViewControllerBlock:`。所有你需要做的是返回一个返回表视图节点控制器的 Block。
+
+一旦你添加这个方法，你会有一个完全功能的页面，页面的格子是由你之前创建的表节点控制器控制的。
+</code></pre>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" rel="prev" title="多线程编程">
+      <i class="fa fa-chevron-left"></i> 多线程编程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91/" rel="next" title="多线程开发">
+      多线程开发 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%BC%80%E5%A7%8B"><span class="nav-number">1.</span> <span class="nav-text">1.开始</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

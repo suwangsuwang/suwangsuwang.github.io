@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="简介PhotoKit比AssetsLibrary的特性更多表现更好。可以观察照片库的变化和创建提交自己修改的改变。官方代码示例https:&#x2F;&#x2F;developer.apple.com&#x2F;library&#x2F;ios&#x2F;samplecode&#x2F;UsingPhotosFramework&#x2F;Introduction&#x2F;Intro.html#&#x2F;&#x2F;apple_ref&#x2F;doc&#x2F;uid&#x2F;TP4001">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Photo">
+<meta property="og:url" content="https://suwangsuwang.github.io/2018/05/05/Photo/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="简介PhotoKit比AssetsLibrary的特性更多表现更好。可以观察照片库的变化和创建提交自己修改的改变。官方代码示例https:&#x2F;&#x2F;developer.apple.com&#x2F;library&#x2F;ios&#x2F;samplecode&#x2F;UsingPhotosFramework&#x2F;Introduction&#x2F;Intro.html#&#x2F;&#x2F;apple_ref&#x2F;doc&#x2F;uid&#x2F;TP4001">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-05T06:24:25.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:26.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2018/05/05/Photo/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Photo | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/05/05/Photo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Photo
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-05 14:24:25" itemprop="dateCreated datePublished" datetime="2018-05-05T14:24:25+08:00">2018-05-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:26" itemprop="dateModified" datetime="2023-06-07T23:20:26+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>PhotoKit比AssetsLibrary的特性更多表现更好。可以观察照片库的变化和创建提交自己修改的改变。官方代码示例<a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/samplecode/UsingPhotosFramework/Introduction/Intro.html#//apple_ref/doc/uid/TP40014575">https://developer.apple.com/library/ios/samplecode/UsingPhotosFramework/Introduction/Intro.html#//apple_ref&#x2F;doc&#x2F;uid&#x2F;TP40014575</a> ，WWDC session视频</p>
+<h1 id="PhotoKit对象模型"><a href="#PhotoKit对象模型" class="headerlink" title="PhotoKit对象模型"></a>PhotoKit对象模型</h1><p>所有PhotoKit对象都继承PHObject抽象类，公共接口只提供localIdentifier属性。</p>
+<ul>
+<li>PHAsset：表示照片库里单独资源以提供资源元数据。</li>
+<li>PHAssetCollection：表示资源集合，是PHCollection的子类。单独的资源集合可以是照片库里的相册或智能相册，包括所有的视频集合，最近添加项目，用户收藏，所有连拍照片等。</li>
+<li>PHCollectionList：表示一组PHCollections。在照片应用可以看到它，照片 - 时刻 - 精选 - 年度</li>
+</ul>
+<h2 id="Fetch照片实体"><a href="#Fetch照片实体" class="headerlink" title="Fetch照片实体"></a>Fetch照片实体</h2><span id="more"></span>
+
+<p>Fetch方法命名类似class func fetchXXX(…, options: PHFetchOptions) -&gt; PHFetchResult。这里的options参数提供了对结果进行过滤和排序的途径，和NSFetchRequest的predicate与sortDescriptors类似。</p>
+<p>获取结果为返回的PHFetchResult对象，能够缓存最近请求内容，这个返回不会自动更新。如果要更新实时显示最新结果需要通过PHPhotoLibrary对象用registerChangeObserver(…)方法注册一个遵从PHPhotoLibraryChangeObserver协议的Observer。如果照片库里有变化了，photoLibraryDidChange(…)方法会被调用，这个方法只有一个PHChange类型参数。</p>
+<p>PHChange提供了changeDetailsForObject(…)和changDetailsForFetchResult(…)方法能够通过传入需要观察跟踪的PHObject或PHFetchResult对象来跟踪变化。观察变化用PHObjectChangeDetails观察是否变化是否曾被删除或PHFetchResultChangeDetails适合简化CollectionView或TableView更新操作。</p>
+<h2 id="Transient-Collections临时集合"><a href="#Transient-Collections临时集合" class="headerlink" title="Transient Collections临时集合"></a>Transient Collections临时集合</h2><p>通过PHAsset对象数组或PHFetchResult对象来创建临时资源合集。创建的这些操作在PHAssetCollection的transientAssetCollectionWithAssets(…)和transientAssetCollectionWithFetchResult(…)工厂方法内完成。创建出来的的对象跟PHAssetCollection对象一样使用。</p>
+<p>可以用PHCollectionList中的transientCollectionListWithXXX(…)工厂方法来创建临时集合列表。</p>
+<h2 id="照片元数据"><a href="#照片元数据" class="headerlink" title="照片元数据"></a>照片元数据</h2><p>PhotoKit提供关于用户资源的元数据。</p>
+<h2 id="HDR和全景照片"><a href="#HDR和全景照片" class="headerlink" title="HDR和全景照片"></a>HDR和全景照片</h2><p>用照片资源的mediaSubtypes属性验证资源库里图像是否开启了HDR，拍摄是否使用了相机全景模式。</p>
+<h2 id="收藏和隐藏资源"><a href="#收藏和隐藏资源" class="headerlink" title="收藏和隐藏资源"></a>收藏和隐藏资源</h2><p>验证资源是否被用户收藏或隐藏，检查PHAsset实例的favorite和hidden属性。</p>
+<h2 id="连拍模式照片"><a href="#连拍模式照片" class="headerlink" title="连拍模式照片"></a>连拍模式照片</h2><p>如果一个资源的PHAsset的representsBurst属性为true就表示资源是连拍。它还有个属性burstIdentifier，想要获得连拍其余照片可以通过这个值传入fetchAssetsWithBurstIdentifier(…)方法获取。通过PHAsset的burstSelectionTypes属性访问标记用户可能会选择的潜在代表照片。</p>
+<p>burstSelectionTypes这个属性的三个常量组成的位掩码</p>
+<ul>
+<li>.UserPick：表示用户手动标记的资源</li>
+<li>.AutoPick：表示用户可能标记的潜在资源</li>
+<li>.None：表示没有标记的资源</li>
+</ul>
+<h1 id="PHImageManager照片加载管理编辑"><a href="#PHImageManager照片加载管理编辑" class="headerlink" title="PHImageManager照片加载管理编辑"></a>PHImageManager照片加载管理编辑</h1><p>PHImageManager可以处理图像大小修改裁剪和缓存等。</p>
+<h2 id="请求图像"><a href="#请求图像" class="headerlink" title="请求图像"></a>请求图像</h2><p>通过requestImageForAsset(…)请求，可以通过PHImageRequestOptions参数设置返回图像大小和图像的其它选项，以及result handler。</p>
+<h2 id="图像的尺寸和裁剪"><a href="#图像的尺寸和裁剪" class="headerlink" title="图像的尺寸和裁剪"></a>图像的尺寸和裁剪</h2><p>requestImageForAsset(…)方法的targetSize和contentMode俩参数决定照片是按比例缩放还是比例填充方式放到目标大小内。如果不裁剪不改大小，参数分别为PHImageManagerMaximumSIze和PHImageContentMode.Default。</p>
+<p>PHImageRequestOptions的resizeMode属性可以设置为.Exact（和目标大小匹配）.Fast（效率高但可能和目标大小不一样）或.None。normalizedCroppingMode属性确定如何裁剪图像，如果这只了这个值，那么resizeMode必须为.Exact。</p>
+<h2 id="将图片递送给你"><a href="#将图片递送给你" class="headerlink" title="将图片递送给你"></a>将图片递送给你</h2><p>默认情况图像管理器会先传递一个较低质量版本的图像给你，然后再将图像的高质量版本递送给你。可以通过 deliverMode属性控制这个行为，默认行为的值为.Opportunistic。设置.HighQualityFormat如果只要高质量图像也要接受更长的加载时间。.FastFormat就可以得到更快加载速度，但会牺牲图片质量。</p>
+<p>如果设置PHImageRequestOptions的synchronous属性为true同步操作，那么就都会deliverMode就都会按照.HighQualityFormat处理，这时要注意iCould照片库是要从网络上读取的，同步必定会带来慢，所以可以将networkAccessAllowed设置为false</p>
+<p>当然也可以使用和iCloud相关的属性progressHandler。可以将它设置为PHAssetImageProgressHandler的block，从iCloud下载照片时就会被图像管理器自动调用。</p>
+<h2 id="照片资源的版本"><a href="#照片资源的版本" class="headerlink" title="照片资源的版本"></a>照片资源的版本</h2><p>通过设置version属性</p>
+<ul>
+<li>.Current：修改和调整过的图像</li>
+<li>.Unadjusted：递送未被修改的图像，递送JPEG</li>
+<li>.Original：递送原始质量最高格式的图像</li>
+</ul>
+<h2 id="Result-handler"><a href="#Result-handler" class="headerlink" title="Result handler"></a>Result handler</h2><p>包含一个UIImage和一个info字典，根据字典信息可以实时更新UI告知用户当前状态。</p>
+<p>info字典提供请求状态信息</p>
+<ul>
+<li>PHImageResultIsInCloudKey：图像是否必须从iCloud请求</li>
+<li>PHImageResultIsDegradedKey：当前UIImage是否是低质量的，这个可以实现给用户先显示一个预览图</li>
+<li>PHImageResultRequestIDKey和PHImageCancelledKey：请求ID以及请求是否已经被取消</li>
+<li>PHImageErrorKey：如果没有图像，字典内的错误信息</li>
+</ul>
+<h2 id="加载时的缓存"><a href="#加载时的缓存" class="headerlink" title="加载时的缓存"></a>加载时的缓存</h2><p>PHImageManager的子类PHImageCachingManager可以预先将一些图像加载到内存中来实现缓存。</p>
+<ul>
+<li>startCachingImagesForAssets(…)：这个方法比较关键，需要传入一个PHAssets类型数组和一些请求参数。</li>
+<li>allowCachingHightQualityImages：这个属性为true适合比较短或者不变资源列表，如果是需要快速滑动操作的列表最好设置为false。</li>
+</ul>
+<h1 id="改变照片库"><a href="#改变照片库" class="headerlink" title="改变照片库"></a>改变照片库</h1><p>通过performChanges(…)提交到共享的PHPhotoLibrary的block内完成。</p>
+<p>通过创建PHAssetChangeRequest可以修改资源创建日期，资源位置，是否隐藏资源，是否收藏，从照片库删除等。</p>
+<p>通过PHAssetCollectionChangeRequest或PHCollectionListChangeRequest对象可以修改集合标题，添加删除集合成员，完全删除集合</p>
+<p>通过creationRequestForAssetFromXXX(…)传入资源数据，可以创建一个新资源。对新资源有额外修改需求可以用placeholderForCreatedAsset属性。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/15/OpenCV/" rel="prev" title="OpenCV">
+      <i class="fa fa-chevron-left"></i> OpenCV
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/16/UIVieiw/" rel="next" title="UIView">
+      UIView <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PhotoKit%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">PhotoKit对象模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Fetch%E7%85%A7%E7%89%87%E5%AE%9E%E4%BD%93"><span class="nav-number">2.1.</span> <span class="nav-text">Fetch照片实体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transient-Collections%E4%B8%B4%E6%97%B6%E9%9B%86%E5%90%88"><span class="nav-number">2.2.</span> <span class="nav-text">Transient Collections临时集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%85%A7%E7%89%87%E5%85%83%E6%95%B0%E6%8D%AE"><span class="nav-number">2.3.</span> <span class="nav-text">照片元数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HDR%E5%92%8C%E5%85%A8%E6%99%AF%E7%85%A7%E7%89%87"><span class="nav-number">2.4.</span> <span class="nav-text">HDR和全景照片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B6%E8%97%8F%E5%92%8C%E9%9A%90%E8%97%8F%E8%B5%84%E6%BA%90"><span class="nav-number">2.5.</span> <span class="nav-text">收藏和隐藏资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8B%8D%E6%A8%A1%E5%BC%8F%E7%85%A7%E7%89%87"><span class="nav-number">2.6.</span> <span class="nav-text">连拍模式照片</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHImageManager%E7%85%A7%E7%89%87%E5%8A%A0%E8%BD%BD%E7%AE%A1%E7%90%86%E7%BC%96%E8%BE%91"><span class="nav-number">3.</span> <span class="nav-text">PHImageManager照片加载管理编辑</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%9B%BE%E5%83%8F"><span class="nav-number">3.1.</span> <span class="nav-text">请求图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E7%9A%84%E5%B0%BA%E5%AF%B8%E5%92%8C%E8%A3%81%E5%89%AA"><span class="nav-number">3.2.</span> <span class="nav-text">图像的尺寸和裁剪</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E5%9B%BE%E7%89%87%E9%80%92%E9%80%81%E7%BB%99%E4%BD%A0"><span class="nav-number">3.3.</span> <span class="nav-text">将图片递送给你</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%85%A7%E7%89%87%E8%B5%84%E6%BA%90%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-number">3.4.</span> <span class="nav-text">照片资源的版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Result-handler"><span class="nav-number">3.5.</span> <span class="nav-text">Result handler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%97%B6%E7%9A%84%E7%BC%93%E5%AD%98"><span class="nav-number">3.6.</span> <span class="nav-text">加载时的缓存</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%B9%E5%8F%98%E7%85%A7%E7%89%87%E5%BA%93"><span class="nav-number">4.</span> <span class="nav-text">改变照片库</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

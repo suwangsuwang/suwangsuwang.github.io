@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="相关组件 NSURLSession NSURLSessionConfiguration NSURLSessionDataTask NSURLSessionUploadTask NSURLSessionDownloadTask  与NSURLConnection对比改进是可以配置每个session的缓存，协议，cookie以及credential policy。每个NSURLSession对象都是一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="URLSession">
+<meta property="og:url" content="https://suwangsuwang.github.io/2017/03/04/URLSession/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="相关组件 NSURLSession NSURLSessionConfiguration NSURLSessionDataTask NSURLSessionUploadTask NSURLSessionDownloadTask  与NSURLConnection对比改进是可以配置每个session的缓存，协议，cookie以及credential policy。每个NSURLSession对象都是一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-03-04T05:24:25.000Z">
+<meta property="article:modified_time" content="2023-06-07T15:20:29.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2017/03/04/URLSession/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>URLSession | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/03/04/URLSession/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          URLSession
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-04 13:24:25" itemprop="dateCreated datePublished" datetime="2017-03-04T13:24:25+08:00">2017-03-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:29" itemprop="dateModified" datetime="2023-06-07T23:20:29+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="相关组件"><a href="#相关组件" class="headerlink" title="相关组件"></a>相关组件</h1><ul>
+<li>NSURLSession</li>
+<li>NSURLSessionConfiguration</li>
+<li>NSURLSessionDataTask</li>
+<li>NSURLSessionUploadTask</li>
+<li>NSURLSessionDownloadTask</li>
+</ul>
+<h1 id="与NSURLConnection对比"><a href="#与NSURLConnection对比" class="headerlink" title="与NSURLConnection对比"></a>与NSURLConnection对比</h1><p>改进是可以配置每个session的缓存，协议，cookie以及credential policy。每个NSURLSession对象都是一个NSURLSessionConfiguration对象来进行初始化，指定那些策略和增强移动设备上性能选项。</p>
+<h1 id="NSURLSessionTask"><a href="#NSURLSessionTask" class="headerlink" title="NSURLSessionTask"></a>NSURLSessionTask</h1><p>负责处理数据的加载以及文件和数据在客户端与服务器之间的上传和下载。3个子类NSURLSessionDataTask,NSURLSessionUploadTask,NSURLSessionDownloadTask可以直接使用。这三个子类完成最基本的网络任务，获取JSON或XML数据，上传和下载文件。</p>
+<p>所有task都是可以取消，暂停或恢复的。当download task取消时，可以通过选项创建一个resume data传递给下一次新创建的download task继续download</p>
+<h2 id="Get请求"><a href="#Get请求" class="headerlink" title="Get请求"></a>Get请求</h2><span id="more"></span>
+
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@&quot;http://example.com&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sharedSession];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLSessionDataTask</span> *task = [session dataTaskWithRequest:request</span><br><span class="line"></span><br><span class="line">          completionHandler:</span><br><span class="line"></span><br><span class="line">     ^(<span class="built_in">NSData</span> *data, <span class="built_in">NSURLResponse</span> *response, <span class="built_in">NSError</span> *error) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">     &#125;];</span><br><span class="line"></span><br><span class="line">[task resume];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="上传NSData"><a href="#上传NSData" class="headerlink" title="上传NSData"></a>上传NSData</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@&quot;http://example.com/upload&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSData</span> *data = ...;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sharedSession];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLSessionUploadTask</span> *uploadTask = [session uploadTaskWithRequest:request</span><br><span class="line"></span><br><span class="line">          fromData:data</span><br><span class="line"></span><br><span class="line">          completionHandler:</span><br><span class="line"></span><br><span class="line">     ^(<span class="built_in">NSData</span> *data, <span class="built_in">NSURLResponse</span> *response, <span class="built_in">NSError</span> *error) &#123;</span><br><span class="line"></span><br><span class="line">          <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">     &#125;];</span><br><span class="line"></span><br><span class="line">[uploadTask resume];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@&quot;http://example.com/file.zip&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sharedSession];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLSessionDownloadTask</span> *downloadTask = [session downloadTaskWithRequest:request</span><br><span class="line"></span><br><span class="line">          completionHandler:</span><br><span class="line"></span><br><span class="line">     ^(<span class="built_in">NSURL</span> *location, <span class="built_in">NSURLResponse</span> *response, <span class="built_in">NSError</span> *error) &#123;</span><br><span class="line"></span><br><span class="line">         <span class="comment">//download是一点点将数据写入本地临时文件，完成后需要将文件从临时地方转移到一个永久地址保存起来。</span></span><br><span class="line"></span><br><span class="line">          <span class="built_in">NSString</span> *documentsPath = [<span class="built_in">NSSearchPathForDirectoriesInDomains</span>(<span class="built_in">NSDocumentDirectory</span>, <span class="built_in">NSUserDomainMask</span>, <span class="literal">YES</span>) firstObject];</span><br><span class="line"></span><br><span class="line">          <span class="built_in">NSURL</span> *documentsDirectoryURL = [<span class="built_in">NSURL</span> fileURLWithPath:documentsPath];</span><br><span class="line"></span><br><span class="line">          <span class="built_in">NSURL</span> *newFileLocation = [documentsDirectoryURL URLByAppendingPathComponent:[[response URL] lastPathComponent]];</span><br><span class="line"></span><br><span class="line">          [[<span class="built_in">NSFileManager</span> defaultManager] copyItemAtURL:location toURL:newFileLocation error:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">[downloadTask resume];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="NSURLSession的delegate方法"><a href="#NSURLSession的delegate方法" class="headerlink" title="NSURLSession的delegate方法"></a>NSURLSession的delegate方法</h1><p>NSURLSession的task的delegate用来处理鉴权查询，session的delegate处理连接层，如服务器信任，客户端证书评估，NTLM和Kerberos协议问题，task处理网络请求的如Basic,Digest以及Proxy authentication等。</p>
+<p>表示请求结束的delegate是-URLSession:task:didCompleteWithError:</p>
+<h1 id="NSURLSessionConfiguration"><a href="#NSURLSessionConfiguration" class="headerlink" title="NSURLSessionConfiguration"></a>NSURLSessionConfiguration</h1><p>可以找到任何你想要进行配置的选项。包括可用网络，cookie，安全性，缓存策略，自定义协议，启动事件的设置，移动设备优化。</p>
+<h2 id="NSURLSessionConfiguration的工厂方法"><a href="#NSURLSessionConfiguration的工厂方法" class="headerlink" title="NSURLSessionConfiguration的工厂方法"></a>NSURLSessionConfiguration的工厂方法</h2><ul>
+<li>+defaultSessionConfiguration：标准configuration，具有相同共享NSHTTPCookieStorage，共享NSURLCache和共享NSURLCredentiaStorage</li>
+<li>+ephemeralSessionConfiguration：实现秘密浏览，不会对缓存，Cookie和证书持久性存储</li>
+<li>+backgroundSessionConfiguration:(NSString *)identifier：</li>
+</ul>
+<h2 id="配置属性"><a href="#配置属性" class="headerlink" title="配置属性"></a>配置属性</h2><p>NSURLSessionConfiguration有20个可配属性。</p>
+<h3 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h3><ul>
+<li><p>HTTPAdditionalHeaders：设置请求的header，跨session共享信息如内容类型，语言，User agent和Author</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *userPasswordString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@&quot;%@:%@&quot;</span>, user, password];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSData</span> * userPasswordData = [userPasswordString dataUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *base64EncodedCredential = [userPasswordData base64EncodedStringWithOptions:<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *authString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@&quot;Basic %@&quot;</span>, base64EncodedCredential];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *userAgentString = <span class="string">@&quot;AppName/com.example.app (iPhone 5s; iOS 7.0.2; Scale/2.0)&quot;</span>;</span><br><span class="line"></span><br><span class="line">configuration.HTTPAdditionalHeaders = @&#123;<span class="string">@&quot;Accept&quot;</span>: <span class="string">@&quot;application/json&quot;</span>,</span><br><span class="line"></span><br><span class="line">     <span class="string">@&quot;Accept-Language&quot;</span>: <span class="string">@&quot;en&quot;</span>,</span><br><span class="line"></span><br><span class="line">     <span class="string">@&quot;Authorization&quot;</span>: authString,</span><br><span class="line"></span><br><span class="line">     <span class="string">@&quot;User-Agent&quot;</span>: userAgentString&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>networkServiceType：一般不需要设置这个。</p>
+</li>
+<li><p>allowsCellularAccess和discretionary：后台传输使用discretionary这个属性。</p>
+</li>
+<li><p>timeoutIntervalForRequest和timeoutIntervalForResource：前者是packet之间请求时间。如果希望限制整体超时时间，使用后者timeoutIntervalForResource</p>
+</li>
+<li><p>HTTPMaximumConnectionsPerHost：限制连接到主机的数量</p>
+</li>
+<li><p>HTTPShouldUsePipelining：默认禁止，因为很多服务器没有支持</p>
+</li>
+<li><p>sessionSendsLaunchEvents：session是否应该从后台启动</p>
+</li>
+<li><p>connectionProxyDictionary：指定连接的代理服务器。</p>
+</li>
+</ul>
+<h3 id="Cookie策略"><a href="#Cookie策略" class="headerlink" title="Cookie策略"></a>Cookie策略</h3><ul>
+<li>HTTPCookieStorage：默认情况会使用NSHTTPCookieStorage的+sharedHTTPCookieStorage这个单例，跟NSURLConnection一样。</li>
+<li>HTTPCookieAcceptPolicy：设置什么情况session应该接收服务器发出的cookie</li>
+<li>HTTPShouldSetCookies：是否该存储cookie</li>
+</ul>
+<h3 id="安全策略"><a href="#安全策略" class="headerlink" title="安全策略"></a>安全策略</h3><ul>
+<li>URLCredentialStorage：默认情况会使用NSURLCredentialStorage的+sharedCredentialStorage这个单例，跟NSURLConnection一样。</li>
+<li>TLSMaximumSupportedProtocol和TLSMinimumSupportedProtocolLinux：是否支持SSL协议</li>
+</ul>
+<h3 id="缓存策略"><a href="#缓存策略" class="headerlink" title="缓存策略"></a>缓存策略</h3><ul>
+<li>URLCache：默认情况会使用NSURLCache的+sharedURLCache这个单例，跟NSURLConnection一样。</li>
+<li>requestCachePolicy：设置什么时候应该缓存返回的响应。</li>
+</ul>
+<h3 id="自定义协议"><a href="#自定义协议" class="headerlink" title="自定义协议"></a>自定义协议</h3><ul>
+<li>protocolClasses：是NSURLProtocol的子类，配置自定义协议的数组。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/02/25/iOS%EF%BC%9A%E4%BD%BF%E7%94%A8-Core-ML-%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="prev" title="iOS：使用 Core ML 进行机器学习">
+      <i class="fa fa-chevron-left"></i> iOS：使用 Core ML 进行机器学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/04/05/Core-Animation/" rel="next" title="Core-Animation">
+      Core-Animation <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E7%BB%84%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">相关组件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8ENSURLConnection%E5%AF%B9%E6%AF%94"><span class="nav-number">2.</span> <span class="nav-text">与NSURLConnection对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NSURLSessionTask"><span class="nav-number">3.</span> <span class="nav-text">NSURLSessionTask</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Get%E8%AF%B7%E6%B1%82"><span class="nav-number">3.1.</span> <span class="nav-text">Get请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0NSData"><span class="nav-number">3.2.</span> <span class="nav-text">上传NSData</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">3.3.</span> <span class="nav-text">下载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NSURLSession%E7%9A%84delegate%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">NSURLSession的delegate方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NSURLSessionConfiguration"><span class="nav-number">5.</span> <span class="nav-text">NSURLSessionConfiguration</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSURLSessionConfiguration%E7%9A%84%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">NSURLSessionConfiguration的工厂方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7"><span class="nav-number">5.2.</span> <span class="nav-text">配置属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">5.2.1.</span> <span class="nav-text">基本配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie%E7%AD%96%E7%95%A5"><span class="nav-number">5.2.2.</span> <span class="nav-text">Cookie策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5"><span class="nav-number">5.2.3.</span> <span class="nav-text">安全策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5"><span class="nav-number">5.2.4.</span> <span class="nav-text">缓存策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8D%8F%E8%AE%AE"><span class="nav-number">5.2.5.</span> <span class="nav-text">自定义协议</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

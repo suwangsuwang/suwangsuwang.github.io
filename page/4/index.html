@@ -149,6 +149,80 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/07/05/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-GCD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/07/05/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-GCD/" class="post-title-link" itemprop="url">深入理解 GCD</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-07-05 14:25:00" itemprop="dateCreated datePublished" datetime="2017-07-05T14:25:00+08:00">2017-07-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:20" itemprop="dateModified" datetime="2023-06-07T23:20:20+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-Dispatch-Group"><a href="#1-Dispatch-Group" class="headerlink" title="1.Dispatch Group"></a>1.Dispatch Group</h1><p>在追加到 Dispatch Queue 中的多个任务处理完毕之后想执行结束处理，这种需求会经常出现。如果只是使用一个 Serial Dispatch Queue （串行队列）时，只想要将执行的处理全部追加到改串行队列中并在最后追加结束处理即可，但是在使用 Concurrent Queue 时，可能会同时使用多个 Dispatch Queue 时，源码就会变得很复杂。</p>
+<p>这种情况下，就可以使用 Dispatch Group。</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_t group = dispatch_group_create()<span class="comment">;</span></span><br><span class="line">  dispatch_queue_t  queue = dispatch_queue_create(<span class="string">&quot;com.wangwang.www&quot;</span>, DISPATCH_QUEUE_CONCURRENT)<span class="comment">;</span></span><br><span class="line">  </span><br><span class="line">  dispatch_group_async(<span class="name">group</span>, queue, ^&#123;</span><br><span class="line">      for (<span class="name">int</span> i = <span class="number">0</span><span class="comment">; i &lt; 1000; i++) &#123;</span></span><br><span class="line">          if (<span class="name">i</span> == <span class="number">999</span>) &#123;</span><br><span class="line">              NSLog(@<span class="string">&quot;11111&quot;</span>)<span class="comment">;</span></span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;)<span class="comment">;</span></span><br><span class="line">  </span><br><span class="line">  dispatch_group_async(<span class="name">group</span>, queue, ^&#123;</span><br><span class="line">      NSLog(@<span class="string">&quot;22222222&quot;</span>)<span class="comment">;</span></span><br><span class="line">  &#125;)<span class="comment">;</span></span><br><span class="line">  </span><br><span class="line">  dispatch_group_async(<span class="name">group</span>, queue, ^&#123;</span><br><span class="line">      NSLog(@<span class="string">&quot;3333&quot;</span>)<span class="comment">;</span></span><br><span class="line">  &#125;)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line">  dispatch_group_notify(<span class="name">group</span>, queue, ^&#123;</span><br><span class="line">      NSLog(@<span class="string">&quot;done&quot;</span>)<span class="comment">;</span></span><br><span class="line">  &#125;)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/07/05/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-GCD/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2017/06/06/Core-Image/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -801,7 +875,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-07 23:20:32" itemprop="dateModified" datetime="2023-06-07T23:20:32+08:00">2023-06-07</time>
+                <time title="修改时间：2025-04-17 19:27:39" itemprop="dateModified" datetime="2025-04-17T19:27:39+08:00">2025-04-17</time>
               </span>
 
           
@@ -818,93 +892,20 @@
           <p>AsyncDisplayKit 是一个 源自 Facebook 的 Paper 项目的UI 框架。它完美解决了 Paper 项目团队面临的众多核心问题之一：如何使主线程尽量清晰明了。</p>
 <p>现在，许多 App的用户体验都严重依赖于连续的手势和物理动画。至少，你的 UI 界面可能依赖于一些滑动视图。</p>
 <p>这种类型的用户接口大多完全取决于主线程并且对主线程阻塞异常敏感。一旦主线程阻塞就意味着动画掉帧并产生一个极差的用户体验。</p>
-<p>主线程中要做的主要工作如下：<br></p>
+<p>主线程中要做的主要工作如下：<code>&lt;br&gt;</code></p>
 <ul>
-<li>尺寸和布局：一些像<code>-heightForRowAtIndexPath:</code> 或者调用 UILabel 的 <code>-sizeThatFits</code>方法，也包括<code>AutoLayout</code>的约束求解器的指数级开销。<br></li>
-<li>图像解码： 在一个图像框中使用<code>UIImage</code>就意味着要先将图像数据解码。<br></li>
-<li>绘图：复杂的文本也需要手动完成绘图渐变和阴影。<br></li>
-<li>对象生存期：创建、使用、销毁系统对象（例如创建一个 <code>UIView</code>）。<br></li>
+<li>尺寸和布局：一些像 <code>-heightForRowAtIndexPath:</code> 或者调用 UILabel 的 <code>-sizeThatFits</code>方法，也包括 <code>AutoLayout</code>的约束求解器的指数级开销。<code>&lt;br&gt;</code></li>
+<li>图像解码： 在一个图像框中使用 <code>UIImage</code>就意味着要先将图像数据解码。<code>&lt;br&gt;</code></li>
+<li>绘图：复杂的文本也需要手动完成绘图渐变和阴影。<code>&lt;br&gt;</code></li>
+<li>对象生存期：创建、使用、销毁系统对象（例如创建一个 <code>UIView</code>）。<code>&lt;br&gt;</code></li>
 </ul>
 <p>在正确使用时，AsyncDisplayKit就可以默认异步执行所有尺寸，布局和渲染操作。并且无需额外优化，App 主线程需要完成的工作量也会显著减少。</p>
 <p>除了性能上的出色表现，新版的 AsyncDisplayKit 还提供了仅仅使用几行简单的代码就可以完成复杂功能并且方便调用的编程接口。</p>
-<p>这篇 AsyncDisplayKit 2.0教程由两部分组成，你可以从中学到使用 ASDK完成一个易用动态应用程序的全部技能。在第一部分，你会学到构建一个 App的想法构思。在第二部分，你会学到如何创建自己的<code>node</code>子类和如何使用ASDK 的强有力布局引擎。完成这段教程需要 Xcode7.3 并且需要熟悉 Objective-C。</p>
+<p>这篇 AsyncDisplayKit 2.0教程由两部分组成，你可以从中学到使用 ASDK完成一个易用动态应用程序的全部技能。在第一部分，你会学到构建一个 App的想法构思。在第二部分，你会学到如何创建自己的 <code>node</code>子类和如何使用ASDK 的强有力布局引擎。完成这段教程需要 Xcode7.3 并且需要熟悉 Objective-C。</p>
 <figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">免责声明： <span class="variable">ASDK</span> 和自动视图布局是不兼容的，所以在教程中将不会使用。</span><br><span class="line">尽管 <span class="variable">ASDK</span> 完全支持 <span class="variable">Swift</span>，许多使用者始终使用 <span class="variable">Objective</span><span class="operator">-</span><span class="built_in">C</span>。</span><br><span class="line">现在最流行的前<span class="number">100</span>个 <span class="variable">App</span> 并没有包含任何 <span class="variable">Swift</span>（其中至少<span class="number">6</span>个使用了 <span class="variable">ASDK</span>）。</span><br><span class="line">因为以上原因，这个教程使用 <span class="variable">Objctive</span><span class="operator">-</span><span class="built_in">C</span>。</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2016/12/01/AsyncDisplayKit-2-0-%E6%95%99%E7%A8%8B/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="suwang">
-      <meta itemprop="description" content="Tech Blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="suwang Tech Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" class="post-title-link" itemprop="url">多线程编程</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2016-11-13 14:22:45" itemprop="dateCreated datePublished" datetime="2016-11-13T14:22:45+08:00">2016-11-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-07 23:20:19" itemprop="dateModified" datetime="2023-06-07T23:20:19+08:00">2023-06-07</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这次STMAssembleView<a target="_blank" rel="noopener" href="https://github.com/ming1016/STMAssembleView">https://github.com/ming1016/STMAssembleView</a>加入异步解析上线后发现一些线程安全方面的问题，现总结下。<br>先看看这段代码</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line"></span><br><span class="line">    [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string is very first&quot;</span>;</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(doSomething) withObject:<span class="literal">nil</span> afterDelay:<span class="number">0.5</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>), ^&#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;before sleep %@&quot;</span>,<span class="keyword">self</span>.asStr);</span><br><span class="line"></span><br><span class="line">        sleep(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;after sleep %@&quot;</span>,<span class="keyword">self</span>.asStr);</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)doSomething &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string has changed&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -993,16 +994,16 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-count">60</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

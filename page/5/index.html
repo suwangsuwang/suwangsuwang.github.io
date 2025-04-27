@@ -149,6 +149,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/" class="post-title-link" itemprop="url">多线程编程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-11-13 14:22:45" itemprop="dateCreated datePublished" datetime="2016-11-13T14:22:45+08:00">2016-11-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:19" itemprop="dateModified" datetime="2023-06-07T23:20:19+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这次STMAssembleView<a target="_blank" rel="noopener" href="https://github.com/ming1016/STMAssembleView">https://github.com/ming1016/STMAssembleView</a>加入异步解析上线后发现一些线程安全方面的问题，现总结下。<br>先看看这段代码</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line"></span><br><span class="line">    [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string is very first&quot;</span>;</span><br><span class="line"></span><br><span class="line">    [<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(doSomething) withObject:<span class="literal">nil</span> afterDelay:<span class="number">0.5</span>];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, <span class="number">0</span>), ^&#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;before sleep %@&quot;</span>,<span class="keyword">self</span>.asStr);</span><br><span class="line"></span><br><span class="line">        sleep(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@&quot;after sleep %@&quot;</span>,<span class="keyword">self</span>.asStr);</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)doSomething &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.asStr = <span class="string">@&quot;string has changed&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/11/13/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2016/10/08/Camera/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -335,13 +408,19 @@
 
               <time title="创建时间：2016-08-15 12:23:06" itemprop="dateCreated datePublished" datetime="2016-08-15T12:23:06+08:00">2016-08-15</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-17 18:42:28" itemprop="dateModified" datetime="2025-04-17T18:42:28+08:00">2025-04-17</time>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
               </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">iOS开发</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">数据管理</span></a>
+                </span>
+            </span>
 
           
 
@@ -354,11 +433,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="包含组件"><a href="#包含组件" class="headerlink" title="包含组件"></a>包含组件</h1><p>最底层File System -&gt; SQLite -&gt; NSPersistent Store（可有多个） -&gt; NSPersistent StoreCoordinator -&gt; NSManagedObjectContext（可有多个，每个可包含多个NSManagedObject）</p>
-<h1 id="设置堆栈"><a href="#设置堆栈" class="headerlink" title="设置堆栈"></a>设置堆栈</h1><p>范例：<a target="_blank" rel="noopener" href="https://github.com/objcio/issue-4-full-core-data-application">https://github.com/objcio/issue-4-full-core-data-application</a></p>
+          <p>本文详细介绍了 iOS 中 Core Data 框架的使用方法，包括组件结构、设置堆栈、数据模型设计、CRUD 操作等内容，适合 iOS 开发者学习数据持久化技术。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2016/08/15/Core-Data/#more" rel="contents">
+              <a class="btn" href="/2016/08/15/Core-Data/">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -793,7 +871,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2015/12/12/Swift/" class="post-title-link" itemprop="url">Swift</a>
+            <a href="/2015/12/12/Swift/" class="post-title-link" itemprop="url">Swift 编程语言教程</a>
         </h2>
 
         <div class="post-meta">
@@ -805,93 +883,19 @@
 
               <time title="创建时间：2015-12-12 20:25:12" itemprop="dateCreated datePublished" datetime="2015-12-12T20:25:12+08:00">2015-12-12</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-07 23:20:29" itemprop="dateModified" datetime="2023-06-07T23:20:29+08:00">2023-06-07</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Optionals"><a href="#Optionals" class="headerlink" title="Optionals"></a>Optionals</h1><ul>
-<li>swif不允许nil传入，如果要达到能够传nil使用如下方法添加?这个符号标识是</li>
-</ul>
-   <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">extension <span class="built_in">NSAttributedString</span> &#123;</span><br><span class="line"></span><br><span class="line">     init(string str: String?)</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>返回一个可以为nil的返回值</li>
-</ul>
- <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">func parseColorFromHexString(input: String) -&gt; <span class="built_in">UIColor</span>? &#123;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2015/12/12/Swift/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="suwang">
-      <meta itemprop="description" content="Tech Blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="suwang Tech Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="post-title-link" itemprop="url">字符串</a>
-        </h2>
-
-        <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
+                <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2015-11-06 17:45:34" itemprop="dateCreated datePublished" datetime="2015-11-06T17:45:34+08:00">2015-11-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">iOS开发</span></a>
                 </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-07 23:20:32" itemprop="dateModified" datetime="2023-06-07T23:20:32+08:00">2023-06-07</time>
-              </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS%E5%BC%80%E5%8F%91/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index"><span itemprop="name">编程语言</span></a>
+                </span>
+            </span>
 
           
 
@@ -904,19 +908,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h1><h2 id="在一个字符串中搜索子字符串"><a href="#在一个字符串中搜索子字符串" class="headerlink" title="在一个字符串中搜索子字符串"></a>在一个字符串中搜索子字符串</h2><ul>
-<li><p>最灵活的方法</p>
-<ul>
-<li>(NSRange)rangeOfString:(NSString *)aString options:(NSStringCompareOptions)mask range:(NSRange)searchRange locale:(NSLocale *)locale</li>
-</ul>
-</li>
-</ul>
-<h1 id="格式化字符串"><a href="#格式化字符串" class="headerlink" title="格式化字符串"></a>格式化字符串</h1><ul>
-<li>3个方法</li>
-</ul>
+          <p>本文详细介绍了 Swift 编程语言的核心特性，包括可选类型、值类型与引用类型、函数定义与调用、类与结构体等内容。通过实例讲解了 Swift 的基本语法和最佳实践，适合 iOS 开发者学习参考。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2015/11/06/%E5%AD%97%E7%AC%A6%E4%B8%B2/#more" rel="contents">
+              <a class="btn" href="/2015/12/12/Swift/">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1005,16 +1000,16 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-count">60</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>

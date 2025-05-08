@@ -149,6 +149,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/08/14/ReactiveCocoa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/08/14/ReactiveCocoa/" class="post-title-link" itemprop="url">ReactiveCocoa</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-14 19:24:39" itemprop="dateCreated datePublished" datetime="2018-08-14T19:24:39+08:00">2018-08-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-07 23:20:24" itemprop="dateModified" datetime="2023-06-07T23:20:24+08:00">2023-06-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>FRP全称Function Reactive Programming，从名称就能够看出来这个模型关键就是Function Programming和Reactive Programming的结合。那么就先从函数式编程说起。说函数式编程前先聊聊链式编程，先看看一个开源Alert控件的头文件里定义的接口方法的写法。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> *  自定义样式的alertView</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">instancetype</span>)showAlertWithTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line"></span><br><span class="line">                           message:(<span class="built_in">NSString</span> *)message</span><br><span class="line"></span><br><span class="line">                        completion:(PXAlertViewCompletionBlock)completion</span><br><span class="line"></span><br><span class="line">                       cancelTitle:(<span class="built_in">NSString</span> *)cancelTitle</span><br><span class="line"></span><br><span class="line">                       otherTitles:(<span class="built_in">NSString</span> *)otherTitles, ... <span class="built_in">NS_REQUIRES_NIL_TERMINATION</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> * @param otherTitles Must be a NSArray containing type NSString, or set to nil for no otherTitles.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">instancetype</span>)showAlertWithTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line"></span><br><span class="line">                       contentView:(<span class="built_in">UIView</span> *)view</span><br><span class="line"></span><br><span class="line">                       secondTitle:(<span class="built_in">NSString</span> *)secondTitle</span><br><span class="line"></span><br><span class="line">                           message:(<span class="built_in">NSString</span> *)message</span><br><span class="line"></span><br><span class="line">                       cancelTitle:(<span class="built_in">NSString</span> *)cancelTitle</span><br><span class="line"></span><br><span class="line">                       otherTitles:(<span class="built_in">NSArray</span> *)otherTitles</span><br><span class="line"></span><br><span class="line">                          btnStyle:(<span class="type">BOOL</span>)btnStyle</span><br><span class="line"></span><br><span class="line">                        completion:(PXAlertViewCompletionBlock)completion;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/08/14/ReactiveCocoa/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/07/28/%E7%A8%8B%E5%BA%8F%E7%98%A6%E8%BA%AB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -848,86 +921,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/03/04/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90-iOS-%E7%BC%96%E8%AF%91-Clang-LLVM/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="suwang">
-      <meta itemprop="description" content="Tech Blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="suwang Tech Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/03/04/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90-iOS-%E7%BC%96%E8%AF%91-Clang-LLVM/" class="post-title-link" itemprop="url">剖析 iOS编译</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-03-04 13:24:15" itemprop="dateCreated datePublished" datetime="2018-03-04T13:24:15+08:00">2018-03-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-07 23:20:23" itemprop="dateModified" datetime="2023-06-07T23:20:23+08:00">2023-06-07</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="深入剖析-iOS-编译-Clang-LLVM"><a href="#深入剖析-iOS-编译-Clang-LLVM" class="headerlink" title="深入剖析 iOS 编译 Clang &#x2F; LLVM"></a>深入剖析 iOS 编译 Clang &#x2F; LLVM</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>2000年，伊利诺伊大学厄巴纳－香槟分校（University of Illinois at Urbana-Champaign 简称UIUC）这所享有世界声望的一流公立研究型大学的 Chris Lattner（他的 twitter <a target="_blank" rel="noopener" href="https://twitter.com/clattner_llvm">@clattner_llvm</a> ） 开发了一个叫作 Low Level Virtual Machine 的编译器开发工具套件，后来涉及范围越来越大，可以用于常规编译器，JIT编译器，汇编器，调试器，静态分析工具等一系列跟编程语言相关的工作，于是就把简称 LLVM 这个简称作为了正式的名字。Chris Lattner 后来又开发了 Clang，使得 LLVM 直接挑战 GCC 的地位。2012年，LLVM 获得美国计算机学会 ACM 的软件系统大奖，和 UNIX，WWW，TCP&#x2F;IP，Tex，JAVA 等齐名。</p>
-<p>Chris Lattner 生于 1978 年，2005年加入苹果，将苹果使用的 GCC 全面转为 LLVM。2010年开始主导开发 Swift 语言。</p>
-<p>iOS 开发中 Objective-C 是 Clang &#x2F; LLVM 来编译的。</p>
-<p>swift 是 Swift &#x2F; LLVM，其中 Swift 前端会多出 SIL optimizer，它会把 .swift 生成的中间代码 .sil 属于 High-Level IR， 因为 swift 在编译时就完成了方法绑定直接通过地址调用属于强类型语言，方法调用不再是像OC那样的消息发送，这样编译就可以获得更多的信息用在后面的后端优化上。</p>
-<p>LLVM是一个模块化和可重用的编译器和工具链技术的集合，Clang 是 LLVM 的子项目，是 C，C++ 和 Objective-C 编译器，目的是提供惊人的快速编译，比 GCC 快3倍，其中的 clang static analyzer 主要是进行语法分析，语义分析和生成中间代码，当然这个过程会对代码进行检查，出错的和需要警告的会标注出来。LLVM 核心库提供一个优化器，对流行的 CPU 做代码生成支持。lld 是 Clang &#x2F; LLVM 的内置链接器，clang 必须调用链接器来产生可执行文件。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/03/04/%E6%B7%B1%E5%85%A5%E5%89%96%E6%9E%90-iOS-%E7%BC%96%E8%AF%91-Clang-LLVM/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -993,7 +990,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

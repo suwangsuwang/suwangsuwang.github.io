@@ -149,6 +149,131 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2025/05/08/%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/05/08/%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" class="post-title-link" itemprop="url">Melos 的详细介绍与使用教程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-05-08 14:19:08" itemprop="dateCreated datePublished" datetime="2025-05-08T14:19:08+08:00">2025-05-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+
+
+<p>以下是关于 <strong>Melos</strong> 的详细介绍与使用教程，结合 <a target="_blank" rel="noopener" href="https://pub.dev/packages/melos">pub.dev</a> 官方文档及网络信息整理而成：</p>
+<hr>
+<h3 id="一、Melos-是什么？"><a href="#一、Melos-是什么？" class="headerlink" title="一、Melos 是什么？"></a>一、Melos 是什么？</h3><p><strong>Melos</strong> 是一款专为 <strong>Dart&#x2F;Flutter 多包项目（Monorepo）</strong> 设计的命令行工具，旨在简化多包工作区的管理、版本控制、依赖协调及脚本自动化。它通过统一的配置和命令，帮助开发者高效管理包含多个子包的复杂项目，尤其适用于需要跨包协作的 Flutter 插件开发或模块化应用场景。</p>
+<h4 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h4><ol>
+<li><strong>多包协调管理</strong>：支持批量执行命令（如构建、测试、发布）。</li>
+<li><strong>自动化版本控制</strong>：基于 Conventional Commits 规范自动生成版本号和变更日志。</li>
+<li><strong>本地包链接</strong>：无需手动修改依赖路径，直接在本地工作区中链接子包。</li>
+<li><strong>脚本化工作流</strong>：通过自定义脚本简化重复操作。</li>
+<li><strong>IDE 集成</strong>：与 IntelliJ、VSCode 等主流开发工具无缝兼容。</li>
+</ol>
+<hr>
+<h3 id="二、安装与初始化"><a href="#二、安装与初始化" class="headerlink" title="二、安装与初始化"></a>二、安装与初始化</h3><h4 id="1-安装-Melos"><a href="#1-安装-Melos" class="headerlink" title="1. 安装 Melos"></a>1. 安装 Melos</h4><p>通过 Dart 全局安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dart pub global activate melos</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-初始化项目"><a href="#2-初始化项目" class="headerlink" title="2. 初始化项目"></a>2. 初始化项目</h4><p>在项目根目录执行以下命令生成基础配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">melos init</span><br></pre></td></tr></table></figure>
+
+<p>该命令会创建 <code>melos.yaml</code> 文件，并生成默认的目录结构：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">my_project<span class="symbol">/</span></span><br><span class="line">├── melos.yaml        <span class="comment"># 核心配置文件</span></span><br><span class="line">├── packages<span class="symbol">/</span>         <span class="comment"># 子包目录</span></span><br><span class="line">│   ├── package_a<span class="symbol">/</span></span><br><span class="line">│   └── package_b<span class="symbol">/</span></span><br><span class="line">└── ...               <span class="comment"># 其他项目文件</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="三、配置文件-melos-yaml"><a href="#三、配置文件-melos-yaml" class="headerlink" title="三、配置文件 melos.yaml"></a>三、配置文件 <code>melos.yaml</code></h3><p><code>melos.yaml</code> 是 Melos 的核心配置文件，定义工作区的子包路径、脚本、版本策略等。示例配置如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">my_workspace</span></span><br><span class="line"><span class="attr">packages:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;packages/**&quot;</span>       <span class="comment"># 使用通配符匹配子包路径</span></span><br><span class="line"><span class="attr">scripts:</span></span><br><span class="line">  <span class="attr">analyze:</span>             <span class="comment"># 自定义脚本</span></span><br><span class="line">    <span class="attr">exec:</span> <span class="string">flutter</span> <span class="string">analyze</span></span><br><span class="line">    <span class="attr">description:</span> <span class="string">&quot;分析所有子包的代码&quot;</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">exec:</span> <span class="string">flutter</span> <span class="string">build</span></span><br><span class="line">    <span class="attr">concurrency:</span> <span class="number">2</span>     <span class="comment"># 并发执行数</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span></span><br><span class="line">  <span class="attr">message:</span> <span class="string">&quot;chore: release %s&quot;</span>   <span class="comment"># 版本发布时的提交信息模板</span></span><br><span class="line">  <span class="attr">conventionalCommits:</span> <span class="literal">true</span>       <span class="comment"># 启用 Conventional Commits 规范</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="关键配置项"><a href="#关键配置项" class="headerlink" title="关键配置项"></a>关键配置项</h4><ul>
+<li><strong><code>packages</code></strong>：定义子包路径（支持通配符）。</li>
+<li><strong><code>scripts</code></strong>：自定义命令（如测试、构建）。</li>
+<li><strong><code>version</code></strong>：版本控制策略（自动生成 CHANGELOG）。</li>
+</ul>
+<hr>
+<h3 id="四、常用命令与工作流"><a href="#四、常用命令与工作流" class="headerlink" title="四、常用命令与工作流"></a>四、常用命令与工作流</h3><h4 id="1-初始化依赖"><a href="#1-初始化依赖" class="headerlink" title="1. 初始化依赖"></a>1. 初始化依赖</h4><p>在根目录运行以下命令，自动安装所有子包的依赖并链接本地包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">melos bootstrap</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-执行脚本"><a href="#2-执行脚本" class="headerlink" title="2. 执行脚本"></a>2. 执行脚本</h4><p>通过 <code>melos run</code> 运行自定义脚本（需在 <code>melos.yaml</code> 中定义）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">melos run analyze   <span class="comment"># 执行代码分析</span></span><br><span class="line">melos run <span class="built_in">test</span> -- -n <span class="string">&quot;特定测试用例&quot;</span>  <span class="comment"># 传递参数给子命令</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-版本管理与发布"><a href="#3-版本管理与发布" class="headerlink" title="3. 版本管理与发布"></a>3. 版本管理与发布</h4><p>Melos 支持自动化版本升级与发布：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于提交历史生成新版本号及变更日志</span></span><br><span class="line">melos version</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发布所有子包到 pub.dev</span></span><br><span class="line">melos publish</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>conventionalCommits: true</code> 配置，Melos 会根据提交类型（如 <code>feat</code>、<code>fix</code>）自动决定版本号（SemVer）。</p>
+<hr>
+<h3 id="五、高级功能"><a href="#五、高级功能" class="headerlink" title="五、高级功能"></a>五、高级功能</h3><h4 id="1-本地包依赖管理"><a href="#1-本地包依赖管理" class="headerlink" title="1. 本地包依赖管理"></a>1. 本地包依赖管理</h4><p>在子包的 <code>pubspec.yaml</code> 中直接引用本地包名称，Melos 会自动解析为本地路径：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">dependencies:</span></span><br><span class="line">  <span class="attr">package_a:</span> <span class="string">^1.0.0</span>   <span class="comment"># 实际指向本地 packages/package_a</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-IDE-集成"><a href="#2-IDE-集成" class="headerlink" title="2. IDE 集成"></a>2. IDE 集成</h4><ul>
+<li><strong>VSCode</strong>：安装 <code>melos</code> 插件，支持脚本可视化执行和包导航。</li>
+<li><strong>IntelliJ</strong>：通过插件实现类似功能，提升开发效率。</li>
+</ul>
+<h4 id="3-跨包测试与构建"><a href="#3-跨包测试与构建" class="headerlink" title="3. 跨包测试与构建"></a>3. 跨包测试与构建</h4><p>通过并发执行加速工作流：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">melos run build --concurrency=4   <span class="comment"># 并发构建 4 个子包</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="六、适用场景"><a href="#六、适用场景" class="headerlink" title="六、适用场景"></a>六、适用场景</h3><ol>
+<li><strong>Flutter 插件开发</strong>：管理多个平台（Android&#x2F;iOS&#x2F;Web）的实现包。</li>
+<li><strong>模块化应用</strong>：将应用拆分为独立的功能模块（如 UI、数据层）。</li>
+<li><strong>企业级 Monorepo</strong>：统一管理多个团队共享的代码库。</li>
+</ol>
+<hr>
+<h3 id="七、最佳实践"><a href="#七、最佳实践" class="headerlink" title="七、最佳实践"></a>七、最佳实践</h3><ol>
+<li><strong>目录结构规范</strong>：将子包统一放在 <code>packages/</code> 目录下。</li>
+<li><strong>脚本标准化</strong>：定义通用的 <code>test</code>、<code>format</code> 脚本确保代码一致性。</li>
+<li><strong>版本控制策略</strong>：采用 Conventional Commits 规范，便于自动化生成版本日志。</li>
+</ol>
+<hr>
+<p>通过 Melos，开发者可以显著减少多包项目的维护成本，提升团队协作效率。更多高级用法（如 CI&#x2F;CD 集成）可参考 <a target="_blank" rel="noopener" href="https://pub.dev/packages/melos">官方文档</a> 或社区教程。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2025/04/24/%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E4%B8%8E%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -869,83 +994,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2018/08/14/ReactiveCocoa/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="suwang">
-      <meta itemprop="description" content="Tech Blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="suwang Tech Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2018/08/14/ReactiveCocoa/" class="post-title-link" itemprop="url">ReactiveCocoa</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-08-14 19:24:39" itemprop="dateCreated datePublished" datetime="2018-08-14T19:24:39+08:00">2018-08-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-07 23:20:24" itemprop="dateModified" datetime="2023-06-07T23:20:24+08:00">2023-06-07</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>FRP全称Function Reactive Programming，从名称就能够看出来这个模型关键就是Function Programming和Reactive Programming的结合。那么就先从函数式编程说起。说函数式编程前先聊聊链式编程，先看看一个开源Alert控件的头文件里定义的接口方法的写法。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> *  自定义样式的alertView</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">instancetype</span>)showAlertWithTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line"></span><br><span class="line">                           message:(<span class="built_in">NSString</span> *)message</span><br><span class="line"></span><br><span class="line">                        completion:(PXAlertViewCompletionBlock)completion</span><br><span class="line"></span><br><span class="line">                       cancelTitle:(<span class="built_in">NSString</span> *)cancelTitle</span><br><span class="line"></span><br><span class="line">                       otherTitles:(<span class="built_in">NSString</span> *)otherTitles, ... <span class="built_in">NS_REQUIRES_NIL_TERMINATION</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> * @param otherTitles Must be a NSArray containing type NSString, or set to nil for no otherTitles.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">instancetype</span>)showAlertWithTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line"></span><br><span class="line">                       contentView:(<span class="built_in">UIView</span> *)view</span><br><span class="line"></span><br><span class="line">                       secondTitle:(<span class="built_in">NSString</span> *)secondTitle</span><br><span class="line"></span><br><span class="line">                           message:(<span class="built_in">NSString</span> *)message</span><br><span class="line"></span><br><span class="line">                       cancelTitle:(<span class="built_in">NSString</span> *)cancelTitle</span><br><span class="line"></span><br><span class="line">                       otherTitles:(<span class="built_in">NSArray</span> *)otherTitles</span><br><span class="line"></span><br><span class="line">                          btnStyle:(<span class="type">BOOL</span>)btnStyle</span><br><span class="line"></span><br><span class="line">                        completion:(PXAlertViewCompletionBlock)completion;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/08/14/ReactiveCocoa/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1011,7 +1063,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"suwangsuwang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="以下是关于 Melos 的详细介绍与使用教程，结合 pub.dev 官方文档及网络信息整理而成：  一、Melos 是什么？Melos 是一款专为 Dart&#x2F;Flutter 多包项目（Monorepo） 设计的命令行工具，旨在简化多包工作区的管理、版本控制、依赖协调及脚本自动化。它通过统一的配置和命令，帮助开发者高效管理包含多个子包的复杂项目，尤其适用于需要跨包协作的 Flutte">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Melos 的详细介绍与使用教程">
+<meta property="og:url" content="https://suwangsuwang.github.io/2025/05/08/%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="suwang Tech Blog">
+<meta property="og:description" content="以下是关于 Melos 的详细介绍与使用教程，结合 pub.dev 官方文档及网络信息整理而成：  一、Melos 是什么？Melos 是一款专为 Dart&#x2F;Flutter 多包项目（Monorepo） 设计的命令行工具，旨在简化多包工作区的管理、版本控制、依赖协调及脚本自动化。它通过统一的配置和命令，帮助开发者高效管理包含多个子包的复杂项目，尤其适用于需要跨包协作的 Flutte">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-08T06:19:08.000Z">
+<meta property="article:modified_time" content="2025-05-08T06:19:08.000Z">
+<meta property="article:author" content="suwang">
+<meta property="article:tag" content="iOS, Swift, Objective-C, 技术博客, 编程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://suwangsuwang.github.io/2025/05/08/%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Melos 的详细介绍与使用教程 | suwang Tech Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">suwang Tech Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Tech Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suwangsuwang.github.io/2025/05/08/%E7%9A%84%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suwang">
+      <meta itemprop="description" content="Tech Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="suwang Tech Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Melos 的详细介绍与使用教程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-05-08 14:19:08" itemprop="dateCreated datePublished" datetime="2025-05-08T14:19:08+08:00">2025-05-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <span id="more"></span>
+
+
+<p>以下是关于 <strong>Melos</strong> 的详细介绍与使用教程，结合 <a target="_blank" rel="noopener" href="https://pub.dev/packages/melos">pub.dev</a> 官方文档及网络信息整理而成：</p>
+<hr>
+<h3 id="一、Melos-是什么？"><a href="#一、Melos-是什么？" class="headerlink" title="一、Melos 是什么？"></a>一、Melos 是什么？</h3><p><strong>Melos</strong> 是一款专为 <strong>Dart&#x2F;Flutter 多包项目（Monorepo）</strong> 设计的命令行工具，旨在简化多包工作区的管理、版本控制、依赖协调及脚本自动化。它通过统一的配置和命令，帮助开发者高效管理包含多个子包的复杂项目，尤其适用于需要跨包协作的 Flutter 插件开发或模块化应用场景。</p>
+<h4 id="核心功能"><a href="#核心功能" class="headerlink" title="核心功能"></a>核心功能</h4><ol>
+<li><strong>多包协调管理</strong>：支持批量执行命令（如构建、测试、发布）。</li>
+<li><strong>自动化版本控制</strong>：基于 Conventional Commits 规范自动生成版本号和变更日志。</li>
+<li><strong>本地包链接</strong>：无需手动修改依赖路径，直接在本地工作区中链接子包。</li>
+<li><strong>脚本化工作流</strong>：通过自定义脚本简化重复操作。</li>
+<li><strong>IDE 集成</strong>：与 IntelliJ、VSCode 等主流开发工具无缝兼容。</li>
+</ol>
+<hr>
+<h3 id="二、安装与初始化"><a href="#二、安装与初始化" class="headerlink" title="二、安装与初始化"></a>二、安装与初始化</h3><h4 id="1-安装-Melos"><a href="#1-安装-Melos" class="headerlink" title="1. 安装 Melos"></a>1. 安装 Melos</h4><p>通过 Dart 全局安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dart pub global activate melos</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-初始化项目"><a href="#2-初始化项目" class="headerlink" title="2. 初始化项目"></a>2. 初始化项目</h4><p>在项目根目录执行以下命令生成基础配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">melos init</span><br></pre></td></tr></table></figure>
+
+<p>该命令会创建 <code>melos.yaml</code> 文件，并生成默认的目录结构：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">my_project<span class="symbol">/</span></span><br><span class="line">├── melos.yaml        <span class="comment"># 核心配置文件</span></span><br><span class="line">├── packages<span class="symbol">/</span>         <span class="comment"># 子包目录</span></span><br><span class="line">│   ├── package_a<span class="symbol">/</span></span><br><span class="line">│   └── package_b<span class="symbol">/</span></span><br><span class="line">└── ...               <span class="comment"># 其他项目文件</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="三、配置文件-melos-yaml"><a href="#三、配置文件-melos-yaml" class="headerlink" title="三、配置文件 melos.yaml"></a>三、配置文件 <code>melos.yaml</code></h3><p><code>melos.yaml</code> 是 Melos 的核心配置文件，定义工作区的子包路径、脚本、版本策略等。示例配置如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">my_workspace</span></span><br><span class="line"><span class="attr">packages:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;packages/**&quot;</span>       <span class="comment"># 使用通配符匹配子包路径</span></span><br><span class="line"><span class="attr">scripts:</span></span><br><span class="line">  <span class="attr">analyze:</span>             <span class="comment"># 自定义脚本</span></span><br><span class="line">    <span class="attr">exec:</span> <span class="string">flutter</span> <span class="string">analyze</span></span><br><span class="line">    <span class="attr">description:</span> <span class="string">&quot;分析所有子包的代码&quot;</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">exec:</span> <span class="string">flutter</span> <span class="string">build</span></span><br><span class="line">    <span class="attr">concurrency:</span> <span class="number">2</span>     <span class="comment"># 并发执行数</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span></span><br><span class="line">  <span class="attr">message:</span> <span class="string">&quot;chore: release %s&quot;</span>   <span class="comment"># 版本发布时的提交信息模板</span></span><br><span class="line">  <span class="attr">conventionalCommits:</span> <span class="literal">true</span>       <span class="comment"># 启用 Conventional Commits 规范</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="关键配置项"><a href="#关键配置项" class="headerlink" title="关键配置项"></a>关键配置项</h4><ul>
+<li><strong><code>packages</code></strong>：定义子包路径（支持通配符）。</li>
+<li><strong><code>scripts</code></strong>：自定义命令（如测试、构建）。</li>
+<li><strong><code>version</code></strong>：版本控制策略（自动生成 CHANGELOG）。</li>
+</ul>
+<hr>
+<h3 id="四、常用命令与工作流"><a href="#四、常用命令与工作流" class="headerlink" title="四、常用命令与工作流"></a>四、常用命令与工作流</h3><h4 id="1-初始化依赖"><a href="#1-初始化依赖" class="headerlink" title="1. 初始化依赖"></a>1. 初始化依赖</h4><p>在根目录运行以下命令，自动安装所有子包的依赖并链接本地包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">melos bootstrap</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-执行脚本"><a href="#2-执行脚本" class="headerlink" title="2. 执行脚本"></a>2. 执行脚本</h4><p>通过 <code>melos run</code> 运行自定义脚本（需在 <code>melos.yaml</code> 中定义）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">melos run analyze   <span class="comment"># 执行代码分析</span></span><br><span class="line">melos run <span class="built_in">test</span> -- -n <span class="string">&quot;特定测试用例&quot;</span>  <span class="comment"># 传递参数给子命令</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-版本管理与发布"><a href="#3-版本管理与发布" class="headerlink" title="3. 版本管理与发布"></a>3. 版本管理与发布</h4><p>Melos 支持自动化版本升级与发布：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基于提交历史生成新版本号及变更日志</span></span><br><span class="line">melos version</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发布所有子包到 pub.dev</span></span><br><span class="line">melos publish</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>conventionalCommits: true</code> 配置，Melos 会根据提交类型（如 <code>feat</code>、<code>fix</code>）自动决定版本号（SemVer）。</p>
+<hr>
+<h3 id="五、高级功能"><a href="#五、高级功能" class="headerlink" title="五、高级功能"></a>五、高级功能</h3><h4 id="1-本地包依赖管理"><a href="#1-本地包依赖管理" class="headerlink" title="1. 本地包依赖管理"></a>1. 本地包依赖管理</h4><p>在子包的 <code>pubspec.yaml</code> 中直接引用本地包名称，Melos 会自动解析为本地路径：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">dependencies:</span></span><br><span class="line">  <span class="attr">package_a:</span> <span class="string">^1.0.0</span>   <span class="comment"># 实际指向本地 packages/package_a</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-IDE-集成"><a href="#2-IDE-集成" class="headerlink" title="2. IDE 集成"></a>2. IDE 集成</h4><ul>
+<li><strong>VSCode</strong>：安装 <code>melos</code> 插件，支持脚本可视化执行和包导航。</li>
+<li><strong>IntelliJ</strong>：通过插件实现类似功能，提升开发效率。</li>
+</ul>
+<h4 id="3-跨包测试与构建"><a href="#3-跨包测试与构建" class="headerlink" title="3. 跨包测试与构建"></a>3. 跨包测试与构建</h4><p>通过并发执行加速工作流：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">melos run build --concurrency=4   <span class="comment"># 并发构建 4 个子包</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="六、适用场景"><a href="#六、适用场景" class="headerlink" title="六、适用场景"></a>六、适用场景</h3><ol>
+<li><strong>Flutter 插件开发</strong>：管理多个平台（Android&#x2F;iOS&#x2F;Web）的实现包。</li>
+<li><strong>模块化应用</strong>：将应用拆分为独立的功能模块（如 UI、数据层）。</li>
+<li><strong>企业级 Monorepo</strong>：统一管理多个团队共享的代码库。</li>
+</ol>
+<hr>
+<h3 id="七、最佳实践"><a href="#七、最佳实践" class="headerlink" title="七、最佳实践"></a>七、最佳实践</h3><ol>
+<li><strong>目录结构规范</strong>：将子包统一放在 <code>packages/</code> 目录下。</li>
+<li><strong>脚本标准化</strong>：定义通用的 <code>test</code>、<code>format</code> 脚本确保代码一致性。</li>
+<li><strong>版本控制策略</strong>：采用 Conventional Commits 规范，便于自动化生成版本日志。</li>
+</ol>
+<hr>
+<p>通过 Melos，开发者可以显著减少多包项目的维护成本，提升团队协作效率。更多高级用法（如 CI&#x2F;CD 集成）可参考 <a target="_blank" rel="noopener" href="https://pub.dev/packages/melos">官方文档</a> 或社区教程。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/04/24/%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E4%B8%8E%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/" rel="prev" title="事件循环与异步执行机制详解">
+      <i class="fa fa-chevron-left"></i> 事件循环与异步执行机制详解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81Melos-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">一、Melos 是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD"><span class="nav-number">1.1.</span> <span class="nav-text">核心功能</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%89%E8%A3%85%E4%B8%8E%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">二、安装与初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-Melos"><span class="nav-number">2.1.</span> <span class="nav-text">1. 安装 Melos</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.2.</span> <span class="nav-text">2. 初始化项目</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-melos-yaml"><span class="nav-number">3.</span> <span class="nav-text">三、配置文件 melos.yaml</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">3.1.</span> <span class="nav-text">关键配置项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">4.</span> <span class="nav-text">四、常用命令与工作流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BE%9D%E8%B5%96"><span class="nav-number">4.1.</span> <span class="nav-text">1. 初始化依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC"><span class="nav-number">4.2.</span> <span class="nav-text">2. 执行脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86%E4%B8%8E%E5%8F%91%E5%B8%83"><span class="nav-number">4.3.</span> <span class="nav-text">3. 版本管理与发布</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E9%AB%98%E7%BA%A7%E5%8A%9F%E8%83%BD"><span class="nav-number">5.</span> <span class="nav-text">五、高级功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%9C%AC%E5%9C%B0%E5%8C%85%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86"><span class="nav-number">5.1.</span> <span class="nav-text">1. 本地包依赖管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-IDE-%E9%9B%86%E6%88%90"><span class="nav-number">5.2.</span> <span class="nav-text">2. IDE 集成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%B7%A8%E5%8C%85%E6%B5%8B%E8%AF%95%E4%B8%8E%E6%9E%84%E5%BB%BA"><span class="nav-number">5.3.</span> <span class="nav-text">3. 跨包测试与构建</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">6.</span> <span class="nav-text">六、适用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">7.</span> <span class="nav-text">七、最佳实践</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suwang</p>
+  <div class="site-description" itemprop="description">Tech Blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
